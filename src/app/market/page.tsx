@@ -274,7 +274,7 @@ function CompanySetupContent() {
 
             {/* Footer Navigation */}
             <div className="flex items-center justify-between">
-              <Link href="/" className="flex items-center justify-center h-12 px-6 rounded-lg text-[#92adc9] font-bold text-base hover:bg-[#1f2937] transition-colors">
+              <Link href="/onboarding" className="flex items-center justify-center h-12 px-6 rounded-lg text-[#92adc9] font-bold text-base hover:bg-[#1f2937] transition-colors">
                 Back
               </Link>
               <button
