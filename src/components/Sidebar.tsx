@@ -36,7 +36,7 @@ export default function Sidebar() {
                         {!isCollapsed && (
                             <div className="flex flex-col">
                                 <h1 className="text-white text-base font-bold leading-tight">
-                                    MVP Simulator
+                                    PorterAi
                                 </h1>
                                 <p className="text-[#92adc9] text-xs font-normal">
                                     CEO Cockpit

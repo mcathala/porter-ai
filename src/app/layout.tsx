@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MVP Onboarding: Difficulty",
-  description: "Select your challenge level",
+  title: "PorterAi",
+  description: "AI-powered business strategy simulator",
 };
 
 export default function RootLayout({

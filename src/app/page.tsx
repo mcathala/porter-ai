@@ -23,7 +23,7 @@ export default function Home() {
               </span>
             </div>
             <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-              MVP Simulator
+              PorterAi
             </h2>
           </div>
         </header>

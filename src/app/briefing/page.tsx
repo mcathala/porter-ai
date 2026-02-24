@@ -78,7 +78,7 @@ export default function BriefingPage() {
             <span className="material-symbols-outlined text-xl">rocket_launch</span>
           </div>
           <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-            MVP Simulator
+            PorterAi
           </h2>
         </div>
         <span className="text-[#92adc9] text-sm font-medium">Mission Briefing</span>
