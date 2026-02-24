@@ -69,10 +69,10 @@ export default function TurnSummaryModal({
       />
       <div className="bg-[#1a2632] w-full max-w-4xl rounded-2xl shadow-2xl border border-[#233648] overflow-hidden flex flex-col max-h-[90vh] relative z-10 animate-in zoom-in-95 duration-200 text-white">
         {/* Header */}
-        <div className="px-8 py-6 border-b border-[#233648] bg-gradient-to-r from-[#1a2632] to-[#1f3044]">
+        <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#233648] bg-gradient-to-r from-[#1a2632] to-[#1f3044]">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2 sm:gap-3">
                 <span className="material-symbols-outlined text-primary text-[28px]">
                   flag
                 </span>
@@ -92,9 +92,9 @@ export default function TurnSummaryModal({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-8 space-y-8">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 sm:space-y-8">
           {/* Turn Summary Narrative */}
-          <div className="bg-[#111a22] rounded-xl p-6 border border-[#233648]">
+          <div className="bg-[#111a22] rounded-xl p-4 sm:p-6 border border-[#233648]">
             <p className="text-gray-300 leading-relaxed whitespace-pre-line">
               {turnResult.turnSummary}
             </p>
@@ -337,7 +337,7 @@ export default function TurnSummaryModal({
         </div>
 
         {/* Footer */}
-        <div className="px-8 py-5 border-t border-[#233648] bg-[#1a2632] flex justify-end">
+        <div className="px-4 sm:px-8 py-4 sm:py-5 border-t border-[#233648] bg-[#1a2632] flex justify-end">
           <button
             onClick={onClose}
             className="px-8 py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/25 hover:bg-primary/90 transition-all flex items-center gap-2"

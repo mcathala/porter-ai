@@ -40,9 +40,9 @@ export default function TurnDialog({
                 aria-hidden="true"
             />
             <div className="bg-[#1a2632] w-full max-w-4xl rounded-2xl shadow-2xl border border-[#233648] overflow-hidden flex flex-col max-h-[90vh] relative z-10 animate-in zoom-in-95 duration-200 text-white">
-                <div className="px-8 py-6 border-b border-[#233648] flex items-center justify-between bg-[#1a2632] sticky top-0 z-10">
+                <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#233648] flex items-center justify-between bg-[#1a2632] sticky top-0 z-10">
                     <div>
-                        <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                        <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
                             <span className="material-symbols-outlined text-primary text-[24px]">
                                 timelapse
                             </span>
@@ -60,7 +60,7 @@ export default function TurnDialog({
                     </button>
                 </div>
 
-                <div className="p-8 overflow-y-auto bg-[#111a22]/50">
+                <div className="p-4 sm:p-8 overflow-y-auto bg-[#111a22]/50">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {/* Recommended Option - Emerald */}
                         <div
@@ -338,7 +338,7 @@ export default function TurnDialog({
                     </div>
                 </div>
 
-                <div className="px-8 py-5 border-t border-[#233648] bg-[#1a2632] flex justify-between items-center">
+                <div className="px-4 sm:px-8 py-4 sm:py-5 border-t border-[#233648] bg-[#1a2632] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
                     <div className="flex items-center gap-2">
                         <input
                             className="rounded border-slate-600 bg-[#111a22] text-primary focus:ring-primary/50"
@@ -347,22 +347,22 @@ export default function TurnDialog({
                             checked={rememberChoice}
                             onChange={(e) => setRememberChoice(e.target.checked)}
                         />
-                        <label className="text-sm text-gray-400" htmlFor="dontShow">
+                        <label className="text-xs sm:text-sm text-gray-400" htmlFor="dontShow">
                             Remember choice for this session
                         </label>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 w-full sm:w-auto">
                         <button
                             onClick={onClose}
                             disabled={isSimulating}
-                            className="px-5 py-2.5 rounded-lg text-slate-300 font-medium hover:bg-[#1f2d3b] transition-colors disabled:opacity-50 cursor-pointer"
+                            className="px-4 sm:px-5 py-2.5 rounded-lg text-slate-300 font-medium hover:bg-[#1f2d3b] transition-colors disabled:opacity-50 cursor-pointer flex-1 sm:flex-none"
                         >
                             Cancel
                         </button>
                         <button
                             onClick={handleProceed}
                             disabled={!selectedOption || isSimulating}
-                            className={`px-5 py-2.5 rounded-lg text-white font-medium shadow-lg transition-colors flex items-center gap-2 cursor-pointer ${selectedOption && !isSimulating
+                            className={`px-4 sm:px-5 py-2.5 rounded-lg text-white font-medium shadow-lg transition-colors flex items-center justify-center gap-2 cursor-pointer flex-1 sm:flex-none ${selectedOption && !isSimulating
                                     ? "bg-primary hover:bg-primary/90 shadow-primary/25"
                                     : "bg-slate-700 cursor-not-allowed shadow-none"
                                 }`}

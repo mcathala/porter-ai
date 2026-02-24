@@ -47,7 +47,7 @@ function CompanyPageContent() {
     <div className="relative flex min-h-screen w-full flex-col bg-[#101922] overflow-x-hidden text-white">
       <div className="flex h-full grow flex-col">
         {/* Top Navigation */}
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#233648] px-10 py-3 bg-[#111a22]">
+        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#233648] px-4 sm:px-10 py-3 bg-[#111a22]">
           <div className="flex items-center gap-4 text-white">
             <div className="size-8 flex items-center justify-center rounded-lg bg-primary text-white">
               <span className="material-symbols-outlined text-xl">

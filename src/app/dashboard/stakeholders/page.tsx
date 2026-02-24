@@ -118,6 +118,7 @@ const moodConfig: Record<
 export default function StakeholdersPage() {
     const [activeStakeholderId, setActiveStakeholderId] = useState("investor");
     const [searchQuery, setSearchQuery] = useState("");
+    const [showChat, setShowChat] = useState(false);
 
     const activeStakeholder =
         stakeholders.find((s) => s.id === activeStakeholderId) || stakeholders[0];
@@ -126,10 +127,15 @@ export default function StakeholdersPage() {
         s.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const handleSelectStakeholder = (id: string) => {
+        setActiveStakeholderId(id);
+        setShowChat(true);
+    };
+
     return (
         <div className="flex h-full w-full overflow-hidden">
             {/* Secondary Sidebar - Stakeholder List */}
-            <aside className="w-72 flex flex-col border-r border-[#233648] bg-[#111a22] shrink-0 z-10">
+            <aside className={`${showChat ? "hidden md:flex" : "flex"} w-full md:w-72 flex-col border-r border-[#233648] bg-[#111a22] shrink-0 z-10`}>
                 {/* Search */}
                 <div className="px-4 py-[18px] border-b border-[#233648]">
                     <div className="relative">
@@ -159,7 +165,7 @@ export default function StakeholdersPage() {
                         return (
                             <div
                                 key={stakeholder.id}
-                                onClick={() => setActiveStakeholderId(stakeholder.id)}
+                                onClick={() => handleSelectStakeholder(stakeholder.id)}
                                 className={`group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border ${isActive
                                         ? "bg-[#1f2d3b] border-primary shadow-sm ring-1 ring-primary/20"
                                         : "bg-[#111a22] border-[#233648] hover:border-primary/50"
@@ -228,15 +234,22 @@ export default function StakeholdersPage() {
             </aside>
 
             {/* Chat Area */}
-            <section className="flex flex-col flex-1 min-h-0 bg-[#0f1a24] relative">
+            <section className={`${showChat ? "flex" : "hidden md:flex"} flex-col flex-1 min-h-0 bg-[#0f1a24] relative`}>
                 {/* Chat Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-[#233648] bg-[#111a22]">
-                    <div className="flex items-center gap-4">
-                        <div className="size-10 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 ring-2 ring-amber-500/50 flex items-center justify-center text-white font-bold">
+                <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-[#233648] bg-[#111a22]">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        {/* Back button on mobile */}
+                        <button
+                            onClick={() => setShowChat(false)}
+                            className="flex md:hidden items-center justify-center p-1.5 -ml-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-[22px]">arrow_back</span>
+                        </button>
+                        <div className="size-9 sm:size-10 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 ring-2 ring-amber-500/50 flex items-center justify-center text-white font-bold text-sm sm:text-base">
                             {activeStakeholder.name.charAt(0)}
                         </div>
                         <div>
-                            <h2 className="text-lg font-bold text-white leading-none">
+                            <h2 className="text-base sm:text-lg font-bold text-white leading-none">
                                 {activeStakeholder.name}
                             </h2>
                             <div className="flex items-center gap-2 mt-1">
@@ -250,24 +263,24 @@ export default function StakeholdersPage() {
                             </div>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                         <button
                             className="p-2 rounded-full hover:bg-slate-800 text-slate-400 transition-colors"
                             title="History"
                         >
-                            <span className="material-symbols-outlined">history</span>
+                            <span className="material-symbols-outlined text-[20px] sm:text-[24px]">history</span>
                         </button>
                         <button
                             className="p-2 rounded-full hover:bg-slate-800 text-slate-400 transition-colors"
                             title="Profile"
                         >
-                            <span className="material-symbols-outlined">info</span>
+                            <span className="material-symbols-outlined text-[20px] sm:text-[24px]">info</span>
                         </button>
                     </div>
                 </div>
 
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6 scroll-smooth">
                     {/* Date Separator */}
                     <div className="flex justify-center">
                         <span className="text-xs font-medium text-slate-400 uppercase tracking-widest bg-[#1f2d3b] px-3 py-1 rounded-full">
@@ -279,11 +292,11 @@ export default function StakeholdersPage() {
                         if (message.type === "system") {
                             return (
                                 <div key={message.id} className="flex justify-center w-full">
-                                    <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-500 px-4 py-2 rounded-lg text-sm font-medium">
-                                        <span className="material-symbols-outlined text-[18px]">
+                                    <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-500 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium">
+                                        <span className="material-symbols-outlined text-[16px] sm:text-[18px]">
                                             trending_down
                                         </span>
-                                        {message.content}
+                                        <span className="text-center">{message.content}</span>
                                     </div>
                                 </div>
                             );
@@ -294,10 +307,10 @@ export default function StakeholdersPage() {
                         return (
                             <div
                                 key={message.id}
-                                className={`flex gap-4 max-w-3xl ${isPlayer ? "flex-row-reverse ml-auto" : ""
+                                className={`flex gap-3 sm:gap-4 max-w-3xl ${isPlayer ? "flex-row-reverse ml-auto" : ""
                                     }`}
                             >
-                                <div className="size-10 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white font-bold shrink-0 mt-1">
+                                <div className="size-8 sm:size-10 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white font-bold shrink-0 mt-1 text-sm sm:text-base">
                                     {message.sender?.charAt(0) || "?"}
                                 </div>
                                 <div
@@ -316,7 +329,7 @@ export default function StakeholdersPage() {
                                         </span>
                                     </div>
                                     <div
-                                        className={`p-4 shadow-sm leading-relaxed ${isPlayer
+                                        className={`p-3 sm:p-4 shadow-sm leading-relaxed text-sm sm:text-base ${isPlayer
                                                 ? "bg-primary text-white rounded-2xl rounded-tr-none"
                                                 : "bg-[#1f2d3b] border border-[#233648] rounded-2xl rounded-tl-none text-slate-100"
                                             }`}
@@ -330,13 +343,13 @@ export default function StakeholdersPage() {
                 </div>
 
                 {/* Message Input */}
-                <div className="shrink-0 p-4 border-t border-[#233648] bg-[#111a22]">
-                    <div className="flex items-end gap-3">
+                <div className="shrink-0 p-3 sm:p-4 border-t border-[#233648] bg-[#111a22]">
+                    <div className="flex items-end gap-2 sm:gap-3">
                         <div className="flex-1 relative">
                             <textarea
                                 placeholder="Type your response..."
                                 rows={1}
-                                className="w-full px-4 py-3 bg-[#1a2632] border border-[#233648] rounded-xl text-white placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-[#1a2632] border border-[#233648] rounded-xl text-sm sm:text-base text-white placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
                                 onInput={(e) => {
                                     const target = e.target as HTMLTextAreaElement;
                                     target.style.height = 'auto';
@@ -344,11 +357,11 @@ export default function StakeholdersPage() {
                                 }}
                             />
                         </div>
-                        <button className="flex items-center justify-center size-12 bg-primary hover:bg-blue-600 text-white rounded-xl transition-colors shadow-lg shadow-primary/20">
-                            <span className="material-symbols-outlined">send</span>
+                        <button className="flex items-center justify-center size-10 sm:size-12 bg-primary hover:bg-blue-600 text-white rounded-xl transition-colors shadow-lg shadow-primary/20">
+                            <span className="material-symbols-outlined text-[20px] sm:text-[24px]">send</span>
                         </button>
                     </div>
-                    <p className="text-xs text-gray-500 mt-2 px-1">
+                    <p className="text-xs text-gray-500 mt-2 px-1 hidden sm:block">
                         Your response will influence stakeholder sentiment
                     </p>
                 </div>

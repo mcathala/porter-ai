@@ -31,6 +31,15 @@ input[type="radio"]:checked+div .check-icon {
   display: none;
 }
 
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Custom scrollbar for sleek look */
 ::-webkit-scrollbar {
   width: 8px;

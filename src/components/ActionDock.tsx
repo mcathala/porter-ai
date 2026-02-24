@@ -85,7 +85,7 @@ export default function ActionDock() {
       <button
         onClick={openAdvisor}
         disabled={isProcessingTurn}
-        className={`fixed bottom-[140px] right-8 z-30 group flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${isAdvisorOpen
+        className={`fixed bottom-[180px] md:bottom-[140px] right-4 sm:right-8 z-30 group flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full shadow-xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${isAdvisorOpen
           ? "bg-emerald-600 shadow-emerald-500/50"
           : "bg-[#1f2d3b] border border-[#30475e] hover:border-emerald-500 shadow-black/40"
           }`}
@@ -103,24 +103,24 @@ export default function ActionDock() {
         )}
       </button>
 
-      <div className="relative shrink-0 z-20 bg-[#111a22] border-t border-[#233648] p-4 sm:p-6 pb-8 sm:pb-10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-        <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="relative shrink-0 z-20 bg-[#111a22] border-t border-[#233648] p-3 sm:p-6 pb-4 sm:pb-10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div className="mx-auto max-w-6xl flex flex-row items-center justify-between gap-3 sm:gap-4">
 
           {/* Left Side: Take Action & Queue Status */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+          <div className="flex items-center gap-3 sm:gap-4 flex-1 sm:flex-none">
             <button
               onClick={() => setIsDialogOpen(true)}
               disabled={isProcessingTurn}
-              className="group flex items-center gap-3 px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-[0_0_15px_rgba(37,99,235,0.2)] hover:shadow-[0_0_25px_rgba(37,99,235,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto h-full justify-center"
+              className="group flex items-center gap-2 sm:gap-3 px-4 sm:px-8 py-2.5 sm:py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-[0_0_15px_rgba(37,99,235,0.2)] hover:shadow-[0_0_25px_rgba(37,99,235,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-none justify-center"
             >
-              <span className="material-symbols-outlined text-[24px] text-blue-200 group-hover:text-white transition-colors">
+              <span className="material-symbols-outlined text-[20px] sm:text-[24px] text-blue-200 group-hover:text-white transition-colors">
                 add_circle
               </span>
-              <span className="font-bold text-lg tracking-wide">Take Action</span>
+              <span className="font-bold text-sm sm:text-lg tracking-wide">Take Action</span>
             </button>
 
             {actions.length > 0 && (
-              <div className="text-sm font-medium text-gray-400 flex items-center gap-2 bg-[#1a2632] px-4 py-2 rounded-lg border border-[#233648]">
+              <div className="text-xs sm:text-sm font-medium text-gray-400 flex items-center gap-2 bg-[#1a2632] px-3 sm:px-4 py-2 rounded-lg border border-[#233648] shrink-0 hidden sm:flex">
                 <span className="material-symbols-outlined text-[16px] text-blue-400">
                   checklist
                 </span>
@@ -129,9 +129,9 @@ export default function ActionDock() {
             )}
           </div>
 
-          {/* Error Message */}
+          {/* Error Message - hidden on small mobile, shown on sm+ */}
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg px-4 py-2 text-sm flex items-center gap-2 max-w-md mx-auto">
+            <div className="hidden sm:flex bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg px-4 py-2 text-sm items-center gap-2 max-w-md mx-auto">
               <span className="material-symbols-outlined text-[18px] shrink-0">error</span>
               <span className="flex-1 truncate">{error}</span>
               <button
@@ -145,16 +145,16 @@ export default function ActionDock() {
           )}
 
           {/* Right Side: Next Turn */}
-          <div className="flex flex-col items-center sm:items-end w-full sm:w-auto mt-2 sm:mt-0">
+          <div className="flex items-center flex-1 sm:flex-none">
             <button
               onClick={() => setIsTurnDialogOpen(true)}
               disabled={isProcessingTurn}
-              className="group relative flex items-center gap-3 px-8 py-3 sm:py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full sm:w-auto h-full justify-center"
+              className="group relative flex items-center gap-2 sm:gap-3 px-4 sm:px-8 py-2.5 sm:py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full sm:w-auto justify-center"
             >
-              <span className="font-bold text-lg tracking-wide">
+              <span className="font-bold text-sm sm:text-lg tracking-wide">
                 {isProcessingTurn ? "Simulating..." : "Next Turn"}
               </span>
-              <span className={`material-symbols-outlined text-[24px] ${isProcessingTurn ? 'animate-spin' : 'group-hover:translate-x-1 transition-transform'}`}>
+              <span className={`material-symbols-outlined text-[20px] sm:text-[24px] ${isProcessingTurn ? 'animate-spin' : 'group-hover:translate-x-1 transition-transform'}`}>
                 {isProcessingTurn ? "hourglass_empty" : "arrow_forward"}
               </span>
             </button>
@@ -162,8 +162,23 @@ export default function ActionDock() {
 
         </div>
 
-        {/* Global Command Center Hint */}
-        <div className="absolute bottom-2 left-0 right-0 flex justify-center pointer-events-none">
+        {/* Error on mobile - shown below buttons */}
+        {error && (
+          <div className="flex sm:hidden bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg px-3 py-2 text-xs items-center gap-2 mt-3">
+            <span className="material-symbols-outlined text-[16px] shrink-0">error</span>
+            <span className="flex-1 truncate">{error}</span>
+            <button
+              onClick={() => setError(null)}
+              className="hover:text-red-300 transition-colors shrink-0"
+              title="Clear error"
+            >
+              <span className="material-symbols-outlined text-[14px]">close</span>
+            </button>
+          </div>
+        )}
+
+        {/* Global Command Center Hint - hidden on mobile */}
+        <div className="absolute bottom-2 left-0 right-0 hidden sm:flex justify-center pointer-events-none">
           <span className="text-[10px] text-gray-500/70 uppercase tracking-[0.2em] font-medium">
             Press Enter to Open Command Center
           </span>
