@@ -1,13 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useGame } from "@/context/GameContext";
 import BriefingModal from "./BriefingModal";
 
 export default function KPIHeader() {
   const { gameState, totalTokenUsage, initialBriefing } = useGame();
   const [showBriefing, setShowBriefing] = useState(false);
+  const [showTokenDetails, setShowTokenDetails] = useState(false);
+  const tokenRef = useRef<HTMLDivElement>(null);
   const { kpis, turn } = gameState;
+
+  useEffect(() => {
+    if (!showTokenDetails) return;
+    const handleClick = (e: MouseEvent) => {
+      if (tokenRef.current && !tokenRef.current.contains(e.target as Node)) {
+        setShowTokenDetails(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [showTokenDetails]);
 
   const formatTokenCount = (count: number): string => {
     if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
@@ -96,13 +109,38 @@ export default function KPIHeader() {
             <span className="font-mono text-base sm:text-lg font-bold text-white">{turn}</span>
           </div>
           {totalTokenUsage.totalTokens > 0 && (
-            <div className="hidden sm:flex items-center gap-2 bg-[#1a2632] px-3 py-1.5 sm:py-2 rounded-lg border border-[#233648]" title={`Input: ${totalTokenUsage.inputTokens.toLocaleString()} | Output: ${totalTokenUsage.outputTokens.toLocaleString()}`}>
-              <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
-                token
-              </span>
-              <span className="text-xs font-mono text-gray-400">
-                {formatTokenCount(totalTokenUsage.totalTokens)}
-              </span>
+            <div className="relative" ref={tokenRef}>
+              <button
+                onClick={() => setShowTokenDetails((v) => !v)}
+                className="hidden sm:flex items-center gap-2 bg-[#1a2632] px-3 py-1.5 sm:py-2 rounded-lg border border-[#233648] hover:border-primary/50 hover:bg-[#1f2f3f] transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
+                  token
+                </span>
+                <span className="text-xs font-mono text-gray-400">
+                  {formatTokenCount(totalTokenUsage.totalTokens)}
+                </span>
+              </button>
+              {showTokenDetails && (
+                <div className="absolute right-0 top-full mt-2 z-50 bg-[#1a2632] border border-[#233648] rounded-lg shadow-xl p-3 min-w-[180px]">
+                  <div className="text-xs font-medium text-gray-400 mb-2">Token Usage</div>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500">Input</span>
+                      <span className="text-xs font-mono text-gray-300">{totalTokenUsage.inputTokens.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500">Output</span>
+                      <span className="text-xs font-mono text-gray-300">{totalTokenUsage.outputTokens.toLocaleString()}</span>
+                    </div>
+                    <div className="border-t border-[#233648] my-0.5" />
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-400 font-medium">Total</span>
+                      <span className="text-xs font-mono text-white font-medium">{totalTokenUsage.totalTokens.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
