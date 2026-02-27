@@ -45,6 +45,21 @@ function CompanyPageContent() {
 
   return (
     <div className="relative flex min-h-screen w-full flex-col bg-[#101922] overflow-x-hidden text-white">
+      {/* Initialization Loading Overlay */}
+      {isInitializing && (
+        <div className="fixed inset-0 z-50 bg-[#111a22]/80 backdrop-blur-sm transition-all duration-300 flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center gap-4 bg-[#1a2632]/80 p-8 rounded-3xl border border-[#233648] shadow-2xl animate-in zoom-in-95 duration-300">
+            <span className="material-symbols-outlined text-primary text-[48px] animate-spin">
+              autorenew
+            </span>
+            <div className="flex flex-col items-center gap-1">
+              <h3 className="text-xl font-bold text-white tracking-wide">Initializing Simulation</h3>
+              <p className="text-sm text-gray-400">Generating competitors and market intelligence...</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex h-full grow flex-col">
         {/* Top Navigation */}
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#233648] px-4 sm:px-10 py-3 bg-[#111a22]">
