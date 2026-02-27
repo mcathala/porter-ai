@@ -89,12 +89,12 @@ export default function OnboardingPage() {
                       Easy
                     </h3>
                     <p className="text-[#92adc9] text-sm leading-relaxed">
-                      Tasks success rate is high, allowing you to experiment freely. Less pressure by stakeholders.
+                      Sandbox mode. Actions tend to succeed, the market responds easily, and regulation is minimal.
                     </p>
                   </div>
                   <div className="mt-auto pt-4 border-t border-[#2a3b4d]">
                     <span className="inline-flex items-center text-xs font-semibold text-green-400 bg-green-500/10 px-2 py-1 rounded">
-                      Low AI Pressure
+                      Sandbox
                     </span>
                   </div>
                 </div>
@@ -128,13 +128,12 @@ export default function OnboardingPage() {
                       Standard
                     </h3>
                     <p className="text-[#92adc9] text-sm leading-relaxed">
-                      Tasks could fail. AI agents actively compete for
-                      market share and respond to your moves.
+                      Balanced experience. Actions sometimes have unexpected outcomes, with moderate market inertia and occasional regulation.
                     </p>
                   </div>
                   <div className="mt-auto pt-4 border-t border-[#2a3b4d]">
                     <span className="inline-flex items-center text-xs font-semibold text-primary bg-blue-500/10 px-2 py-1 rounded">
-                      Standard Pressure
+                      Balanced
                     </span>
                   </div>
                 </div>
@@ -168,13 +167,12 @@ export default function OnboardingPage() {
                       Hard
                     </h3>
                     <p className="text-[#92adc9] text-sm leading-relaxed">
-                      High pressure simulation. AI agents are aggressive,
-                      unpredictable, and will try to drive you out.
+                      Realistic simulation. Plans rarely go as expected, the market resists change, and regulation actively shapes your strategy.
                     </p>
                   </div>
                   <div className="mt-auto pt-4 border-t border-[#2a3b4d]">
                     <span className="inline-flex items-center text-xs font-semibold text-orange-400 bg-orange-500/10 px-2 py-1 rounded">
-                      High AI Pressure
+                      Realistic
                     </span>
                   </div>
                 </div>

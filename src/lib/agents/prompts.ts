@@ -23,28 +23,22 @@ export function getDifficultyModifier(difficulty: Difficulty): string {
   switch (difficulty) {
     case "easy":
       return `
-DIFFICULTY: EASY
-- Competitors are slow to react (1-2 turn delay)
-- Market conditions are generally favorable
-- Strengths and opportunities are weighted more heavily
-- KPI swings are moderate and recoverable
-- The Gamemaster should be forgiving in interpretation`;
+DIFFICULTY: EASY (Sandbox)
+- Action Success: Actions tend to succeed as planned, with few unexpected complications
+- Market Impact: The player's actions move the needle easily, the market is responsive to change
+- Regulation: Minimal regulatory pressure, compliance is straightforward`;
     case "standard":
       return `
-DIFFICULTY: STANDARD
-- Competitors react within 1 turn
-- Market conditions are balanced
-- Strengths/weaknesses and opportunities/threats are weighted equally
-- KPI swings are realistic and impactful
-- The Gamemaster gives a balanced assessment`;
+DIFFICULTY: STANDARD (Balanced)
+- Action Success: Actions sometimes produce unexpected outcomes or partial results
+- Market Impact: Proportional cause-and-effect, the market responds but with some inertia
+- Regulation: Occasional regulatory events that require attention and adaptation`;
     case "hard":
       return `
-DIFFICULTY: HARD
-- Competitors react immediately and aggressively
-- Market conditions are challenging
-- Weaknesses and threats are weighted more heavily
-- KPI swings can be severe
-- The Gamemaster should be punishing in interpretation`;
+DIFFICULTY: HARD (Realistic)
+- Action Success: Plans rarely go exactly as expected — realistic friction, delays, and side effects
+- Market Impact: The market has real inertia, change is slow and hard-won, no single action shifts everything
+- Regulation: Realistic regulatory environment — compliance costs, new laws, audits, and policy shifts that force the player to adapt`;
   }
 }
 
@@ -279,10 +273,10 @@ ${getDifficultyModifier(difficulty)}
 - Weigh strengths vs weaknesses (Internal) and opportunities vs threats (External)
 - Produce final KPI deltas (NET cash, market share, satisfaction) with value, change, change percent, and reason
   - NET cash (current balance, revenues based on actions and market share, expenses)
-- Difficulty modulates generosity:
-  - Easy = forgiving, strengths matter more
-  - Standard = balanced, realistic assessment
-  - Hard = punishing, weaknesses and threats hit harder
+- Difficulty modulates realism:
+  - Easy = actions succeed easily, market is responsive, little regulation
+  - Standard = balanced outcomes, some market inertia, occasional regulation
+  - Hard = realistic friction, market has real inertia, active regulatory environment
 
 ## B. NARRATIVE WEIGHT MANAGEMENT
 Narrative arcs have weights that sum to 100%. You must:
@@ -290,8 +284,8 @@ Narrative arcs have weights that sum to 100%. You must:
 - **Amplify** arcs that the player's actions feed
 - **Decay** arcs not engaged by the player (reduce each turn)
 - **Retire** arcs that fall below 3% (remove from pool)
-- **Inject** arcs to create tension when the game is too easy (difficulty-aware)
-- **Let decay** threatening arcs when the game is too hard
+- **Inject** arcs to create tension when the game lacks challenge
+- **Let decay** threatening arcs when the player is overwhelmed
 
 Rules:
 - Weights MUST sum to 100%

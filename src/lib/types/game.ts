@@ -34,7 +34,6 @@ export interface CompanyConfig {
   startingCash: number;
   startingMarketShare: number;
   startingSatisfaction: number;
-  difficulty: Difficulty;
 }
 
 // All company archetypes with their configurations
@@ -46,7 +45,6 @@ export const COMPANY_CONFIGS: Record<CompanyArchetype, CompanyConfig> = {
     startingCash: 750000,
     startingMarketShare: 1,
     startingSatisfaction: 85,
-    difficulty: "hard",
   },
   incumbent: {
     archetype: "incumbent",
@@ -55,7 +53,6 @@ export const COMPANY_CONFIGS: Record<CompanyArchetype, CompanyConfig> = {
     startingCash: 100000000,
     startingMarketShare: 40,
     startingSatisfaction: 75,
-    difficulty: "easy",
   },
   costleader: {
     archetype: "costleader",
@@ -64,7 +61,6 @@ export const COMPANY_CONFIGS: Record<CompanyArchetype, CompanyConfig> = {
     startingCash: 15000000,
     startingMarketShare: 25,
     startingSatisfaction: 70,
-    difficulty: "standard",
   },
   premium: {
     archetype: "premium",
@@ -73,7 +69,6 @@ export const COMPANY_CONFIGS: Record<CompanyArchetype, CompanyConfig> = {
     startingCash: 5000000,
     startingMarketShare: 5,
     startingSatisfaction: 95,
-    difficulty: "hard",
   },
   platform: {
     archetype: "platform",
@@ -82,7 +77,6 @@ export const COMPANY_CONFIGS: Record<CompanyArchetype, CompanyConfig> = {
     startingCash: 10000000,
     startingMarketShare: 8,
     startingSatisfaction: 80,
-    difficulty: "standard",
   },
 };
 
