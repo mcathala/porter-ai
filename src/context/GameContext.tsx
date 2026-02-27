@@ -16,6 +16,7 @@ import {
   CompanyArchetype,
   Difficulty,
   Market,
+  TokenUsage,
   COMPANY_CONFIGS,
   RestOfMarket,
 } from "@/lib/types/game";
@@ -75,6 +76,9 @@ interface GameContextType {
   closeAdvisor: () => void;
   sendAdvisorMessage: (content: string) => Promise<void>;
   clearAdvisorHistory: () => void;
+
+  // Token usage tracking
+  totalTokenUsage: TokenUsage;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -101,6 +105,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [showTurnSummary, setShowTurnSummary] = useState(false);
   const [actions, setActions] = useState<string[]>([]);
   const [turnHistory, setTurnHistory] = useState<TurnHistoryEntry[]>([]);
+
+  // Token usage tracking
+  const [totalTokenUsage, setTotalTokenUsage] = useState<TokenUsage>({
+    inputTokens: 0,
+    outputTokens: 0,
+    totalTokens: 0,
+  });
+
+  const addTokenUsage = useCallback((usage: TokenUsage) => {
+    setTotalTokenUsage((prev) => ({
+      inputTokens: prev.inputTokens + usage.inputTokens,
+      outputTokens: prev.outputTokens + usage.outputTokens,
+      totalTokens: prev.totalTokens + usage.totalTokens,
+    }));
+  }, []);
 
   // Advisor (Michael) state
   const [advisorMessages, setAdvisorMessages] = useState<AdvisorMessage[]>([]);
@@ -170,6 +189,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
           restOfMarket: turn0Result.restOfMarket,
           lastTurnSummary: turn0Result.marketSummary,
         });
+
+        // Reset and initialize token usage
+        const initUsage = turn0Result.tokenUsage || { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
+        setTotalTokenUsage(initUsage);
 
         setActions([]);
         setCurrentTurnResult(null);
@@ -247,6 +270,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
             ...result.newConsequences,
           ],
         }));
+
+        // Accumulate token usage from this turn
+        if (result.tokenUsage) {
+          addTokenUsage(result.tokenUsage);
+        }
 
         // Show turn summary
         setCurrentTurnResult(result);
@@ -334,12 +362,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
         // Read stream
         let done = false;
+        let fullContent = "";
         while (!done) {
           const { value, done: readerDone } = await reader.read();
           done = readerDone;
 
           if (value) {
             const chunk = decoder.decode(value, { stream: true });
+            fullContent += chunk;
             setAdvisorMessages((prev) =>
               prev.map((msg) =>
                 msg.id === assistantMessageId
@@ -348,6 +378,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
               )
             );
           }
+        }
+
+        // Parse token usage from the stream delimiter if present
+        const tokenDelimiter = "\n__TOKEN_USAGE__:";
+        const delimiterIndex = fullContent.lastIndexOf(tokenDelimiter);
+        if (delimiterIndex !== -1) {
+          const usageJson = fullContent.slice(delimiterIndex + tokenDelimiter.length);
+          try {
+            const usage: TokenUsage = JSON.parse(usageJson);
+            addTokenUsage(usage);
+          } catch { /* ignore parse errors */ }
+
+          // Remove the delimiter from the displayed message
+          const cleanContent = fullContent.slice(0, delimiterIndex);
+          setAdvisorMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === assistantMessageId
+                ? { ...msg, content: cleanContent }
+                : msg
+            )
+          );
         }
       } catch (error) {
         console.error("Advisor error:", error);
@@ -391,6 +442,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         closeAdvisor,
         sendAdvisorMessage,
         clearAdvisorHistory,
+        // Token usage
+        totalTokenUsage,
       }}
     >
       {children}

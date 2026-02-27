@@ -8,6 +8,7 @@ import {
   Turn0Result,
   PlayerCompany,
   Difficulty,
+  TokenUsage,
   COMPANY_CONFIGS,
 } from "../types/game";
 import {
@@ -31,12 +32,22 @@ import {
 // GRAPH STATE ANNOTATION
 // =============================================================================
 
+const ZERO_USAGE: TokenUsage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
+
 const GraphState = Annotation.Root({
   turnInput: Annotation<TurnInput>,
   internalOutput: Annotation<InternalAgentOutput | undefined>,
   externalOutput: Annotation<ExternalAgentOutput | undefined>,
   gamemasterOutput: Annotation<GamemasterOutput | undefined>,
   turnResult: Annotation<TurnResult | undefined>,
+  tokenUsage: Annotation<TokenUsage>({
+    reducer: (a, b) => ({
+      inputTokens: a.inputTokens + b.inputTokens,
+      outputTokens: a.outputTokens + b.outputTokens,
+      totalTokens: a.totalTokens + b.totalTokens,
+    }),
+    default: () => ({ ...ZERO_USAGE }),
+  }),
 });
 
 // =============================================================================
@@ -45,22 +56,45 @@ const GraphState = Annotation.Root({
 
 // LLM Factory is imported from ./llm.ts
 
+// Extract token usage from LLM response metadata
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractUsage(response: any): TokenUsage {
+  const meta = response?.usage_metadata;
+  if (meta) {
+    return {
+      inputTokens: meta.input_tokens || 0,
+      outputTokens: meta.output_tokens || 0,
+      totalTokens: meta.total_tokens || (meta.input_tokens || 0) + (meta.output_tokens || 0),
+    };
+  }
+  return { ...ZERO_USAGE };
+}
+
+interface SafeInvokeResult<T> {
+  result: T;
+  usage: TokenUsage;
+}
+
 // Safe invoke wrapper: attempts structured output, falls back to raw LLM + jsonrepair on failure
 async function safeInvoke<T>(
   schema: z.ZodType<T>,
   messages: Array<{ role: string; content: string }>,
   retries = 1,
   label = "unknown"
-): Promise<T> {
+): Promise<SafeInvokeResult<T>> {
   const invokeStart = performance.now();
 
-  // First try: use structured output with JSON mode
+  // First try: use structured output with JSON mode + includeRaw for token tracking
   try {
-    const llm = createBaseLLM().withStructuredOutput(schema, { method: "jsonMode" });
-    const result = await llm.invoke(messages) as T;
+    const llm = createBaseLLM().withStructuredOutput(schema, {
+      method: "jsonMode",
+      includeRaw: true,
+    });
+    const response = await llm.invoke(messages) as { raw: unknown; parsed: T };
+    const usage = extractUsage(response.raw);
     const elapsed = ((performance.now() - invokeStart) / 1000).toFixed(1);
-    console.log(`[${label}] Structured output succeeded in ${elapsed}s`);
-    return result;
+    console.log(`[${label}] Structured output succeeded in ${elapsed}s (tokens: ${usage.totalTokens})`);
+    return { result: response.parsed, usage };
   } catch (firstError) {
     const elapsed = ((performance.now() - invokeStart) / 1000).toFixed(1);
     console.warn(`[${label}] Structured output failed after ${elapsed}s, attempting jsonrepair fallback`);
@@ -75,6 +109,7 @@ async function safeInvoke<T>(
       const response = await rawLLM.invoke(messages, {
         response_format: { type: "json_object" },
       } as any);
+      const usage = extractUsage(response);
       const rawText = typeof response.content === "string"
         ? response.content
         : JSON.stringify(response.content);
@@ -84,8 +119,8 @@ async function safeInvoke<T>(
       const result = schema.parse(parsed) as T;
       const elapsed = ((performance.now() - attemptStart) / 1000).toFixed(1);
       const totalElapsed = ((performance.now() - invokeStart) / 1000).toFixed(1);
-      console.log(`[${label}] Fallback attempt ${attempt + 1} succeeded in ${elapsed}s (total: ${totalElapsed}s)`);
-      return result;
+      console.log(`[${label}] Fallback attempt ${attempt + 1} succeeded in ${elapsed}s (total: ${totalElapsed}s, tokens: ${usage.totalTokens})`);
+      return { result, usage };
     } catch (retryError) {
       const elapsed = ((performance.now() - attemptStart) / 1000).toFixed(1);
       console.warn(`[${label}] Fallback attempt ${attempt + 1} failed after ${elapsed}s`);
@@ -140,9 +175,9 @@ Analyze the STRENGTHS and WEAKNESSES of these actions from the company's interna
   ];
 
   const start = performance.now();
-  const output = await safeInvoke(InternalAgentSchema, messages, 1, "InternalAgent");
+  const { result: output, usage } = await safeInvoke(InternalAgentSchema, messages, 1, "InternalAgent");
   console.log(`[InternalAgent] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
-  return { internalOutput: output };
+  return { internalOutput: output, tokenUsage: usage };
 }
 
 // =============================================================================
@@ -206,9 +241,9 @@ Analyze the OPPORTUNITIES and THREATS of these actions, competitor reactions, an
   ];
 
   const start = performance.now();
-  const output = await safeInvoke(ExternalAgentSchema, messages, 1, "ExternalAgent");
+  const { result: output, usage } = await safeInvoke(ExternalAgentSchema, messages, 1, "ExternalAgent");
   console.log(`[ExternalAgent] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
-  return { externalOutput: output };
+  return { externalOutput: output, tokenUsage: usage };
 }
 
 // =============================================================================
@@ -284,7 +319,7 @@ Resolve KPIs, update narratives (weights must sum to 100), manage competitors, h
   ];
 
   const start = performance.now();
-  const output = await safeInvoke(GamemasterOutputSchema, messages, 2, "Gamemaster");
+  const { result: output, usage } = await safeInvoke(GamemasterOutputSchema, messages, 2, "Gamemaster");
 
   // Fallback: use current state values if the LLM omitted fields
   if (!output.updatedCompetitors || output.updatedCompetitors.length === 0) {
@@ -334,7 +369,7 @@ Resolve KPIs, update narratives (weights must sum to 100), manage competitors, h
   }
 
   console.log(`[Gamemaster] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
-  return { gamemasterOutput: output };
+  return { gamemasterOutput: output, tokenUsage: usage };
 }
 
 // =============================================================================
@@ -344,7 +379,7 @@ Resolve KPIs, update narratives (weights must sum to 100), manage competitors, h
 function assembleResultNode(
   state: typeof GraphState.State
 ): Partial<typeof GraphState.State> {
-  const { gamemasterOutput, externalOutput } = state;
+  const { gamemasterOutput, externalOutput, tokenUsage } = state;
 
   if (!gamemasterOutput) {
     throw new Error("Gamemaster output is missing");
@@ -362,7 +397,10 @@ function assembleResultNode(
     triggeredConsequences: gamemasterOutput.triggeredConsequences,
     newDate: gamemasterOutput.newDate,
     nextTurnContext: gamemasterOutput.nextTurnContext,
+    tokenUsage,
   };
+
+  console.log(`[TokenUsage] Turn total — input: ${tokenUsage.inputTokens}, output: ${tokenUsage.outputTokens}, total: ${tokenUsage.totalTokens}`);
 
   return { turnResult };
 }
@@ -414,6 +452,7 @@ export async function executeTurn(turnInput: TurnInput): Promise<TurnResult> {
     externalOutput: undefined,
     gamemasterOutput: undefined,
     turnResult: undefined,
+    tokenUsage: { ...ZERO_USAGE },
   };
 
   const result = await graph.invoke(initialState);
@@ -452,7 +491,7 @@ export async function executeInitialization(config: {
 
   const start = performance.now();
   console.log(`[Pipeline] Starting initialization...`);
-  const result = await safeInvoke(Turn0ResultSchema, messages, 2, "Initialization");
-  console.log(`[Pipeline] Initialization completed in ${((performance.now() - start) / 1000).toFixed(1)}s`);
-  return result;
+  const { result, usage } = await safeInvoke(Turn0ResultSchema, messages, 2, "Initialization");
+  console.log(`[Pipeline] Initialization completed in ${((performance.now() - start) / 1000).toFixed(1)}s (tokens: ${usage.totalTokens})`);
+  return { ...result, tokenUsage: usage };
 }

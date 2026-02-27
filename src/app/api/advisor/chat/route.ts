@@ -79,16 +79,35 @@ export async function POST(request: NextRequest) {
     // Create streaming response
     const stream = await llm.stream(messages);
 
-    // Create a ReadableStream for the response
+    // Create a ReadableStream for the response, tracking token usage
     const readableStream = new ReadableStream({
       async start(controller) {
         try {
+          let inputTokens = 0;
+          let outputTokens = 0;
+
           for await (const chunk of stream) {
             const content = chunk.content;
             if (typeof content === "string") {
               controller.enqueue(new TextEncoder().encode(content));
             }
+            // Extract token usage from chunk metadata (typically on last chunk)
+            const meta = (chunk as unknown as Record<string, unknown>).usage_metadata as
+              | { input_tokens?: number; output_tokens?: number }
+              | undefined;
+            if (meta) {
+              if (meta.input_tokens) inputTokens = meta.input_tokens;
+              if (meta.output_tokens) outputTokens = meta.output_tokens;
+            }
           }
+
+          // Append token usage as a final delimiter line
+          const totalTokens = inputTokens + outputTokens;
+          if (totalTokens > 0) {
+            const usageData = JSON.stringify({ inputTokens, outputTokens, totalTokens });
+            controller.enqueue(new TextEncoder().encode(`\n__TOKEN_USAGE__:${usageData}`));
+          }
+
           controller.close();
         } catch (error) {
           controller.error(error);

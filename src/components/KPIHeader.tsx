@@ -3,8 +3,14 @@
 import { useGame } from "@/context/GameContext";
 
 export default function KPIHeader() {
-  const { gameState } = useGame();
+  const { gameState, totalTokenUsage } = useGame();
   const { kpis, turn } = gameState;
+
+  const formatTokenCount = (count: number): string => {
+    if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
+    if (count >= 1000) return `${(count / 1000).toFixed(1)}k`;
+    return count.toString();
+  };
 
   const formatCurrency = (value: number): string => {
     if (value >= 1000000000) {
@@ -82,6 +88,16 @@ export default function KPIHeader() {
             </span>
             <span className="font-mono text-base sm:text-lg font-bold text-white">{turn}</span>
           </div>
+          {totalTokenUsage.totalTokens > 0 && (
+            <div className="hidden sm:flex items-center gap-2 bg-[#1a2632] px-3 py-1.5 sm:py-2 rounded-lg border border-[#233648]" title={`Input: ${totalTokenUsage.inputTokens.toLocaleString()} | Output: ${totalTokenUsage.outputTokens.toLocaleString()}`}>
+              <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
+                token
+              </span>
+              <span className="text-xs font-mono text-gray-400">
+                {formatTokenCount(totalTokenUsage.totalTokens)}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </header>

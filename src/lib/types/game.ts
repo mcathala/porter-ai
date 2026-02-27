@@ -136,6 +136,16 @@ export interface PendingConsequence {
 }
 
 // =============================================================================
+// TOKEN USAGE TRACKING
+// =============================================================================
+
+export interface TokenUsage {
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+}
+
+// =============================================================================
 // GAME STATE
 // =============================================================================
 
@@ -209,6 +219,9 @@ export interface TurnResult {
 
   // For next turn context
   nextTurnContext: string;
+
+  // Token usage for this turn
+  tokenUsage?: TokenUsage;
 }
 
 export interface NewsItem {
@@ -228,6 +241,7 @@ export interface Turn0Result {
   competitors: Competitor[];
   restOfMarket: RestOfMarket;
   marketSummary: string;
+  tokenUsage?: TokenUsage;
 }
 
 // =============================================================================
