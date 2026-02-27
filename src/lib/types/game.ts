@@ -256,10 +256,6 @@ export interface GamemasterOutput {
   newConsequences: PendingConsequence[];
   triggeredConsequences: PendingConsequence[];
   newDate: string;
-  narratorContext: string;
-}
-
-export interface NarratorOutput {
   turnSummary: string;
   newsItems: NewsItem[];
   nextTurnContext: string;
@@ -279,9 +275,6 @@ export interface AgentGraphState {
 
   // Layer 2 output
   gamemasterOutput?: GamemasterOutput;
-
-  // Layer 3 output
-  narratorOutput?: NarratorOutput;
 
   // Final result
   turnResult?: TurnResult;

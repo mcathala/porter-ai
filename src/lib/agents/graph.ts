@@ -14,18 +14,15 @@ import {
   InternalAgentOutput,
   ExternalAgentOutput,
   GamemasterOutput,
-  NarratorOutput,
   InternalAgentSchema,
   ExternalAgentSchema,
   GamemasterOutputSchema,
-  NarratorOutputSchema,
   Turn0ResultSchema,
 } from "./schemas";
 import {
   getInternalAgentPrompt,
   getExternalAgentPrompt,
   getGamemasterPrompt,
-  getNarratorPrompt,
   getTurn0GamemasterPrompt,
   getNewsCountForTimeAdvance,
 } from "./prompts";
@@ -39,7 +36,6 @@ const GraphState = Annotation.Root({
   internalOutput: Annotation<InternalAgentOutput | undefined>,
   externalOutput: Annotation<ExternalAgentOutput | undefined>,
   gamemasterOutput: Annotation<GamemasterOutput | undefined>,
-  narratorOutput: Annotation<NarratorOutput | undefined>,
   turnResult: Annotation<TurnResult | undefined>,
 });
 
@@ -225,6 +221,8 @@ async function gamemasterNode(
   const { turnInput, internalOutput, externalOutput } = state;
   const { gameState, timeAdvance } = turnInput;
 
+  const newsCount = getNewsCountForTimeAdvance(timeAdvance);
+
   const systemPrompt = getGamemasterPrompt(
     gameState.playerCompany,
     gameState.difficulty,
@@ -275,7 +273,10 @@ ${gameState.pendingConsequences.length > 0
 ### Time Advance
 ${timeAdvance}
 
-Resolve KPIs, update narratives (weights must sum to 100), manage competitors, and handle consequences.`;
+### News Items Count
+Generate exactly ${newsCount} news items for this time period.
+
+Resolve KPIs, update narratives (weights must sum to 100), manage competitors, handle consequences, and write the player-facing narrative.`;
 
   const messages = [
     { role: "system", content: systemPrompt },
@@ -308,6 +309,20 @@ Resolve KPIs, update narratives (weights must sum to 100), manage competitors, a
       }];
   }
 
+  // Fallback: ensure narrative fields are present
+  if (!output.turnSummary) {
+    console.warn("[gamemasterNode] LLM omitted turnSummary, using default");
+    output.turnSummary = "The turn proceeded without major incident.";
+  }
+  if (!output.newsItems || output.newsItems.length === 0) {
+    console.warn("[gamemasterNode] LLM omitted newsItems, using empty array");
+    output.newsItems = [];
+  }
+  if (!output.nextTurnContext) {
+    console.warn("[gamemasterNode] LLM omitted nextTurnContext, using default");
+    output.nextTurnContext = "The game continues.";
+  }
+
   // Fallback: compute newDate if the LLM omitted it
   if (!output.newDate) {
     const base = new Date(gameState.currentDate);
@@ -323,99 +338,22 @@ Resolve KPIs, update narratives (weights must sum to 100), manage competitors, a
 }
 
 // =============================================================================
-// LAYER 3: NARRATOR
-// =============================================================================
-
-async function narratorNode(
-  state: typeof GraphState.State
-): Promise<Partial<typeof GraphState.State>> {
-  const { turnInput, gamemasterOutput, externalOutput } = state;
-  const { gameState, timeAdvance } = turnInput;
-
-  const newsCount = getNewsCountForTimeAdvance(timeAdvance);
-
-  const systemPrompt = getNarratorPrompt(
-    gameState.customMarket || gameState.market,
-    gameState.difficulty,
-    timeAdvance,
-    newsCount
-  );
-
-  const narrativeContext = gamemasterOutput?.updatedNarratives
-    ?.map((a) => `- "${a.name}" — ${a.weight}% (${a.status})`)
-    .join("\n") || "No narrative arcs.";
-
-  const userPrompt = `
-## WRITE THE TURN NARRATIVE
-
-### Gamemaster Context
-${gamemasterOutput?.narratorContext || "No context provided."}
-
-### Player Actions
-${turnInput.tasks.length > 0 ? turnInput.tasks.map((t, i) => `${i + 1}. ${t}`).join("\n") : "Routine operations"}
-
-### KPI Changes
-- Cash: ${gamemasterOutput?.kpiDeltas.cash.reason || "No change"}
-- Market Share: ${gamemasterOutput?.kpiDeltas.marketShare.reason || "No change"}
-- Satisfaction: ${gamemasterOutput?.kpiDeltas.satisfaction.reason || "No change"}
-
-### Competitor Activity
-${externalOutput?.competitorReactions
-      ?.map((m) => `- ${m.competitorName} (${m.archetype}): ${m.action}`)
-      .join("\n") || "No significant competitor activity"
-    }
-
-### Active Narrative Arcs (flavor your writing with these)
-${narrativeContext}
-
-### New Consequences Created
-${gamemasterOutput?.newConsequences
-      ?.map((c) => `- ${c.description}`)
-      .join("\n") || "None"
-    }
-
-### Triggered Consequences
-${gamemasterOutput?.triggeredConsequences
-      ?.map((c) => `- ${c.description}: ${c.effect}`)
-      .join("\n") || "None"
-    }
-
-### Time Period
-${timeAdvance} — Generate exactly ${newsCount} news items.
-
-Write an engaging turn summary and news items.`;
-
-  const messages = [
-    { role: "system", content: systemPrompt },
-    { role: "user", content: userPrompt },
-  ];
-
-  const start = performance.now();
-  const output = await safeInvoke(NarratorOutputSchema, messages, 1, "Narrator");
-  console.log(`[Narrator] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
-  return { narratorOutput: output };
-}
-
-// =============================================================================
 // FINAL ASSEMBLY NODE
 // =============================================================================
 
 function assembleResultNode(
   state: typeof GraphState.State
 ): Partial<typeof GraphState.State> {
-  const { gamemasterOutput, narratorOutput, externalOutput } = state;
+  const { gamemasterOutput, externalOutput } = state;
 
   if (!gamemasterOutput) {
     throw new Error("Gamemaster output is missing");
   }
-  if (!narratorOutput) {
-    throw new Error("Narrator output is missing");
-  }
 
   const turnResult: TurnResult = {
     kpiDeltas: gamemasterOutput.kpiDeltas,
-    turnSummary: narratorOutput.turnSummary,
-    newsItems: narratorOutput.newsItems,
+    turnSummary: gamemasterOutput.turnSummary,
+    newsItems: gamemasterOutput.newsItems,
     competitorMoves: externalOutput?.competitorReactions || [],
     updatedCompetitors: gamemasterOutput.updatedCompetitors,
     updatedRestOfMarket: gamemasterOutput.updatedRestOfMarket,
@@ -423,7 +361,7 @@ function assembleResultNode(
     newConsequences: gamemasterOutput.newConsequences,
     triggeredConsequences: gamemasterOutput.triggeredConsequences,
     newDate: gamemasterOutput.newDate,
-    nextTurnContext: narratorOutput.nextTurnContext,
+    nextTurnContext: gamemasterOutput.nextTurnContext,
   };
 
   return { turnResult };
@@ -438,10 +376,8 @@ export function buildTurnGraph() {
     // Layer 1 nodes (run in parallel)
     .addNode("internalAgent", internalAgentNode)
     .addNode("externalAgent", externalAgentNode)
-    // Layer 2
+    // Layer 2 (Gamemaster now also handles narrative)
     .addNode("gamemaster", gamemasterNode)
-    // Layer 3
-    .addNode("narrator", narratorNode)
     // Final assembly
     .addNode("assembleResult", assembleResultNode)
 
@@ -453,11 +389,8 @@ export function buildTurnGraph() {
     .addEdge("internalAgent", "gamemaster")
     .addEdge("externalAgent", "gamemaster")
 
-    // Layer 2 → Layer 3
-    .addEdge("gamemaster", "narrator")
-
-    // Layer 3 → Assembly
-    .addEdge("narrator", "assembleResult")
+    // Layer 2 → Assembly
+    .addEdge("gamemaster", "assembleResult")
 
     // Assembly → END
     .addEdge("assembleResult", END);
@@ -480,7 +413,6 @@ export async function executeTurn(turnInput: TurnInput): Promise<TurnResult> {
     internalOutput: undefined,
     externalOutput: undefined,
     gamemasterOutput: undefined,
-    narratorOutput: undefined,
     turnResult: undefined,
   };
 

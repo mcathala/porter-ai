@@ -155,31 +155,21 @@ export const GamemasterOutputSchema = z.object({
     .string()
     .default("")
     .describe("The new date after time advancement (YYYY-MM-DD format)"),
-  narratorContext: z
-    .string()
-    .default("")
-    .describe("Context summary for the Narrator to use when writing the turn narrative"),
-});
-
-export type GamemasterOutput = z.infer<typeof GamemasterOutputSchema>;
-
-// =============================================================================
-// NARRATOR OUTPUT SCHEMA
-// =============================================================================
-
-export const NarratorOutputSchema = z.object({
   turnSummary: z
     .string()
+    .default("")
     .describe("A 2-3 paragraph narrative summary of the turn, flavored by dominant narrative arcs"),
   newsItems: z
     .array(NewsItemSchema)
+    .default([])
     .describe("News headlines and summaries for this turn, scaled by time advance"),
   nextTurnContext: z
     .string()
+    .default("")
     .describe("Brief context summary for the next turn and for the Advisor"),
 });
 
-export type NarratorOutput = z.infer<typeof NarratorOutputSchema>;
+export type GamemasterOutput = z.infer<typeof GamemasterOutputSchema>;
 
 // =============================================================================
 // TURN 0 INITIALIZATION SCHEMA
