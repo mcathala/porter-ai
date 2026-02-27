@@ -1,0 +1,253 @@
+"use client";
+
+import { useGame, InitialBriefing } from "@/context/GameContext";
+import { COMPANY_CONFIGS } from "@/lib/types/game";
+
+const MARKET_LABELS: Record<string, string> = {
+  saas: "Software as a Service (SaaS)",
+  automotive: "Automotive Industry",
+  random: "Randomized Market",
+  custom: "Custom Market",
+};
+
+const ARCHETYPE_ICONS: Record<string, string> = {
+  innovator: "rocket_launch",
+  incumbent: "corporate_fare",
+  costleader: "warehouse",
+  premium: "diamond",
+  platform: "hub",
+};
+
+const ARCHETYPE_COLORS: Record<string, string> = {
+  innovator: "cyan",
+  incumbent: "blue",
+  costleader: "emerald",
+  premium: "purple",
+  platform: "indigo",
+};
+
+const COMPETITOR_ARCHETYPE_ICONS: Record<string, string> = {
+  dominant: "shield",
+  follower: "group",
+  disruptor: "bolt",
+  opportunist: "target",
+};
+
+const MOMENTUM_STYLES: Record<string, { color: string; icon: string }> = {
+  positive: { color: "text-green-400", icon: "trending_up" },
+  neutral: { color: "text-gray-400", icon: "trending_flat" },
+  negative: { color: "text-red-400", icon: "trending_down" },
+};
+
+interface BriefingModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  briefing: InitialBriefing;
+}
+
+export default function BriefingModal({ isOpen, onClose, briefing }: BriefingModalProps) {
+  const { gameState } = useGame();
+
+  if (!isOpen) return null;
+
+  const { playerCompany, market, customMarket, difficulty } = gameState;
+  const config = COMPANY_CONFIGS[playerCompany.archetype];
+  const accentColor = ARCHETYPE_COLORS[playerCompany.archetype] || "blue";
+  const marketLabel =
+    market === "custom" && customMarket
+      ? customMarket
+      : MARKET_LABELS[market] || market;
+
+  const formatCurrency = (value: number): string => {
+    if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(2)}B`;
+    if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
+    if (value >= 1_000) return `$${(value / 1_000).toFixed(0)}k`;
+    return `$${value.toFixed(0)}`;
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111a22]/90 backdrop-blur-sm">
+      <div
+        className="fixed inset-0 z-0 cursor-default"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <div className="bg-[#1a2632] w-full max-w-4xl rounded-2xl shadow-2xl border border-[#233648] overflow-hidden flex flex-col max-h-[90vh] relative z-10 animate-in zoom-in-95 duration-200 text-white">
+        {/* Header */}
+        <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#233648] bg-gradient-to-r from-[#1a2632] to-[#1f3044]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`p-2.5 rounded-xl bg-${accentColor}-500/20 text-${accentColor}-400`}>
+                <span className="material-symbols-outlined text-2xl">
+                  {ARCHETYPE_ICONS[playerCompany.archetype]}
+                </span>
+              </div>
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-white">
+                  {playerCompany.name}
+                </h2>
+                <p className="text-gray-400 text-sm">{config.name} &middot; Mission Briefing</p>
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+            >
+              <span className="material-symbols-outlined text-[24px]">close</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 sm:space-y-8">
+          {/* Mission */}
+          <p className="text-[#c0d0e0] text-base leading-relaxed italic border-l-2 border-primary/40 pl-4">
+            &ldquo;{playerCompany.mission}&rdquo;
+          </p>
+
+          {/* Industry & Difficulty */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex items-center gap-4 rounded-xl bg-[#111a22] border border-[#233648] p-5">
+              <span className="material-symbols-outlined text-primary text-2xl">domain</span>
+              <div>
+                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Industry</p>
+                <p className="text-base font-bold text-white">{marketLabel}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 rounded-xl bg-[#111a22] border border-[#233648] p-5">
+              <span className="material-symbols-outlined text-primary text-2xl">speed</span>
+              <div>
+                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Difficulty</p>
+                <p className="text-base font-bold text-white capitalize">{difficulty}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Starting KPIs */}
+          <div>
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary">monitoring</span>
+              Starting Position
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="rounded-xl bg-[#111a22] border border-[#233648] p-5 flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-emerald-400 text-lg">payments</span>
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Cash Balance</p>
+                </div>
+                <p className="text-2xl font-black text-white mt-1">{formatCurrency(config.startingCash)}</p>
+              </div>
+              <div className="rounded-xl bg-[#111a22] border border-[#233648] p-5 flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-blue-400 text-lg">pie_chart</span>
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Market Share</p>
+                </div>
+                <p className="text-2xl font-black text-white mt-1">{config.startingMarketShare.toFixed(1)}%</p>
+              </div>
+              <div className="rounded-xl bg-[#111a22] border border-[#233648] p-5 flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-amber-400 text-lg">sentiment_satisfied</span>
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Customer Satisfaction</p>
+                </div>
+                <p className="text-2xl font-black text-white mt-1">{config.startingSatisfaction.toFixed(0)}%</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Market Intelligence Report */}
+          {briefing.marketSummary && (
+            <div>
+              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">newspaper</span>
+                Market Intelligence Report
+              </h3>
+              <div className="rounded-xl bg-[#111a22] border border-[#233648] p-6">
+                <p className="text-[#c0d0e0] text-base leading-relaxed whitespace-pre-line">
+                  {briefing.marketSummary}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Competitors */}
+          {briefing.competitors.length > 0 && (
+            <div>
+              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">groups</span>
+                Initial Competitive Landscape
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {briefing.competitors.map((c, i) => {
+                  const momentum = MOMENTUM_STYLES[c.momentum] || MOMENTUM_STYLES.neutral;
+                  return (
+                    <div
+                      key={i}
+                      className="rounded-xl bg-[#111a22] border border-[#233648] p-5 flex flex-col gap-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-lg bg-[#233648]">
+                            <span className="material-symbols-outlined text-[#92adc9] text-xl">
+                              {COMPETITOR_ARCHETYPE_ICONS[c.archetype] || "business"}
+                            </span>
+                          </div>
+                          <div>
+                            <p className="text-base font-bold text-white">{c.name}</p>
+                            <p className="text-xs text-gray-400 capitalize">{c.archetype}</p>
+                          </div>
+                        </div>
+                        <span className={`material-symbols-outlined text-xl ${momentum.color}`}>
+                          {momentum.icon}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-auto">
+                        <div className="flex-1 h-1.5 rounded-full bg-[#233648] overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-primary/70"
+                            style={{ width: `${Math.min(c.marketShare, 100)}%` }}
+                          />
+                        </div>
+                        <span className="text-xs font-medium text-gray-400 w-12 text-right">
+                          {c.marketShare.toFixed(1)}%
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Rest of Market */}
+              {briefing.restOfMarket.marketShare > 0 && (
+                <div className="mt-4 rounded-xl bg-[#161f2a] border border-[#1e2d3d] p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-gray-500 text-lg">more_horiz</span>
+                    <div>
+                      <p className="text-sm font-medium text-gray-400">Rest of Market</p>
+                      <p className="text-xs text-gray-500 capitalize">
+                        {briefing.restOfMarket.fragmentation} fragmentation &middot; {briefing.restOfMarket.dynamism}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-bold text-gray-400">
+                    {briefing.restOfMarket.marketShare.toFixed(1)}%
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-4 sm:px-8 py-4 sm:py-5 border-t border-[#233648] bg-[#1a2632] flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-8 py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/25 hover:bg-primary/90 transition-all flex items-center gap-2"
+          >
+            <span className="material-symbols-outlined text-[20px]">close</span>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -14,6 +14,7 @@ import {
   Turn0Result,
   TimeAdvance,
   CompanyArchetype,
+  Competitor,
   Difficulty,
   Market,
   TokenUsage,
@@ -27,6 +28,13 @@ export interface TurnHistoryEntry {
   date: string;
   result: TurnResult;
   playerActions: string[];
+}
+
+// Snapshot of turn 0 briefing data (persisted across turns)
+export interface InitialBriefing {
+  marketSummary: string;
+  competitors: Competitor[];
+  restOfMarket: RestOfMarket;
 }
 
 // Advisor (Michael) conversation
@@ -44,6 +52,9 @@ interface GameContextType {
   isInitializing: boolean;
   currentTurnResult: TurnResult | null;
   showTurnSummary: boolean;
+
+  // Turn 0 briefing snapshot
+  initialBriefing: InitialBriefing | null;
 
   // Turn history for the feed
   turnHistory: TurnHistoryEntry[];
@@ -105,6 +116,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [showTurnSummary, setShowTurnSummary] = useState(false);
   const [actions, setActions] = useState<string[]>([]);
   const [turnHistory, setTurnHistory] = useState<TurnHistoryEntry[]>([]);
+
+  // Turn 0 briefing snapshot
+  const [initialBriefing, setInitialBriefing] = useState<InitialBriefing | null>(null);
 
   // Token usage tracking
   const [totalTokenUsage, setTotalTokenUsage] = useState<TokenUsage>({
@@ -188,6 +202,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
           competitors: turn0Result.competitors,
           restOfMarket: turn0Result.restOfMarket,
           lastTurnSummary: turn0Result.marketSummary,
+        });
+
+        // Persist turn 0 briefing data
+        setInitialBriefing({
+          marketSummary: turn0Result.marketSummary,
+          competitors: turn0Result.competitors,
+          restOfMarket: turn0Result.restOfMarket,
         });
 
         // Reset and initialize token usage
@@ -426,6 +447,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         isInitializing,
         currentTurnResult,
         showTurnSummary,
+        initialBriefing,
         turnHistory,
         actions,
         addAction,
