@@ -1,4 +1,4 @@
-import { CompanyArchetype, CompetitorArchetype, Difficulty, COMPANY_CONFIGS, PlayerCompany } from "../types/game";
+import { CompetitorArchetype, Difficulty, PlayerCompany, SIZE_EXPERIENCE_KPIS } from "../types/game";
 
 // =============================================================================
 // COMPETITOR ARCHETYPE DESCRIPTIONS
@@ -42,43 +42,6 @@ DIFFICULTY: HARD (Realistic)
   }
 }
 
-export function getArchetypeCharacteristics(archetype: CompanyArchetype): string {
-  const characteristics: Record<CompanyArchetype, string> = {
-    innovator: `
-- Highly agile, can pivot quickly
-- Limited cash reserves, burn rate is critical
-- Team is passionate but may burn out
-- Innovation is core strength, bureaucracy is minimal
-- High risk tolerance, experimental culture`,
-    incumbent: `
-- Slow decision-making, multiple approval layers
-- Vast resources but allocation is political
-- Large teams with specialized roles
-- Brand reputation is valuable but constraining
-- Risk-averse, prefers proven approaches`,
-    costleader: `
-- Obsessively efficient, every dollar counts
-- Lean teams, everyone wears multiple hats
-- Margins are thin, volume is everything
-- Operational excellence is the culture
-- Price sensitivity drives all decisions`,
-    premium: `
-- Quality over quantity mindset
-- Smaller but highly skilled team
-- Customer relationships are paramount
-- Brand protection is critical
-- Willing to sacrifice scale for margins`,
-    platform: `
-- Data-driven decision making
-- Tech-heavy workforce
-- Network effects are the goal
-- Partnership-oriented
-- User growth prioritized over short-term profit`,
-  };
-
-  return characteristics[archetype];
-}
-
 export function getTimeAdvanceDays(timeAdvance: string): string {
   switch (timeAdvance) {
     case "week":
@@ -120,10 +83,9 @@ export function getNewsCountForTimeAdvance(timeAdvance: string): number {
 export function getInternalAgentPrompt(
   playerCompany: PlayerCompany,
   difficulty: Difficulty,
-  market: string
+  market: string,
+  companyCulture: string
 ): string {
-  const config = COMPANY_CONFIGS[playerCompany.archetype];
-
   return `You are the INTERNAL AGENT in a business simulation game. You analyze the STRENGTHS and WEAKNESSES of the player's action from the company's internal perspective.
 
 ## YOUR SCOPE
@@ -132,19 +94,19 @@ Everything inside the company walls. You evaluate the player's action through an
 ## PLAYER'S COMPANY
 - **Name**: ${playerCompany.name}
 - **Mission**: ${playerCompany.mission}
-- **Type**: ${config.name}
-- **Description**: ${config.description}
+- **Size**: ${playerCompany.size}
+- **Experience**: ${playerCompany.experience}
 - **Market**: ${market}
 
-## COMPANY CHARACTERISTICS
-${getArchetypeCharacteristics(playerCompany.archetype)}
+## COMPANY CULTURE
+${companyCulture}
 
 ${getDifficultyModifier(difficulty)}
 
 ## ANALYTICAL LENS
 
 ### Strengths of the action
-What makes this a good move internally? Does it leverage the company's archetype? Does the team have the skills? Is the timing right given current cash and satisfaction? What advantages does it unlock?
+What makes this a good move internally? Does it align with the company's culture and identity? Does the team have the skills? Is the timing right given current cash and satisfaction? What advantages does it unlock?
 
 ### Weaknesses of the action
 What are the internal risks? Cash strain, team overstretch, misalignment with company DNA, execution complexity. What could go wrong inside the company?
@@ -178,7 +140,8 @@ Respond with a JSON object:
 export function getExternalAgentPrompt(
   playerCompany: PlayerCompany,
   difficulty: Difficulty,
-  market: string
+  market: string,
+  companyCulture: string
 ): string {
   return `You are the EXTERNAL AGENT in a business simulation game. You analyze the OPPORTUNITIES and THREATS of the player's action from the external market perspective.
 
@@ -187,7 +150,8 @@ Everything outside the company — market, competitors, regulatory environment, 
 
 ## MARKET CONTEXT
 - **Industry**: ${market}
-- **Player's Company**: ${playerCompany.name} (${COMPANY_CONFIGS[playerCompany.archetype].name})
+- **Player's Company**: ${playerCompany.name} (${playerCompany.size} ${playerCompany.experience} company)
+- **Company Culture**: ${companyCulture}
 
 ${getDifficultyModifier(difficulty)}
 
@@ -245,10 +209,9 @@ Respond with a JSON object:
 export function getGamemasterPrompt(
   playerCompany: PlayerCompany,
   difficulty: Difficulty,
-  timeAdvance: string
+  timeAdvance: string,
+  companyCulture: string
 ): string {
-  const config = COMPANY_CONFIGS[playerCompany.archetype];
-
   return `You are the GAMEMASTER — the SOURCE OF TRUTH in a business simulation game. You synthesize both agents' analyses, resolve the turn's outcomes, and steer the game's narrative direction.
 
 ## YOUR ROLE
@@ -257,11 +220,14 @@ You receive the Internal Agent's strengths/weaknesses and the External Agent's o
 2. Update narrative weights
 3. Manage competitor entry/exit
 4. Determine direct and delayed impacts
+5. Evolve the company culture description
 
 ## PLAYER'S COMPANY
 - **Name**: ${playerCompany.name}
 - **Mission**: ${playerCompany.mission}
-- **Type**: ${config.name}
+- **Size**: ${playerCompany.size}
+- **Experience**: ${playerCompany.experience}
+- **Company Culture**: ${companyCulture}
 
 ${getDifficultyModifier(difficulty)}
 
@@ -310,7 +276,16 @@ Rules:
 - Create delayed consequences with cause and expected effect
 - Trigger previously pending consequences when contextually appropriate (no deterministic timer — YOU decide each turn)
 
-## E. PLAYER-FACING NARRATIVE
+## E. COMPANY CULTURE EVOLUTION
+You must output an updated "companyCulture" string (1-2 sentences) that reflects how the player's cumulative actions are shaping the company identity. This evolves incrementally each turn:
+- Read the current culture description provided above
+- Consider what the player did this turn
+- Update the culture to reflect any shift (e.g., becoming more aggressive, more cautious, more innovative)
+- The culture should feel like a living description, not a static label
+- Keep it concise: 1-2 sentences maximum
+- Evolve incrementally — do not rewrite from scratch each turn
+
+## F. PLAYER-FACING NARRATIVE
 After resolving the game state, you must also write the player-facing narrative:
 
 ### Turn Summary
@@ -357,7 +332,8 @@ Respond with a JSON object:
   "newsItems": [
     { "id": "unique-id", "headline": "News headline", "summary": "Brief summary (1-2 sentences)", "category": "industry|competitor|internal|market|regulatory", "sentiment": "positive|negative|neutral", "relevance": "high|medium|low" }
   ],
-  "nextTurnContext": "Brief context for next turn and Advisor"
+  "nextTurnContext": "Brief context for next turn and Advisor",
+  "companyCulture": "Updated 1-2 sentence company culture description..."
 }`;
 }
 
@@ -370,16 +346,17 @@ export function getTurn0GamemasterPrompt(
   difficulty: Difficulty,
   market: string
 ): string {
-  const config = COMPANY_CONFIGS[playerCompany.archetype];
+  const startingKpis = SIZE_EXPERIENCE_KPIS[playerCompany.size][playerCompany.experience];
 
-  return `You are the GAMEMASTER initializing a new business simulation game. Generate the starting market landscape.
+  return `You are the GAMEMASTER initializing a new business simulation game. Generate the starting market landscape and initial company culture.
 
 ## PLAYER'S COMPANY
 - **Name**: ${playerCompany.name}
 - **Mission**: ${playerCompany.mission}
-- **Type**: ${config.name} — ${config.description}
-- **Starting Cash**: $${config.startingCash.toLocaleString()}
-- **Starting Market Share**: ${config.startingMarketShare}%
+- **Size**: ${playerCompany.size}
+- **Experience**: ${playerCompany.experience}
+- **Starting Cash**: $${startingKpis.cash.toLocaleString()}
+- **Starting Market Share**: ${startingKpis.marketShare}%
 
 ## MARKET
 - **Industry**: ${market}
@@ -387,7 +364,8 @@ export function getTurn0GamemasterPrompt(
 ${getDifficultyModifier(difficulty)}
 
 ## YOUR TASK
-Generate 3-4 named competitors and a "rest of market" aggregate that create an interesting competitive landscape for this player.
+1. Generate 3-4 named competitors and a "rest of market" aggregate that create an interesting competitive landscape for this player.
+2. Generate an initial "companyCulture" description (1-2 sentences) that captures the company's identity based on its mission, size, and experience. This will evolve each turn based on player decisions.
 
 ## COMPETITOR ARCHETYPES
 Choose from these 4 behavioral archetypes:
@@ -398,9 +376,9 @@ Choose from these 4 behavioral archetypes:
 
 ## RULES
 - Generate 3-4 named competitors with creative, industry-appropriate names
-- Choose archetypes that create interesting tension with the player's archetype
+- Choose archetypes that create interesting tension with the player's company profile
 - Market shares for ALL actors (player + competitors + rest of market) MUST sum to 100%
-- Player starts at ${config.startingMarketShare}%
+- Player starts at ${startingKpis.marketShare}%
 - Each competitor should have a plausible market share
 - Rest of market captures the residual
 - All competitors start with "neutral" momentum
@@ -415,6 +393,7 @@ Respond with a JSON object:
   "restOfMarket": {
     "marketShare": <residual>, "fragmentation": "high|medium|consolidated", "dynamism": "active|stable|stagnant", "latentPressure": "low|moderate|high"
   },
-  "marketSummary": "2-3 paragraph market introduction..."
+  "marketSummary": "2-3 paragraph market introduction...",
+  "companyCulture": "1-2 sentence initial company culture description..."
 }`;
 }

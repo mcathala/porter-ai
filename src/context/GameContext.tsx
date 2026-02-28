@@ -13,12 +13,13 @@ import {
   TurnResult,
   Turn0Result,
   TimeAdvance,
-  CompanyArchetype,
+  CompanySize,
+  CompanyExperience,
   Competitor,
   Difficulty,
   Market,
   TokenUsage,
-  COMPANY_CONFIGS,
+  SIZE_EXPERIENCE_KPIS,
   RestOfMarket,
 } from "@/lib/types/game";
 
@@ -74,7 +75,8 @@ interface GameContextType {
     difficulty: Difficulty,
     market: Market,
     customMarket: string | undefined,
-    playerCompany: CompanyArchetype,
+    size: CompanySize,
+    experience: CompanyExperience,
     companyName: string,
     companyMission: string
   ) => Promise<void>;
@@ -105,7 +107,7 @@ const DEFAULT_REST_OF_MARKET: RestOfMarket = {
 export function GameProvider({ children }: { children: ReactNode }) {
   // Initialize with default game state
   const [gameState, setGameState] = useState<GameState>(() =>
-    createInitialGameState("standard", "saas", undefined, "incumbent", "My Company", "To be the best")
+    createInitialGameState("standard", "fashion", undefined, "medium", "medium", "My Company", "To be the best")
   );
 
   const [isProcessingTurn, setIsProcessingTurn] = useState(false);
@@ -161,7 +163,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       difficulty: Difficulty,
       market: Market,
       customMarket: string | undefined,
-      playerCompany: CompanyArchetype,
+      size: CompanySize,
+      experience: CompanyExperience,
       companyName: string,
       companyMission: string
     ) => {
@@ -173,7 +176,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
           difficulty,
           market,
           customMarket,
-          playerCompany,
+          size,
+          experience,
           companyName,
           companyMission
         );
@@ -202,6 +206,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           competitors: turn0Result.competitors,
           restOfMarket: turn0Result.restOfMarket,
           lastTurnSummary: turn0Result.marketSummary,
+          companyCulture: turn0Result.companyCulture,
         });
 
         // Persist turn 0 briefing data
@@ -278,6 +283,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
             satisfaction: result.kpiDeltas.satisfaction.value,
           },
           lastTurnSummary: result.nextTurnContext,
+          companyCulture: result.companyCulture || prev.companyCulture,
           // Update competitors from Gamemaster's resolved state
           competitors: result.updatedCompetitors,
           restOfMarket: result.updatedRestOfMarket,
@@ -486,11 +492,12 @@ function createInitialGameState(
   difficulty: Difficulty,
   market: Market,
   customMarket: string | undefined,
-  playerArchetype: CompanyArchetype,
+  size: CompanySize,
+  experience: CompanyExperience,
   companyName: string,
   companyMission: string
 ): GameState {
-  const playerConfig = COMPANY_CONFIGS[playerArchetype];
+  const startingKpis = SIZE_EXPERIENCE_KPIS[size][experience];
 
   return {
     difficulty,
@@ -499,15 +506,17 @@ function createInitialGameState(
     playerCompany: {
       name: companyName,
       mission: companyMission,
-      archetype: playerArchetype,
+      size,
+      experience,
     },
     turn: 0,
     currentDate: new Date().toISOString().split("T")[0],
     kpis: {
-      cash: playerConfig.startingCash,
-      marketShare: playerConfig.startingMarketShare,
-      satisfaction: playerConfig.startingSatisfaction,
+      cash: startingKpis.cash,
+      marketShare: startingKpis.marketShare,
+      satisfaction: startingKpis.satisfaction,
     },
+    companyCulture: "", // Populated by server-side Turn 0
     competitors: [], // Populated by server-side Turn 0
     restOfMarket: DEFAULT_REST_OF_MARKET, // Populated by server-side Turn 0
     narrativeArcs: [], // Empty at Turn 0, created at Turn 1

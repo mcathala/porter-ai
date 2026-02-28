@@ -9,7 +9,7 @@ import {
   PlayerCompany,
   Difficulty,
   TokenUsage,
-  COMPANY_CONFIGS,
+  SIZE_EXPERIENCE_KPIS,
 } from "../types/game";
 import {
   InternalAgentOutput,
@@ -144,7 +144,8 @@ async function internalAgentNode(
   const systemPrompt = getInternalAgentPrompt(
     gameState.playerCompany,
     gameState.difficulty,
-    gameState.customMarket || gameState.market
+    gameState.customMarket || gameState.market,
+    gameState.companyCulture
   );
 
   const userPrompt = `
@@ -193,7 +194,8 @@ async function externalAgentNode(
   const systemPrompt = getExternalAgentPrompt(
     gameState.playerCompany,
     gameState.difficulty,
-    gameState.customMarket || gameState.market
+    gameState.customMarket || gameState.market,
+    gameState.companyCulture
   );
 
   const competitorStatus = gameState.competitors
@@ -221,7 +223,7 @@ ${tasks.length > 0 ? tasks.map((t, i) => `${i + 1}. ${t}`).join("\n") : "No spec
 
 ## PLAYER'S COMPANY
 - Name: ${gameState.playerCompany.name}
-- Type: ${COMPANY_CONFIGS[gameState.playerCompany.archetype].name}
+- Company Culture: ${gameState.companyCulture}
 - Market Share: ${gameState.kpis.marketShare}%
 
 ## PENDING CONSEQUENCES (external)
@@ -261,7 +263,8 @@ async function gamemasterNode(
   const systemPrompt = getGamemasterPrompt(
     gameState.playerCompany,
     gameState.difficulty,
-    timeAdvance
+    timeAdvance,
+    gameState.companyCulture
   );
 
   const narrativeArcsStatus = gameState.narrativeArcs.length > 0
@@ -304,6 +307,9 @@ ${gameState.pendingConsequences.length > 0
       ? JSON.stringify(gameState.pendingConsequences, null, 2)
       : "None"
     }
+
+### Current Company Culture
+${gameState.companyCulture}
 
 ### Time Advance
 ${timeAdvance}
@@ -358,6 +364,12 @@ Resolve KPIs, update narratives (weights must sum to 100), manage competitors, h
     output.nextTurnContext = "The game continues.";
   }
 
+  // Fallback: use current culture if the LLM omitted it
+  if (!output.companyCulture) {
+    console.warn("[gamemasterNode] LLM omitted companyCulture, using current state");
+    output.companyCulture = gameState.companyCulture;
+  }
+
   // Fallback: compute newDate if the LLM omitted it
   if (!output.newDate) {
     const base = new Date(gameState.currentDate);
@@ -397,6 +409,7 @@ function assembleResultNode(
     triggeredConsequences: gamemasterOutput.triggeredConsequences,
     newDate: gamemasterOutput.newDate,
     nextTurnContext: gamemasterOutput.nextTurnContext,
+    companyCulture: gamemasterOutput.companyCulture,
     tokenUsage,
   };
 
@@ -482,7 +495,8 @@ export async function executeInitialization(config: {
     config.market
   );
 
-  const userPrompt = `Generate the initial market landscape for this new game. Remember: all market shares (player at ${COMPANY_CONFIGS[config.playerCompany.archetype].startingMarketShare}% + competitors + rest of market) must sum to 100%.`;
+  const startingKpis = SIZE_EXPERIENCE_KPIS[config.playerCompany.size][config.playerCompany.experience];
+  const userPrompt = `Generate the initial market landscape for this new game. Remember: all market shares (player at ${startingKpis.marketShare}% + competitors + rest of market) must sum to 100%. Also generate an initial companyCulture description based on the player's mission and company characteristics.`;
 
   const messages = [
     { role: "system", content: systemPrompt },

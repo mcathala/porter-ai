@@ -3,8 +3,9 @@
 // =============================================================================
 
 export type Difficulty = "easy" | "standard" | "hard";
-export type Market = "saas" | "automotive" | "random" | "custom";
-export type CompanyArchetype = "innovator" | "incumbent" | "costleader" | "premium" | "platform";
+export type Market = "fashion" | "automotive" | "custom";
+export type CompanySize = "small" | "medium" | "large";
+export type CompanyExperience = "new" | "medium" | "old";
 export type CompetitorArchetype = "dominant" | "follower" | "disruptor" | "opportunist";
 export type TimeAdvance = "event" | "week" | "month" | "quarter" | "year";
 
@@ -24,59 +25,26 @@ export interface KPIDelta {
 export interface PlayerCompany {
   name: string;
   mission: string;
-  archetype: CompanyArchetype;
+  size: CompanySize;
+  experience: CompanyExperience;
 }
 
-export interface CompanyConfig {
-  archetype: CompanyArchetype;
-  name: string;
-  description: string;
-  startingCash: number;
-  startingMarketShare: number;
-  startingSatisfaction: number;
-}
-
-// All company archetypes with their configurations
-export const COMPANY_CONFIGS: Record<CompanyArchetype, CompanyConfig> = {
-  innovator: {
-    archetype: "innovator",
-    name: "Disruptive Innovator",
-    description: "A scrappy startup with breakthrough tech. High innovation potential but extreme financial risk.",
-    startingCash: 750000,
-    startingMarketShare: 1,
-    startingSatisfaction: 85,
+// Size x Experience → Starting KPIs matrix
+export const SIZE_EXPERIENCE_KPIS: Record<CompanySize, Record<CompanyExperience, KPIs>> = {
+  small: {
+    new:    { cash: 500_000,   marketShare: 2,  satisfaction: 90 },
+    medium: { cash: 2_000_000, marketShare: 5,  satisfaction: 85 },
+    old:    { cash: 5_000_000, marketShare: 8,  satisfaction: 75 },
   },
-  incumbent: {
-    archetype: "incumbent",
-    name: "Global Incumbent",
-    description: "An industry titan with massive resources. Immense market power but bureaucratic inertia.",
-    startingCash: 100000000,
-    startingMarketShare: 40,
-    startingSatisfaction: 75,
+  medium: {
+    new:    { cash: 5_000_000,  marketShare: 8,  satisfaction: 85 },
+    medium: { cash: 15_000_000, marketShare: 18, satisfaction: 75 },
+    old:    { cash: 30_000_000, marketShare: 25, satisfaction: 65 },
   },
-  costleader: {
-    archetype: "costleader",
-    name: "Cost Leader",
-    description: "Highly efficient operator with razor-thin margins. Scale economies but vulnerable to price wars.",
-    startingCash: 15000000,
-    startingMarketShare: 25,
-    startingSatisfaction: 70,
-  },
-  premium: {
-    archetype: "premium",
-    name: "Premium Niche",
-    description: "Luxury brand with loyal customers. Superior margins but limited scalability.",
-    startingCash: 5000000,
-    startingMarketShare: 5,
-    startingSatisfaction: 95,
-  },
-  platform: {
-    archetype: "platform",
-    name: "Data Platform",
-    description: "Ecosystem builder leveraging data. Exponential growth potential but high churn risk.",
-    startingCash: 10000000,
-    startingMarketShare: 8,
-    startingSatisfaction: 80,
+  large: {
+    new:    { cash: 25_000_000,  marketShare: 15, satisfaction: 80 },
+    medium: { cash: 75_000_000,  marketShare: 30, satisfaction: 70 },
+    old:    { cash: 150_000_000, marketShare: 45, satisfaction: 60 },
   },
 };
 
@@ -161,6 +129,9 @@ export interface GameState {
   currentDate: string; // ISO date string
   kpis: KPIs;
 
+  // Evolving company culture description (invisible to player)
+  companyCulture: string;
+
   // Competitors (3-5 dynamic named actors)
   competitors: Competitor[];
   restOfMarket: RestOfMarket;
@@ -220,6 +191,9 @@ export interface TurnResult {
   // For next turn context
   nextTurnContext: string;
 
+  // Updated company culture description
+  companyCulture: string;
+
   // Token usage for this turn
   tokenUsage?: TokenUsage;
 }
@@ -241,6 +215,7 @@ export interface Turn0Result {
   competitors: Competitor[];
   restOfMarket: RestOfMarket;
   marketSummary: string;
+  companyCulture: string;
   tokenUsage?: TokenUsage;
 }
 
@@ -273,6 +248,7 @@ export interface GamemasterOutput {
   turnSummary: string;
   newsItems: NewsItem[];
   nextTurnContext: string;
+  companyCulture: string;
 }
 
 // =============================================================================

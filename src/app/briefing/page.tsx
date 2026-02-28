@@ -2,29 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { useGame } from "@/context/GameContext";
-import { COMPANY_CONFIGS } from "@/lib/types/game";
 
 const MARKET_LABELS: Record<string, string> = {
-  saas: "Software as a Service (SaaS)",
+  fashion: "Fashion Industry",
   automotive: "Automotive Industry",
-  random: "Randomized Market",
   custom: "Custom Market",
 };
 
-const ARCHETYPE_ICONS: Record<string, string> = {
-  innovator: "rocket_launch",
-  incumbent: "corporate_fare",
-  costleader: "warehouse",
-  premium: "diamond",
-  platform: "hub",
-};
-
-const ARCHETYPE_COLORS: Record<string, string> = {
-  innovator: "cyan",
-  incumbent: "blue",
-  costleader: "emerald",
-  premium: "purple",
-  platform: "indigo",
+const EXPERIENCE_LABELS: Record<string, string> = {
+  new: "Newcomer",
+  medium: "Established",
+  old: "Veteran",
 };
 
 const COMPETITOR_ARCHETYPE_ICONS: Record<string, string> = {
@@ -55,8 +43,8 @@ export default function BriefingPage() {
     lastTurnSummary,
   } = gameState;
 
-  const config = COMPANY_CONFIGS[playerCompany.archetype];
-  const accentColor = ARCHETYPE_COLORS[playerCompany.archetype] || "blue";
+  const sizeLabel = playerCompany.size.charAt(0).toUpperCase() + playerCompany.size.slice(1);
+  const experienceLabel = EXPERIENCE_LABELS[playerCompany.experience] || playerCompany.experience;
   const marketLabel =
     market === "custom" && customMarket
       ? customMarket
@@ -89,16 +77,16 @@ export default function BriefingPage() {
           {/* Hero: Company Identity */}
           <section className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-xl bg-${accentColor}-500/20 text-${accentColor}-400`}>
-                <span className="material-symbols-outlined text-4xl">
-                  {ARCHETYPE_ICONS[playerCompany.archetype]}
-                </span>
+              <div className="p-3 rounded-xl bg-primary/20 text-primary">
+                <span className="material-symbols-outlined text-4xl">business</span>
               </div>
               <div>
                 <h1 className="text-4xl font-black leading-tight tracking-[-0.033em]">
                   {playerCompany.name}
                 </h1>
-                <p className="text-[#92adc9] text-base mt-1">{config.name}</p>
+                <p className="text-[#92adc9] text-base mt-1">
+                  {sizeLabel} company, {experienceLabel}
+                </p>
               </div>
             </div>
             <p className="text-[#c0d0e0] text-lg leading-relaxed italic border-l-2 border-primary/40 pl-4">

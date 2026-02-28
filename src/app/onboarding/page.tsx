@@ -35,7 +35,7 @@ export default function OnboardingPage() {
             <div className="flex flex-col gap-3 mb-8">
               <div className="flex justify-between items-center">
                 <p className="text-white text-sm font-medium">
-                  Step 1 of 3
+                  Step 1 of 2
                 </p>
                 <p className="text-[#92adc9] text-sm">
                   Configuration
@@ -44,7 +44,7 @@ export default function OnboardingPage() {
               <div className="rounded-full bg-[#324d67] h-2 overflow-hidden">
                 <div
                   className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
-                  style={{ width: "33%" }}
+                  style={{ width: "0%" }}
                 ></div>
               </div>
             </div>

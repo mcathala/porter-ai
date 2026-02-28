@@ -1,4 +1,4 @@
-import { GameState, COMPANY_CONFIGS } from "../types/game";
+import { GameState } from "../types/game";
 
 // Import type only to avoid circular dependency
 interface TurnHistoryEntry {
@@ -15,8 +15,6 @@ export function getAdvisorSystemPrompt(
   turnHistory: TurnHistoryEntry[],
   pendingActions: string[]
 ): string {
-  const playerConfig = COMPANY_CONFIGS[gameState.playerCompany.archetype];
-
   const competitorSummary = gameState.competitors
     .map(
       (c) =>
@@ -76,8 +74,9 @@ export function getAdvisorSystemPrompt(
 ## CURRENT GAME STATE
 
 **Company:** ${gameState.playerCompany.name}
-- ${playerConfig.description}
+- Size: ${gameState.playerCompany.size}, Experience: ${gameState.playerCompany.experience}
 - Mission: ${gameState.playerCompany.mission}
+- Company Culture: ${gameState.companyCulture}
 
 **Current Metrics (Turn ${gameState.turn}):**
 - Cash: $${gameState.kpis.cash.toLocaleString()}

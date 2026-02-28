@@ -167,6 +167,10 @@ export const GamemasterOutputSchema = z.object({
     .string()
     .default("")
     .describe("Brief context summary for the next turn and for the Advisor"),
+  companyCulture: z
+    .string()
+    .default("")
+    .describe("Updated 1-2 sentence company culture description reflecting cumulative player decisions"),
 });
 
 export type GamemasterOutput = z.infer<typeof GamemasterOutputSchema>;
@@ -178,12 +182,15 @@ export type GamemasterOutput = z.infer<typeof GamemasterOutputSchema>;
 export const Turn0ResultSchema = z.object({
   competitors: z
     .array(CompetitorSchema)
-    .describe("3-4 initial named competitors with archetypes that create tension with the player's choice"),
+    .describe("3-4 initial named competitors with archetypes that create tension with the player's company"),
   restOfMarket: RestOfMarketSchema
     .describe("Initial rest of market state"),
   marketSummary: z
     .string()
     .describe("A brief market introduction narrative for the player to read before starting"),
+  companyCulture: z
+    .string()
+    .describe("Initial 1-2 sentence company culture description derived from the player's mission and company characteristics"),
 });
 
 export type Turn0Result = z.infer<typeof Turn0ResultSchema>;

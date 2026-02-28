@@ -1,29 +1,17 @@
 "use client";
 
 import { useGame, InitialBriefing } from "@/context/GameContext";
-import { COMPANY_CONFIGS } from "@/lib/types/game";
 
 const MARKET_LABELS: Record<string, string> = {
-  saas: "Software as a Service (SaaS)",
+  fashion: "Fashion Industry",
   automotive: "Automotive Industry",
-  random: "Randomized Market",
   custom: "Custom Market",
 };
 
-const ARCHETYPE_ICONS: Record<string, string> = {
-  innovator: "rocket_launch",
-  incumbent: "corporate_fare",
-  costleader: "warehouse",
-  premium: "diamond",
-  platform: "hub",
-};
-
-const ARCHETYPE_COLORS: Record<string, string> = {
-  innovator: "cyan",
-  incumbent: "blue",
-  costleader: "emerald",
-  premium: "purple",
-  platform: "indigo",
+const EXPERIENCE_LABELS: Record<string, string> = {
+  new: "Newcomer",
+  medium: "Established",
+  old: "Veteran",
 };
 
 const COMPETITOR_ARCHETYPE_ICONS: Record<string, string> = {
@@ -50,9 +38,9 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
 
   if (!isOpen) return null;
 
-  const { playerCompany, market, customMarket, difficulty } = gameState;
-  const config = COMPANY_CONFIGS[playerCompany.archetype];
-  const accentColor = ARCHETYPE_COLORS[playerCompany.archetype] || "blue";
+  const { playerCompany, market, customMarket, difficulty, kpis } = gameState;
+  const sizeLabel = playerCompany.size.charAt(0).toUpperCase() + playerCompany.size.slice(1);
+  const experienceLabel = EXPERIENCE_LABELS[playerCompany.experience] || playerCompany.experience;
   const marketLabel =
     market === "custom" && customMarket
       ? customMarket
@@ -77,16 +65,14 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
         <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#233648] bg-gradient-to-r from-[#1a2632] to-[#1f3044]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`p-2.5 rounded-xl bg-${accentColor}-500/20 text-${accentColor}-400`}>
-                <span className="material-symbols-outlined text-2xl">
-                  {ARCHETYPE_ICONS[playerCompany.archetype]}
-                </span>
+              <div className="p-2.5 rounded-xl bg-primary/20 text-primary">
+                <span className="material-symbols-outlined text-2xl">business</span>
               </div>
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold text-white">
                   {playerCompany.name}
                 </h2>
-                <p className="text-gray-400 text-sm">{config.name} &middot; Mission Briefing</p>
+                <p className="text-gray-400 text-sm">{sizeLabel} company, {experienceLabel} &middot; Mission Briefing</p>
               </div>
             </div>
             <button
@@ -135,21 +121,21 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
                   <span className="material-symbols-outlined text-emerald-400 text-lg">payments</span>
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Cash Balance</p>
                 </div>
-                <p className="text-2xl font-black text-white mt-1">{formatCurrency(config.startingCash)}</p>
+                <p className="text-2xl font-black text-white mt-1">{formatCurrency(kpis.cash)}</p>
               </div>
               <div className="rounded-xl bg-[#111a22] border border-[#233648] p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-blue-400 text-lg">pie_chart</span>
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Market Share</p>
                 </div>
-                <p className="text-2xl font-black text-white mt-1">{config.startingMarketShare.toFixed(1)}%</p>
+                <p className="text-2xl font-black text-white mt-1">{kpis.marketShare.toFixed(1)}%</p>
               </div>
               <div className="rounded-xl bg-[#111a22] border border-[#233648] p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-amber-400 text-lg">sentiment_satisfied</span>
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Customer Satisfaction</p>
                 </div>
-                <p className="text-2xl font-black text-white mt-1">{config.startingSatisfaction.toFixed(0)}%</p>
+                <p className="text-2xl font-black text-white mt-1">{kpis.satisfaction.toFixed(0)}%</p>
               </div>
             </div>
           </div>
