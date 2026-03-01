@@ -4,8 +4,6 @@ import { useRouter } from "next/navigation";
 import { useGame } from "@/context/GameContext";
 
 const MARKET_LABELS: Record<string, string> = {
-  fashion: "Fashion Industry",
-  automotive: "Automotive Industry",
   custom: "Custom Market",
 };
 
