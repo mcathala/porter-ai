@@ -133,7 +133,20 @@ export default function StakeholdersPage() {
     };
 
     return (
-        <div className="flex h-full w-full overflow-hidden">
+        <div className="flex h-full w-full overflow-hidden relative">
+            {/* Coming Soon Overlay */}
+            <div className="absolute inset-0 z-20 bg-[#101922]/60 backdrop-blur-[2px] flex items-center justify-center">
+                <div className="flex flex-col items-center gap-3 text-center px-8 py-8 rounded-2xl bg-[#111a22]/90 border border-[#233648]">
+                    <div className="p-4 rounded-2xl bg-yellow-400/10 border border-yellow-400/20">
+                        <span className="material-symbols-outlined text-yellow-400 text-5xl">construction</span>
+                    </div>
+                    <h2 className="text-white text-2xl font-black">Coming Soon</h2>
+                    <p className="text-[#92adc9] text-sm max-w-xs">
+                        Stakeholder interactions are currently under development. Stay tuned!
+                    </p>
+                </div>
+            </div>
+
             {/* Secondary Sidebar - Stakeholder List */}
             <aside className={`${showChat ? "hidden md:flex" : "flex"} w-full md:w-72 flex-col border-r border-[#233648] bg-[#111a22] shrink-0 z-10`}>
                 {/* Search */}

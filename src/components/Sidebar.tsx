@@ -10,7 +10,7 @@ export default function Sidebar() {
 
     const navItems = [
         { href: "/dashboard", icon: "dashboard", label: "Dashboard" },
-        { href: "/dashboard/stakeholders", icon: "handshake", label: "Stakeholders" },
+        { href: "/dashboard/stakeholders", icon: "handshake", label: "Stakeholders", comingSoon: true },
     ];
 
     return (
@@ -74,11 +74,13 @@ export default function Sidebar() {
                 <nav className="flex flex-col gap-2 flex-1">
                     {navItems.map((item) => {
                         const isActive = pathname === item.href;
+                        const comingSoon = "comingSoon" in item && item.comingSoon;
+
                         return (
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                title={isCollapsed ? item.label : undefined}
+                                title={isCollapsed ? item.label + (comingSoon ? " (Coming Soon)" : "") : undefined}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${isCollapsed ? "justify-center" : ""
                                     } ${isActive
                                         ? "bg-primary text-white shadow-sm shadow-primary/30"
@@ -89,7 +91,12 @@ export default function Sidebar() {
                                     {item.icon}
                                 </span>
                                 {!isCollapsed && (
-                                    <span className="text-sm font-medium">{item.label}</span>
+                                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                                        <span className="text-sm font-medium">{item.label}</span>
+                                        {comingSoon && (
+                                            <span className="text-[10px] font-semibold text-yellow-400 bg-yellow-400/10 px-1.5 py-0.5 rounded whitespace-nowrap">Soon</span>
+                                        )}
+                                    </div>
                                 )}
                             </Link>
                         );
