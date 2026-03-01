@@ -18,10 +18,12 @@ export default function AdvisorPanel() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Scroll to bottom when messages change
+  // Scroll to bottom when messages change or panel opens
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [advisorMessages, isAdvisorTyping]);
+    if (isAdvisorOpen) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
+    }
+  }, [advisorMessages, isAdvisorTyping, isAdvisorOpen]);
 
   // Focus input when panel opens
   useEffect(() => {
@@ -69,7 +71,7 @@ export default function AdvisorPanel() {
             </div>
             <div>
               <h2 className="font-bold text-white">Michael</h2>
-              <p className="text-xs text-gray-400">Strategic Advisor</p>
+              <p className="text-xs text-gray-400">Chief of Staff</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

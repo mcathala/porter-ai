@@ -26,19 +26,19 @@ export function getAdvisorSystemPrompt(
 
   const narrativeArcsSummary = gameState.narrativeArcs.length > 0
     ? gameState.narrativeArcs
-        .map((a) => `  - "${a.name}" — ${a.weight}% (${a.status})`)
-        .join("\n")
+      .map((a) => `  - "${a.name}" — ${a.weight}% (${a.status})`)
+      .join("\n")
     : "  No active narrative arcs yet.";
 
   const recentHistory =
     turnHistory.length > 0
       ? turnHistory
-          .slice(0, 3)
-          .map(
-            (t) =>
-              `  Turn ${t.turn} (${t.date}): ${t.result.turnSummary.substring(0, 150)}...`
-          )
-          .join("\n")
+        .slice(0, 3)
+        .map(
+          (t) =>
+            `  Turn ${t.turn} (${t.date}): ${t.result.turnSummary.substring(0, 150)}...`
+        )
+        .join("\n")
       : "  No turns completed yet.";
 
   const pendingActionsText =
@@ -49,25 +49,29 @@ export function getAdvisorSystemPrompt(
   const consequencesText =
     gameState.pendingConsequences.length > 0
       ? gameState.pendingConsequences
-          .map((c) => `  - [${c.cause}] ${c.description}: ${c.effect}`)
-          .join("\n")
+        .map((c) => `  - [${c.cause}] ${c.description}: ${c.effect}`)
+        .join("\n")
       : "  None pending.";
 
-  return `You are Michael, a seasoned business strategist and trusted advisor to the CEO. You have 25 years of experience across multiple industries and have guided companies through growth, crisis, and transformation.
+  return `You are Michael, the Chief of Staff to the CEO. You have 25 years of experience across multiple industries and have guided companies through growth, crisis, and transformation. You help the CEO run the day-to-day operations and have full visibility into the company's internal data.
 
 ## YOUR PERSONALITY
 - Direct and insightful — you don't sugarcoat, but you're respectful
-- You reference specific numbers and facts from the game state
+- You reference specific internal numbers and facts confidently — you live and breathe this data
 - You proactively identify risks and opportunities the CEO might miss
 - You ask clarifying questions when the CEO's question is ambiguous
 - You're experienced but never condescending
 - Keep responses to a maximum of 3 sentences unless the player asks for more detail
 
+## KNOWLEDGE BOUNDARIES
+- **Internal data (you KNOW this):** Company metrics, cash, market share, satisfaction, culture, mission, pending actions, past decisions and their outcomes. You can cite these numbers directly and confidently.
+- **External data (you only HINT at this):** Competitor details, market trends, narrative arcs, rest of market dynamics. You're aware of rumors and signals but you do NOT have hard data on competitors. If the CEO asks for specific competitor numbers or external intel, nudge them to investigate or gather intelligence themselves rather than handing it over. You can say things like "I've been hearing things about [competitor]..." or "You might want to look into what [competitor] is doing in that space" but never give exact external figures unprompted.
+
 ## WHAT YOU HELP WITH
-- Analyzing the company's current strategic position
+- Analyzing the company's current strategic position using internal data
 - Evaluating different strategic options and their trade-offs
-- Understanding competitor behavior and likely responses
-- Interpreting market conditions, narrative arcs, and trends
+- Hinting at competitor behavior without giving away exact external data
+- Helping interpret what internal metrics suggest about market position
 - Planning the next moves
 - Reviewing past decisions and their outcomes
 
