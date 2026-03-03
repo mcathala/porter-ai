@@ -73,9 +73,9 @@ export default function LandingPage() {
             </span>
           </h1>
           <p className="animate-fade-up-delay-2 text-[#92adc9] text-base sm:text-lg md:text-xl leading-relaxed mb-8 sm:mb-10 max-w-2xl mx-auto">
-            A turn-based strategy game where you build a company inside a living
-            market. You set decisions. AI competitors respond. The industry
-            evolves.
+            A turn-based strategy game where you run a company inside a living
+            market. You make decisions. AI Competitors take initiatives.
+            The industry evolves.
           </p>
           <div className="animate-fade-up-delay-3">
             <Link
@@ -96,12 +96,11 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="animate-section text-3xl sm:text-4xl md:text-5xl font-black tracking-[-0.025em] mb-4">
-              A Market That Reacts
+              A Market That Lives
             </h2>
             <p className="text-[#92adc9] text-base sm:text-lg max-w-2xl mx-auto">
               You don&apos;t play against static scenarios. Every competitor is
-              driven by AI — each with its own strategy, constraints, and
-              instincts.
+              driven by AI — with its own strategy, personality, and instincts.
             </p>
           </div>
 
@@ -114,10 +113,10 @@ export default function LandingPage() {
               </div>
               <div>
                 <h3 className="text-white text-base font-bold">
-                  Adjusts pricing
+                  Sets pricing strategy
                 </h3>
                 <p className="text-[#92adc9] text-sm">
-                  Undercuts or holds margins based on market pressure
+                  Undercuts or holds margins based on their own position
                 </p>
               </div>
             </div>
@@ -146,10 +145,10 @@ export default function LandingPage() {
               </div>
               <div>
                 <h3 className="text-white text-base font-bold">
-                  Protects margins
+                  Guards its position
                 </h3>
                 <p className="text-[#92adc9] text-sm">
-                  Defends profitability when competitors get aggressive
+                  Defends profitability when the market shifts
                 </p>
               </div>
             </div>
@@ -162,10 +161,10 @@ export default function LandingPage() {
               </div>
               <div>
                 <h3 className="text-white text-base font-bold">
-                  Reacts to your positioning
+                  Takes initiatives
                 </h3>
                 <p className="text-[#92adc9] text-sm">
-                  Adapts strategy in response to every move you make
+                  Launches products, forms partnerships, expands independently
                 </p>
               </div>
             </div>
@@ -188,7 +187,7 @@ export default function LandingPage() {
           </h2>
           <p className="text-[#92adc9] text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto">
             Manage cash constraints. Balance growth against profitability.
-            Anticipate competitor retaliation. Strategy concepts stop being
+            Navigate an unpredictable market. Strategy concepts stop being
             abstract when they affect your survival.
           </p>
         </div>
@@ -231,10 +230,10 @@ export default function LandingPage() {
                 3
               </div>
               <h3 className="text-white text-base font-bold mb-2">
-                Watch competitors react
+                See the market move
               </h3>
               <p className="text-[#92adc9] text-sm leading-relaxed">
-                AI-driven rivals adapt to your every move
+                Competitors, regulations, and trends shift independently
               </p>
             </div>
 
