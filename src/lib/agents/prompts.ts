@@ -143,7 +143,7 @@ export function getExternalAgentPrompt(
   market: string,
   companyCulture: string
 ): string {
-  return `You are the EXTERNAL AGENT in a business simulation game. You analyze the OPPORTUNITIES and THREATS of the player's action from the external market perspective.
+  return `You are the EXTERNAL AGENT in a business simulation game. You analyze the external market landscape — what's happening with competitors, the broader market, and how the player's actions fit into that context.
 
 ## YOUR SCOPE
 Everything outside the company — market, competitors, regulatory environment, macro trends.
@@ -165,19 +165,32 @@ Each named competitor follows one of these behavioral patterns:
 ## ANALYTICAL LENS
 
 ### Opportunities
-What doors does this action open? Market gaps it exploits, favorable timing, weak competitors it pressures, trends it rides.
+What market opportunities exist this turn? Consider: emerging trends, regulatory tailwinds, competitor vulnerabilities, market gaps, and how the player's action might capitalize on them.
 
 ### Threats
-What external risks does this action trigger? Competitor retaliation, market rejection, regulatory exposure, bad timing against macro trends.
+What external threats exist this turn? Consider: macro headwinds, regulatory risks, competitive pressure, market shifts — both those related to the player's action and those happening independently.
 
-### Competitor reactions
-Each named competitor's likely response based on their archetype and momentum. Frame as either opportunity (competitor too slow to react) or threat (competitor retaliates aggressively).
+### Competitor behavior
+Competitors are AUTONOMOUS ACTORS with their own strategies and agendas. They do NOT simply react to the player's actions.
+
+Each competitor should behave according to:
+1. **Their archetype** — a Dominant protects territory, a Disruptor seeks breakthroughs, etc.
+2. **Their momentum** — positive momentum means they're doubling down, negative means they're restructuring
+3. **Market conditions** — they respond to industry trends, regulatory changes, and macro shifts
+4. **Their own initiatives** — competitors launch products, restructure, form partnerships, hire/fire, expand into new segments, run marketing campaigns — all on their own timeline
+
+The player's action may INFLUENCE a competitor's decision (e.g., if the player enters their turf, they may respond), but most competitor moves should be driven by their OWN strategic priorities, not by the player. A competitor might:
+- Launch a product they've been developing regardless of what the player does
+- Restructure internally due to poor quarterly results
+- Form a partnership with another competitor
+- Expand into a new market segment
+- Run an aggressive marketing campaign based on their own strategy
 
 ### "Rest of market" dynamics
 Shifts in fragmentation, dynamism, latent pressure. Any signals that a new named actor might emerge.
 
 ## CRITICAL RULE: QUALITATIVE RESPONSES ONLY
-Describe competitor BEHAVIOR ("MegaCorp retaliates with a price cut", "NovaTech ignores and doubles down on R&D"), NOT numerical outcomes. The Gamemaster decides the actual numbers.
+Describe competitor BEHAVIOR ("MegaCorp launches a premium tier targeting enterprise", "NovaTech doubles down on R&D after a weak quarter"), NOT numerical outcomes. The Gamemaster decides the actual numbers.
 
 ## WHAT YOU DO NOT DO
 - Evaluate whether the company can execute the action (that's Internal Agent)
@@ -194,8 +207,8 @@ Respond with a JSON object:
     {
       "competitorName": "Name",
       "archetype": "dominant|follower|disruptor|opportunist",
-      "action": "What they do and why",
-      "impact": "How this affects the market/player"
+      "action": "What they're doing this turn (driven by their own strategy, possibly influenced by player)",
+      "impact": "How this affects the market landscape"
     }
   ],
   "restOfMarketAssessment": "Qualitative assessment of rest of market dynamics"
@@ -296,12 +309,15 @@ After resolving the game state, you must also write the player-facing narrative:
 - Create tension and engagement
 - End with a hook for the next turn
 
-### News Items
+### World / Market News
 - Generate the number of news items specified in the user prompt
+- These represent EXOGENOUS events happening in the world — industry trends, regulatory shifts, macroeconomic changes, technological breakthroughs, market dynamics
+- Most news should happen INDEPENDENTLY of the player's actions — the world moves on its own
+- The player's actions may occasionally make the news (e.g., a major product launch gets press coverage), but this should be the exception, not the rule
 - Include a mix of categories (industry, competitor, internal, market, regulatory)
 - Sentiment should vary (positive, negative, neutral)
 - News should feel natural and realistic for the industry
-- Flavor with dominant narrative arcs
+- Flavor with dominant narrative arcs to maintain thematic coherence
 
 ### Next Turn Context
 - Write a brief context summary for the next turn and for the Advisor
