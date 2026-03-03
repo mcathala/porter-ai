@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { TurnResult, CompetitorArchetype } from "@/lib/types/game";
 
 interface TurnSummaryModalProps {
@@ -17,6 +18,22 @@ export default function TurnSummaryModal({
   turnNumber,
   newDate,
 }: TurnSummaryModalProps) {
+  const [showDevPanel, setShowDevPanel] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey && e.key === "d") {
+        e.preventDefault();
+        setShowDevPanel((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
   if (!isOpen || !turnResult) return null;
 
   const formatCurrency = (value: number): string => {
@@ -52,6 +69,7 @@ export default function TurnSummaryModal({
     try {
       const date = new Date(dateStr);
       return date.toLocaleDateString("en-US", {
+        day: "numeric",
         month: "long",
         year: "numeric",
       });
@@ -72,13 +90,10 @@ export default function TurnSummaryModal({
         <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#233648] bg-gradient-to-r from-[#1a2632] to-[#1f3044]">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2 sm:gap-3">
-                <span className="material-symbols-outlined text-primary text-[28px]">
-                  flag
-                </span>
-                Turn {turnNumber} Complete
+              <h2 className="text-xl sm:text-2xl font-bold text-white">
+                {formatDate(newDate)}
               </h2>
-              <p className="text-gray-400 mt-1">{formatDate(newDate)}</p>
+              <p className="text-gray-400 text-sm mt-1">Turn {turnNumber}</p>
             </div>
             <button
               onClick={onClose}
@@ -93,20 +108,13 @@ export default function TurnSummaryModal({
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 sm:space-y-8">
-          {/* Turn Summary Narrative */}
-          <div className="bg-[#111a22] rounded-xl p-4 sm:p-6 border border-[#233648]">
-            <p className="text-gray-300 leading-relaxed whitespace-pre-line">
-              {turnResult.turnSummary}
-            </p>
-          </div>
-
-          {/* KPI Changes */}
+          {/* Key Metrics */}
           <div>
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">
                 analytics
               </span>
-              Key Metrics
+              Michael&apos;s Report
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Cash */}
@@ -174,93 +182,7 @@ export default function TurnSummaryModal({
             </div>
           </div>
 
-          {/* Narrative Arcs */}
-          {turnResult.updatedNarratives.length > 0 && (
-            <div>
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-purple-400">
-                  auto_stories
-                </span>
-                Active Narratives
-              </h3>
-              <div className="space-y-3">
-                {turnResult.updatedNarratives.map((arc) => (
-                  <div
-                    key={arc.id}
-                    className="bg-[#111a22] rounded-xl p-4 border border-[#233648]"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-bold text-white">{arc.name}</span>
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded ${
-                        arc.status === "dominant"
-                          ? "bg-purple-500/20 text-purple-400"
-                          : arc.status === "active"
-                          ? "bg-blue-500/20 text-blue-400"
-                          : "bg-gray-500/20 text-gray-400"
-                      }`}>
-                        {arc.status}
-                      </span>
-                    </div>
-                    <div className="w-full bg-[#233648] rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full transition-all duration-500 ${
-                          arc.status === "dominant"
-                            ? "bg-purple-500"
-                            : arc.status === "active"
-                            ? "bg-blue-500"
-                            : "bg-gray-500"
-                        }`}
-                        style={{ width: `${arc.weight}%` }}
-                      />
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">{arc.weight}%</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Competitor Moves */}
-          {turnResult.competitorMoves.length > 0 && (
-            <div>
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-orange-400">
-                  groups
-                </span>
-                Competitor Activity
-              </h3>
-              <div className="space-y-3">
-                {turnResult.competitorMoves.map((move, index) => (
-                  <div
-                    key={index}
-                    className="bg-[#111a22] rounded-xl p-4 border border-[#233648] flex items-start gap-4"
-                  >
-                    <div className="p-2 rounded-lg bg-orange-500/10 text-orange-400">
-                      <span className="material-symbols-outlined">
-                        {getCompetitorIcon(move.archetype)}
-                      </span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-bold text-white">
-                          {move.competitorName}
-                        </span>
-                        <span className="text-xs text-gray-500 bg-[#233648] px-2 py-0.5 rounded">
-                          {move.archetype}
-                        </span>
-                      </div>
-                      <p className="text-gray-400 text-sm">{move.action}</p>
-                      <p className="text-gray-500 text-xs mt-1">
-                        Impact: {move.impact}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* News Headlines */}
+          {/* News & Events */}
           {turnResult.newsItems.length > 0 && (
             <div>
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
@@ -303,35 +225,257 @@ export default function TurnSummaryModal({
             </div>
           )}
 
-          {/* Upcoming Consequences */}
-          {turnResult.newConsequences.length > 0 && (
+          {/* Competitor Activity */}
+          {turnResult.competitorMoves.length > 0 && (
             <div>
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-amber-400">
-                  schedule
+                <span className="material-symbols-outlined text-orange-400">
+                  groups
                 </span>
-                Upcoming Effects
+                Competitor Activity
               </h3>
-              <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4">
-                <ul className="space-y-2">
-                  {turnResult.newConsequences.map((consequence, index) => (
-                    <li
-                      key={consequence.id || index}
-                      className="flex items-start gap-2 text-sm text-amber-200"
-                    >
-                      <span className="material-symbols-outlined text-[16px] mt-0.5">
-                        arrow_forward
+              <div className="space-y-3">
+                {turnResult.competitorMoves.map((move, index) => (
+                  <div
+                    key={index}
+                    className="bg-[#111a22] rounded-xl p-4 border border-[#233648] flex items-start gap-4"
+                  >
+                    <div className="p-2 rounded-lg bg-orange-500/10 text-orange-400">
+                      <span className="material-symbols-outlined">
+                        {getCompetitorIcon(move.archetype)}
                       </span>
-                      <div>
-                        <span>{consequence.description}</span>
-                        <span className="text-amber-400/60 text-xs ml-2">
-                          (caused by: {consequence.cause})
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-bold text-white">
+                          {move.competitorName}
+                        </span>
+                        <span className="text-xs text-gray-500 bg-[#233648] px-2 py-0.5 rounded">
+                          {move.archetype}
                         </span>
                       </div>
-                    </li>
-                  ))}
-                </ul>
+                      <p className="text-gray-400 text-sm">{move.action}</p>
+                      <p className="text-gray-500 text-xs mt-1">
+                        Impact: {move.impact}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
+            </div>
+          )}
+
+          {/* Dev Panel — hidden, toggled with Cmd+D */}
+          {showDevPanel && (
+            <div className="border border-dashed border-gray-600 rounded-xl p-4 sm:p-6 space-y-6 bg-[#0d1419]">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-gray-500 text-xs uppercase tracking-wider">
+                  <span className="material-symbols-outlined text-[16px]">
+                    code
+                  </span>
+                  Dev Panel (Cmd+D)
+                </div>
+                {turnResult.llmInfo && (
+                  <span className="text-xs text-gray-600">
+                    {turnResult.llmInfo.provider} / {turnResult.llmInfo.model}
+                  </span>
+                )}
+              </div>
+
+              {/* ── INTERNAL AGENT ── */}
+              {turnResult.internalAgentOutput && (
+                <div>
+                  <h4 className="text-sm font-bold text-gray-400 mb-2">Internal Agent</h4>
+                  <div className="space-y-2 text-xs text-gray-500">
+                    <div>
+                      <span className="text-emerald-500 font-semibold">Strengths:</span>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        {turnResult.internalAgentOutput.strengths.map((s, i) => (
+                          <li key={i}>- {s}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-red-500 font-semibold">Weaknesses:</span>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        {turnResult.internalAgentOutput.weaknesses.map((w, i) => (
+                          <li key={i}>- {w}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-yellow-500 font-semibold">Proposed KPI Impacts:</span>
+                      <span className="ml-2">
+                        Cash: {turnResult.internalAgentOutput.proposedKPIImpacts.cash},
+                        Share: {turnResult.internalAgentOutput.proposedKPIImpacts.marketShare},
+                        Satisfaction: {turnResult.internalAgentOutput.proposedKPIImpacts.satisfaction}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-orange-500 font-semibold">Side Effects:</span>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        {turnResult.internalAgentOutput.internalSideEffects.map((e, i) => (
+                          <li key={i}>- {e}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ── EXTERNAL AGENT ── */}
+              {turnResult.externalAgentOutput && (
+                <div>
+                  <h4 className="text-sm font-bold text-gray-400 mb-2">External Agent</h4>
+                  <div className="space-y-2 text-xs text-gray-500">
+                    <div>
+                      <span className="text-emerald-500 font-semibold">Opportunities:</span>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        {turnResult.externalAgentOutput.opportunities.map((o, i) => (
+                          <li key={i}>- {o}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-red-500 font-semibold">Threats:</span>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        {turnResult.externalAgentOutput.threats.map((t, i) => (
+                          <li key={i}>- {t}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-blue-500 font-semibold">Rest of Market:</span>
+                      <span className="ml-2">{turnResult.externalAgentOutput.restOfMarketAssessment}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ── GAMEMASTER ── */}
+              <div>
+                <h4 className="text-sm font-bold text-gray-400 mb-2">Gamemaster</h4>
+                <div className="space-y-3 text-xs text-gray-500">
+                  {/* Turn Summary */}
+                  {turnResult.turnSummary && (
+                    <div>
+                      <span className="text-cyan-500 font-semibold">Turn Summary:</span>
+                      <p className="ml-4 mt-1 leading-relaxed whitespace-pre-line">
+                        {turnResult.turnSummary}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Resolved KPIs */}
+                  <div>
+                    <span className="text-cyan-500 font-semibold">Resolved KPIs:</span>
+                    <div className="ml-4 mt-1 space-y-1">
+                      <div>Cash: {turnResult.kpiDeltas.cash.value} ({turnResult.kpiDeltas.cash.change >= 0 ? "+" : ""}{turnResult.kpiDeltas.cash.change}) — {turnResult.kpiDeltas.cash.reason}</div>
+                      <div>Market Share: {turnResult.kpiDeltas.marketShare.value}% ({turnResult.kpiDeltas.marketShare.change >= 0 ? "+" : ""}{turnResult.kpiDeltas.marketShare.change}%) — {turnResult.kpiDeltas.marketShare.reason}</div>
+                      <div>Satisfaction: {turnResult.kpiDeltas.satisfaction.value}% ({turnResult.kpiDeltas.satisfaction.change >= 0 ? "+" : ""}{turnResult.kpiDeltas.satisfaction.change}%) — {turnResult.kpiDeltas.satisfaction.reason}</div>
+                    </div>
+                  </div>
+
+                  {/* Updated Competitors */}
+                  {turnResult.updatedCompetitors.length > 0 && (
+                    <div>
+                      <span className="text-cyan-500 font-semibold">Updated Competitors:</span>
+                      <div className="ml-4 mt-1 space-y-1">
+                        {turnResult.updatedCompetitors.map((comp, i) => (
+                          <div key={i}>{comp.name} ({comp.archetype}) — {comp.marketShare}% share, {comp.momentum} momentum</div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Rest of Market */}
+                  <div>
+                    <span className="text-cyan-500 font-semibold">Rest of Market:</span>
+                    <span className="ml-2">
+                      {turnResult.updatedRestOfMarket.marketShare}% share, {turnResult.updatedRestOfMarket.fragmentation} fragmentation, {turnResult.updatedRestOfMarket.dynamism} dynamism, {turnResult.updatedRestOfMarket.latentPressure} pressure
+                    </span>
+                  </div>
+
+                  {/* Narratives */}
+                  {turnResult.updatedNarratives.length > 0 && (
+                    <div>
+                      <span className="text-cyan-500 font-semibold">Narrative Arcs:</span>
+                      <div className="ml-4 mt-1 space-y-1">
+                        {turnResult.updatedNarratives.map((arc) => (
+                          <div key={arc.id} className="flex items-center gap-3">
+                            <span className={`font-semibold px-2 py-0.5 rounded ${
+                              arc.status === "dominant"
+                                ? "bg-purple-500/20 text-purple-400"
+                                : arc.status === "active"
+                                ? "bg-blue-500/20 text-blue-400"
+                                : "bg-gray-500/20 text-gray-400"
+                            }`}>
+                              {arc.status}
+                            </span>
+                            <span className="text-gray-400">{arc.name}</span>
+                            <div className="flex-1 bg-[#233648] rounded-full h-1.5">
+                              <div
+                                className={`h-1.5 rounded-full ${
+                                  arc.status === "dominant"
+                                    ? "bg-purple-500"
+                                    : arc.status === "active"
+                                    ? "bg-blue-500"
+                                    : "bg-gray-500"
+                                }`}
+                                style={{ width: `${arc.weight}%` }}
+                              />
+                            </div>
+                            <span className="text-gray-500">{arc.weight}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Consequences */}
+                  {(turnResult.newConsequences.length > 0 || turnResult.triggeredConsequences.length > 0) && (
+                    <div>
+                      <span className="text-cyan-500 font-semibold">Consequences:</span>
+                      <div className="ml-4 mt-1 space-y-1">
+                        {turnResult.triggeredConsequences.map((c, i) => (
+                          <div key={c.id || i} className="text-red-400">TRIGGERED: {c.description} (from: {c.cause})</div>
+                        ))}
+                        {turnResult.newConsequences.map((c, i) => (
+                          <div key={c.id || i} className="text-amber-400">PENDING: {c.description} (from: {c.cause})</div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Next Turn Context */}
+                  {turnResult.nextTurnContext && (
+                    <div>
+                      <span className="text-cyan-500 font-semibold">Next Turn Context:</span>
+                      <p className="ml-4 mt-1">{turnResult.nextTurnContext}</p>
+                    </div>
+                  )}
+
+                  {/* Company Culture */}
+                  {turnResult.companyCulture && (
+                    <div>
+                      <span className="text-cyan-500 font-semibold">Company Culture:</span>
+                      <p className="ml-4 mt-1">{turnResult.companyCulture}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* ── META ── */}
+              {turnResult.tokenUsage && (
+                <div>
+                  <h4 className="text-sm font-bold text-gray-400 mb-2">Token Usage</h4>
+                  <p className="text-gray-500 text-xs">
+                    Input: {turnResult.tokenUsage.inputTokens.toLocaleString()} |
+                    Output: {turnResult.tokenUsage.outputTokens.toLocaleString()} |
+                    Total: {turnResult.tokenUsage.totalTokens.toLocaleString()}
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>

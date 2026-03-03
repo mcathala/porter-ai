@@ -391,7 +391,7 @@ Resolve KPIs, update narratives (weights must sum to 100), manage competitors, h
 function assembleResultNode(
   state: typeof GraphState.State
 ): Partial<typeof GraphState.State> {
-  const { gamemasterOutput, externalOutput, tokenUsage } = state;
+  const { gamemasterOutput, externalOutput, internalOutput, tokenUsage } = state;
 
   if (!gamemasterOutput) {
     throw new Error("Gamemaster output is missing");
@@ -411,6 +411,31 @@ function assembleResultNode(
     nextTurnContext: gamemasterOutput.nextTurnContext,
     companyCulture: gamemasterOutput.companyCulture,
     tokenUsage,
+    llmInfo: {
+      provider: process.env.LLM_PROVIDER?.toLowerCase() || "groq",
+      model:
+        (process.env.LLM_PROVIDER?.toLowerCase() === "ollama"
+          ? process.env.OLLAMA_MODEL
+          : process.env.GROQ_MODEL) ||
+        (process.env.LLM_PROVIDER?.toLowerCase() === "ollama"
+          ? "gpt-oss:120b-cloud"
+          : "openai/gpt-oss-20b"),
+    },
+    internalAgentOutput: internalOutput
+      ? {
+          strengths: internalOutput.strengths,
+          weaknesses: internalOutput.weaknesses,
+          proposedKPIImpacts: internalOutput.proposedKPIImpacts,
+          internalSideEffects: internalOutput.internalSideEffects,
+        }
+      : undefined,
+    externalAgentOutput: externalOutput
+      ? {
+          opportunities: externalOutput.opportunities,
+          threats: externalOutput.threats,
+          restOfMarketAssessment: externalOutput.restOfMarketAssessment,
+        }
+      : undefined,
   };
 
   console.log(`[TokenUsage] Turn total — input: ${tokenUsage.inputTokens}, output: ${tokenUsage.outputTokens}, total: ${tokenUsage.totalTokens}`);

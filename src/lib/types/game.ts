@@ -196,6 +196,25 @@ export interface TurnResult {
 
   // Token usage for this turn
   tokenUsage?: TokenUsage;
+
+  // Debug / dev-only: LLM info
+  llmInfo?: {
+    provider: string;
+    model: string;
+  };
+
+  // Debug / dev-only: intermediate agent outputs
+  internalAgentOutput?: {
+    strengths: string[];
+    weaknesses: string[];
+    proposedKPIImpacts: { cash: number; marketShare: number; satisfaction: number };
+    internalSideEffects: string[];
+  };
+  externalAgentOutput?: {
+    opportunities: string[];
+    threats: string[];
+    restOfMarketAssessment: string;
+  };
 }
 
 export interface NewsItem {
