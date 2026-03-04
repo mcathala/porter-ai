@@ -119,7 +119,7 @@ Think carefully about what can realistically change in this time frame. A week i
 ## ANALYTICAL LENS
 
 ### Strengths (internal, concrete)
-What makes this a good position/move from inside the company? Does it align with culture and identity? Does the team have the skills? Is the timing right given current cash and satisfaction? What internal advantages does it unlock?
+What makes this a good position/move from inside the company? Does it align with culture and identity? Does the team have the skills? Is the timing right given current cash and team morale? What internal advantages does it unlock?
 
 ### Weaknesses (internal, concrete)
 What are the internal risks? Cash strain, team overstretch, misalignment with company DNA, execution complexity. What could go wrong inside the company?
@@ -281,7 +281,7 @@ ${getDifficultyModifier(difficulty)}
 You must synthesize the Player Company Agent's SWOT with the Market Agent's independent market activity:
 - **Player action impact**: Weigh strengths vs weaknesses, opportunities vs threats from the Player Company Agent
 - **Market reality**: Consider competitor moves and world events from the Market Agent — do any of them interact with the player's action? Maybe one competitor's independent move collides with the player's strategy. Maybe a world event amplifies or threatens it. Maybe none of them relate.
-- **KPI resolution**: Produce final KPI deltas (NET cash, market share, satisfaction) considering BOTH the action's merits AND the market context
+- **KPI resolution**: Produce final KPI deltas (NET cash, market share, team morale) considering BOTH the action's merits AND the market context
   - NET cash (current balance, revenues based on actions and market share, expenses)
 - **Competitor share changes**: Should reflect BOTH the player's action impact AND the competitors' own independent moves from the Market Agent
 

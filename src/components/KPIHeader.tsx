@@ -82,7 +82,7 @@ export default function KPIHeader() {
             </span>
             <div className="flex flex-col">
               <span className="text-[10px] sm:text-xs font-medium text-gray-400 hidden sm:block">
-                Satisfaction
+                Team Morale
               </span>
               <span className="text-sm sm:text-base font-bold text-white whitespace-nowrap">
                 {kpis.satisfaction.toFixed(0)}%

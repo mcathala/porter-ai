@@ -108,7 +108,7 @@ export const PlayerCompanyAgentSchema = z.object({
   proposedKPIImpacts: z.object({
     cash: z.number().describe("Proposed change in cash (positive or negative dollar amount)"),
     marketShare: z.number().describe("Proposed change in market share (positive or negative percentage points)"),
-    satisfaction: z.number().describe("Proposed change in customer satisfaction (positive or negative percentage points)"),
+    satisfaction: z.number().describe("Proposed change in team morale (positive or negative percentage points)"),
   }).describe("Proposed KPI impacts based on SWOT analysis"),
   sideEffects: z
     .array(z.string())
@@ -156,7 +156,7 @@ export const GamemasterOutputSchema = z.object({
   kpiDeltas: z.object({
     cash: KPIDeltaSchema.describe("Cash balance change details"),
     marketShare: KPIDeltaSchema.describe("Market share change details"),
-    satisfaction: KPIDeltaSchema.describe("Customer satisfaction change details"),
+    satisfaction: KPIDeltaSchema.describe("Team morale change details"),
   }).describe("Final resolved KPI deltas"),
   updatedCompetitors: z
     .array(CompetitorSchema)

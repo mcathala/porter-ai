@@ -164,7 +164,7 @@ export default function TurnSummaryModal({
               {/* Satisfaction */}
               <div className="bg-[#111a22] rounded-xl p-5 border border-[#233648]">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-gray-400 text-sm">Satisfaction</span>
+                  <span className="text-gray-400 text-sm">Team Morale</span>
                   <div
                     className={`flex items-center gap-1 text-sm font-bold ${getChangeColor(turnResult.kpiDeltas.satisfaction.change)}`}
                   >
@@ -342,7 +342,7 @@ export default function TurnSummaryModal({
                       <span className="ml-2">
                         Cash: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.cash},
                         Share: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.marketShare},
-                        Satisfaction: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.satisfaction}
+                        Team Morale: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.satisfaction}
                       </span>
                     </div>
                     <div>
@@ -406,7 +406,7 @@ export default function TurnSummaryModal({
                     <div className="ml-4 mt-1 space-y-1">
                       <div>Cash: {turnResult.kpiDeltas.cash.value} ({turnResult.kpiDeltas.cash.change >= 0 ? "+" : ""}{turnResult.kpiDeltas.cash.change}) — {turnResult.kpiDeltas.cash.reason}</div>
                       <div>Market Share: {turnResult.kpiDeltas.marketShare.value}% ({turnResult.kpiDeltas.marketShare.change >= 0 ? "+" : ""}{turnResult.kpiDeltas.marketShare.change}%) — {turnResult.kpiDeltas.marketShare.reason}</div>
-                      <div>Satisfaction: {turnResult.kpiDeltas.satisfaction.value}% ({turnResult.kpiDeltas.satisfaction.change >= 0 ? "+" : ""}{turnResult.kpiDeltas.satisfaction.change}%) — {turnResult.kpiDeltas.satisfaction.reason}</div>
+                      <div>Team Morale: {turnResult.kpiDeltas.satisfaction.value}% ({turnResult.kpiDeltas.satisfaction.change >= 0 ? "+" : ""}{turnResult.kpiDeltas.satisfaction.change}%) — {turnResult.kpiDeltas.satisfaction.reason}</div>
                     </div>
                   </div>
 

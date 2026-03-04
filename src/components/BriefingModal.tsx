@@ -133,7 +133,7 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
               <div className="rounded-xl bg-[#111a22] border border-[#233648] p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-amber-400 text-lg">sentiment_satisfied</span>
-                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Customer Satisfaction</p>
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Team Morale</p>
                 </div>
                 <p className="text-2xl font-black text-white mt-1">{kpis.satisfaction.toFixed(0)}%</p>
               </div>

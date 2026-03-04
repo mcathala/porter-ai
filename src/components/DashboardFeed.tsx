@@ -120,7 +120,7 @@ function TurnHistoryCard({ entry, onClick }: { entry: TurnHistoryEntry; onClick:
               isPercent={true}
             />
             <KPIBadge
-              label="Satisfaction"
+              label="Team Morale"
               change={result.kpiDeltas.satisfaction.change}
               isPercent={true}
             />
