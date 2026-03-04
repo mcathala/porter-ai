@@ -108,7 +108,7 @@ export default function AdvisorPanel() {
                 How can I help?
               </h3>
               <p className="text-gray-400 text-sm mb-6">
-                I'm Michael, your strategic advisor. Ask me about your company's
+                I'm Michael, your chief of staff. Ask me about your company's
                 position, competitors, market conditions, or strategic options.
               </p>
               <div className="space-y-2 w-full">
