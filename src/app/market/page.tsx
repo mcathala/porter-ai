@@ -13,18 +13,78 @@ import {
 
 // Yolo presets — randomize all fields from these
 const YOLO_PRESETS: { name: string; mission: string; size: CompanySize; experience: CompanyExperience; market: Market; customMarket: string }[] = [
-  { name: "SpeedStitch", mission: "Make fast fashion faster and guilt-free", size: "small", experience: "new", market: "custom", customMarket: "Fashion" },
-  { name: "VelvetHive", mission: "Curate luxury experiences for the discerning few", size: "medium", experience: "medium", market: "custom", customMarket: "Luxury Fashion" },
-  { name: "TitanMotors", mission: "Build the trucks that build America", size: "large", experience: "old", market: "custom", customMarket: "Automotive" },
-  { name: "Nexadrive", mission: "Electrify the last mile of urban delivery", size: "small", experience: "new", market: "custom", customMarket: "Electric Vehicles" },
-  { name: "OrbitX Labs", mission: "Make space logistics affordable for every nation", size: "small", experience: "new", market: "custom", customMarket: "Space Logistics" },
-  { name: "NovaPharma", mission: "Democratize precision medicine through AI-driven drug discovery", size: "medium", experience: "medium", market: "custom", customMarket: "Pharmaceuticals" },
-  { name: "DeepHarvest", mission: "Feed the world with vertical farming at industrial scale", size: "medium", experience: "new", market: "custom", customMarket: "AgriTech" },
-  { name: "Arcadia Resorts", mission: "Reinvent hospitality for the remote-work generation", size: "large", experience: "old", market: "custom", customMarket: "Hospitality" },
-  { name: "Synwave Energy", mission: "Replace every coal plant with fusion before 2040", size: "large", experience: "medium", market: "custom", customMarket: "Energy" },
-  { name: "PixelForge", mission: "Build the game engine that makes AAA accessible to indie studios", size: "small", experience: "medium", market: "custom", customMarket: "Video Games" },
-  { name: "MedVault", mission: "Own the future of decentralized health records", size: "medium", experience: "new", market: "custom", customMarket: "HealthTech" },
-  { name: "TerraFreight", mission: "Dominate autonomous freight across three continents", size: "large", experience: "old", market: "custom", customMarket: "Logistics & Shipping" },
+  // Tech
+  { name: "NovaTech Innovations", mission: "Develop cutting-edge AI solutions to revolutionize everyday productivity", size: "medium", experience: "medium", market: "custom", customMarket: "Tech" },
+  { name: "ByteBridge Solutions", mission: "Bridge the digital divide with secure, scalable cloud infrastructure for businesses", size: "large", experience: "old", market: "custom", customMarket: "Tech" },
+  { name: "Quantum Robotics Inc.", mission: "Pioneer advanced robotics to automate industries and enhance human capabilities", size: "medium", experience: "new", market: "custom", customMarket: "Tech" },
+  { name: "Apex Security Systems", mission: "Deliver robust cybersecurity tools to protect businesses from evolving threats", size: "small", experience: "medium", market: "custom", customMarket: "Tech" },
+  { name: "InnovateSoft Ventures", mission: "Drive software innovation to solve complex problems and transform industries", size: "large", experience: "old", market: "custom", customMarket: "Tech" },
+  // Automotive
+  { name: "Apex AutoWorks", mission: "Build reliable, eco-friendly vehicles that empower global mobility", size: "large", experience: "old", market: "custom", customMarket: "Automotive" },
+  { name: "Velocity Motors", mission: "Engineer high-performance electric vehicles for a sustainable future", size: "large", experience: "medium", market: "custom", customMarket: "Automotive" },
+  { name: "TurboCharge Autos", mission: "Design affordable hybrid cars that combine speed, efficiency, and innovation", size: "medium", experience: "new", market: "custom", customMarket: "Automotive" },
+  { name: "AutoNova", mission: "Build the smartest autonomous driving platform", size: "large", experience: "old", market: "custom", customMarket: "Automotive" },
+  // Health
+  { name: "VitalHealth Labs", mission: "Provide affordable telemedicine services to improve access to healthcare worldwide", size: "small", experience: "new", market: "custom", customMarket: "Health" },
+  { name: "PureWellness Spa", mission: "Promote holistic wellness through natural therapies and personalized care", size: "small", experience: "old", market: "custom", customMarket: "Health" },
+  { name: "BioTech Horizons", mission: "Advance biotechnology to cure diseases and extend healthy lifespans", size: "medium", experience: "new", market: "custom", customMarket: "Health" },
+  { name: "VitalCore Fitness", mission: "Inspire active lifestyles through personalized fitness programs and community support", size: "large", experience: "old", market: "custom", customMarket: "Health" },
+  { name: "MediTrack", mission: "Revolutionize patient data management worldwide", size: "medium", experience: "medium", market: "custom", customMarket: "Health" },
+  // Fashion
+  { name: "TrendForge Fashion", mission: "Create sustainable, stylish clothing that celebrates individuality and the environment", size: "medium", experience: "medium", market: "custom", customMarket: "Fashion" },
+  { name: "StyleSphere Apparel", mission: "Design inclusive fashion that empowers self-expression across all body types", size: "medium", experience: "new", market: "custom", customMarket: "Fashion" },
+  { name: "EcoFashion Collective", mission: "Lead the shift to eco-friendly fashion with recycled materials and ethical production", size: "medium", experience: "new", market: "custom", customMarket: "Fashion" },
+  { name: "ThriveWear", mission: "Create sustainable fashion that performs", size: "small", experience: "new", market: "custom", customMarket: "Fashion" },
+  // Food
+  { name: "GreenHarvest Foods", mission: "Deliver organic, farm-fresh produce to promote healthy eating habits", size: "small", experience: "medium", market: "custom", customMarket: "Food" },
+  { name: "Gourmet Global Eats", mission: "Bring authentic international cuisines to tables worldwide with ethical sourcing", size: "large", experience: "old", market: "custom", customMarket: "Food" },
+  { name: "FreshBite Nutrition", mission: "Innovate nutritious snacks that make healthy living delicious and accessible", size: "large", experience: "old", market: "custom", customMarket: "Food" },
+  { name: "FreshFleet", mission: "Revolutionize last-mile grocery delivery", size: "medium", experience: "new", market: "custom", customMarket: "Food & Logistics" },
+  // Entertainment
+  { name: "Elite Entertainment Group", mission: "Produce immersive media experiences that inspire creativity and connection", size: "medium", experience: "new", market: "custom", customMarket: "Entertainment" },
+  { name: "DreamStream Media", mission: "Stream innovative content that entertains, educates, and unites global audiences", size: "medium", experience: "new", market: "custom", customMarket: "Entertainment" },
+  { name: "PixelPlay Games", mission: "Create engaging video games that foster imagination and social interaction", size: "large", experience: "old", market: "custom", customMarket: "Entertainment" },
+  { name: "Nexus Media Productions", mission: "Produce compelling stories that challenge perspectives and spark conversations", size: "small", experience: "medium", market: "custom", customMarket: "Entertainment" },
+  { name: "SoundHive", mission: "Connect independent musicians to global audiences", size: "small", experience: "new", market: "custom", customMarket: "Music & Entertainment" },
+  // Finance
+  { name: "SecureFinance Advisors", mission: "Offer trusted financial guidance to help clients achieve long-term wealth security", size: "large", experience: "old", market: "custom", customMarket: "Finance" },
+  { name: "WealthGuard Investments", mission: "Safeguard investments with transparent, tech-driven strategies for all investors", size: "small", experience: "medium", market: "custom", customMarket: "Finance" },
+  { name: "CapitalEdge Banking", mission: "Provide modern banking services that empower financial independence for everyone", size: "medium", experience: "new", market: "custom", customMarket: "Finance" },
+  { name: "FinEdge", mission: "Make investing accessible to everyone", size: "medium", experience: "medium", market: "custom", customMarket: "Finance" },
+  // Construction
+  { name: "EcoBuild Construction", mission: "Construct energy-efficient buildings that harmonize with nature and communities", size: "small", experience: "medium", market: "custom", customMarket: "Construction" },
+  { name: "UrbanRenew Developers", mission: "Revitalize urban spaces with innovative, community-focused development projects", size: "large", experience: "old", market: "custom", customMarket: "Construction" },
+  { name: "Horizon Builders", mission: "Build resilient structures that stand the test of time and adapt to future needs", size: "small", experience: "medium", market: "custom", customMarket: "Construction" },
+  { name: "TerraBlox", mission: "Build modular eco-friendly housing at scale", size: "large", experience: "medium", market: "custom", customMarket: "Construction" },
+  // Energy
+  { name: "SolarVolt", mission: "Democratize clean energy for every household", size: "small", experience: "new", market: "custom", customMarket: "Energy" },
+  // AgriTech
+  { name: "AgroSense", mission: "Optimize crop yields with AI-driven insights", size: "medium", experience: "medium", market: "custom", customMarket: "AgriTech" },
+  // Travel & Hospitality
+  { name: "CloudNine Travel", mission: "Curate unforgettable travel experiences", size: "large", experience: "old", market: "custom", customMarket: "Travel & Hospitality" },
+  // EdTech
+  { name: "ByteLearn", mission: "Personalize education through adaptive AI", size: "small", experience: "new", market: "custom", customMarket: "EdTech" },
+  // Manufacturing
+  { name: "IronForge Steel", mission: "Supply the strongest industrial-grade materials", size: "large", experience: "old", market: "custom", customMarket: "Manufacturing" },
+  // Real Estate
+  { name: "UrbanNest", mission: "Reinvent affordable urban co-living spaces", size: "medium", experience: "medium", market: "custom", customMarket: "Real Estate" },
+  // Sports Equipment
+  { name: "VeloRush", mission: "Design the fastest carbon-fiber bicycles", size: "small", experience: "medium", market: "custom", customMarket: "Sports Equipment" },
+  // Pharmaceuticals
+  { name: "NexGen Pharma", mission: "Accelerate drug discovery with machine learning", size: "large", experience: "old", market: "custom", customMarket: "Pharmaceuticals" },
+  // Beauty & Cosmetics
+  { name: "PureBloom", mission: "Deliver organic skincare backed by science", size: "small", experience: "new", market: "custom", customMarket: "Beauty & Cosmetics" },
+  // Cybersecurity
+  { name: "DataShield", mission: "Protect businesses from next-gen cyber threats", size: "medium", experience: "medium", market: "custom", customMarket: "Cybersecurity" },
+  // Logistics
+  { name: "SwiftDrive Logistics", mission: "Optimize supply chains with efficient, reliable delivery solutions worldwide", size: "small", experience: "medium", market: "custom", customMarket: "Logistics" },
+  { name: "CargoDrift", mission: "Streamline international freight operations", size: "large", experience: "old", market: "custom", customMarket: "Shipping & Logistics" },
+  // Pet Care
+  { name: "PetPulse", mission: "Improve pet health through connected devices", size: "small", experience: "new", market: "custom", customMarket: "Pet Care" },
+  // Fitness & Wellness
+  { name: "LunaFit", mission: "Empower women's wellness through smart wearables", size: "small", experience: "medium", market: "custom", customMarket: "Fitness & Wellness" },
+  // Data Analytics
+  { name: "DataForge Analytics", mission: "Harness big data to provide actionable insights for smarter decision-making", size: "small", experience: "medium", market: "custom", customMarket: "Tech" },
 ];
 
 const SIZE_OPTIONS: { value: CompanySize; label: string; description: string }[] = [
