@@ -204,15 +204,17 @@ export interface TurnResult {
   };
 
   // Debug / dev-only: intermediate agent outputs
-  internalAgentOutput?: {
+  playerCompanyAgentOutput?: {
     strengths: string[];
     weaknesses: string[];
-    proposedKPIImpacts: { cash: number; marketShare: number; satisfaction: number };
-    internalSideEffects: string[];
-  };
-  externalAgentOutput?: {
     opportunities: string[];
     threats: string[];
+    proposedKPIImpacts: { cash: number; marketShare: number; satisfaction: number };
+    sideEffects: string[];
+  };
+  marketAgentOutput?: {
+    competitorMoves: CompetitorMove[];
+    worldEvents: { headline: string; description: string; category: string; sentiment: string }[];
     restOfMarketAssessment: string;
   };
 }

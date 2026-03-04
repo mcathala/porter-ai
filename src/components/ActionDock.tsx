@@ -27,6 +27,7 @@ export default function ActionDock() {
     isProcessingTurn,
     processTurn,
     currentTurnResult,
+    currentTurnActions,
     showTurnSummary,
     closeTurnSummary,
     openAdvisor,
@@ -209,6 +210,7 @@ export default function ActionDock() {
         turnResult={currentTurnResult}
         turnNumber={gameState.turn}
         newDate={currentTurnResult?.newDate || gameState.currentDate}
+        playerActions={currentTurnActions}
       />
 
       <AdvisorPanel />

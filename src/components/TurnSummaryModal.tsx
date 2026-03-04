@@ -9,6 +9,7 @@ interface TurnSummaryModalProps {
   turnResult: TurnResult | null;
   turnNumber: number;
   newDate: string;
+  playerActions?: string[];
 }
 
 export default function TurnSummaryModal({
@@ -17,6 +18,7 @@ export default function TurnSummaryModal({
   turnResult,
   turnNumber,
   newDate,
+  playerActions = [],
 }: TurnSummaryModalProps) {
   const [showDevPanel, setShowDevPanel] = useState(false);
 
@@ -282,15 +284,31 @@ export default function TurnSummaryModal({
                 )}
               </div>
 
-              {/* ── INTERNAL AGENT ── */}
-              {turnResult.internalAgentOutput && (
+              {/* ── PLAYER ACTIONS ── */}
+              <div>
+                <h4 className="text-sm font-bold text-gray-400 mb-2">Player Actions</h4>
+                <div className="text-xs text-gray-500">
+                  {playerActions.length > 0 ? (
+                    <ul className="ml-4 space-y-1">
+                      {playerActions.map((action, i) => (
+                        <li key={i}>- {action}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <span className="italic text-gray-600">No specific actions — routine operations</span>
+                  )}
+                </div>
+              </div>
+
+              {/* ── PLAYER COMPANY AGENT ── */}
+              {turnResult.playerCompanyAgentOutput && (
                 <div>
-                  <h4 className="text-sm font-bold text-gray-400 mb-2">Internal Agent</h4>
+                  <h4 className="text-sm font-bold text-gray-400 mb-2">Player Company Agent (SWOT)</h4>
                   <div className="space-y-2 text-xs text-gray-500">
                     <div>
                       <span className="text-emerald-500 font-semibold">Strengths:</span>
                       <ul className="ml-4 mt-1 space-y-1">
-                        {turnResult.internalAgentOutput.strengths.map((s, i) => (
+                        {turnResult.playerCompanyAgentOutput.strengths.map((s, i) => (
                           <li key={i}>- {s}</li>
                         ))}
                       </ul>
@@ -298,23 +316,39 @@ export default function TurnSummaryModal({
                     <div>
                       <span className="text-red-500 font-semibold">Weaknesses:</span>
                       <ul className="ml-4 mt-1 space-y-1">
-                        {turnResult.internalAgentOutput.weaknesses.map((w, i) => (
+                        {turnResult.playerCompanyAgentOutput.weaknesses.map((w, i) => (
                           <li key={i}>- {w}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-blue-500 font-semibold">Opportunities:</span>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        {turnResult.playerCompanyAgentOutput.opportunities.map((o, i) => (
+                          <li key={i}>- {o}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <span className="text-amber-500 font-semibold">Threats:</span>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        {turnResult.playerCompanyAgentOutput.threats.map((t, i) => (
+                          <li key={i}>- {t}</li>
                         ))}
                       </ul>
                     </div>
                     <div>
                       <span className="text-yellow-500 font-semibold">Proposed KPI Impacts:</span>
                       <span className="ml-2">
-                        Cash: {turnResult.internalAgentOutput.proposedKPIImpacts.cash},
-                        Share: {turnResult.internalAgentOutput.proposedKPIImpacts.marketShare},
-                        Satisfaction: {turnResult.internalAgentOutput.proposedKPIImpacts.satisfaction}
+                        Cash: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.cash},
+                        Share: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.marketShare},
+                        Satisfaction: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.satisfaction}
                       </span>
                     </div>
                     <div>
                       <span className="text-orange-500 font-semibold">Side Effects:</span>
                       <ul className="ml-4 mt-1 space-y-1">
-                        {turnResult.internalAgentOutput.internalSideEffects.map((e, i) => (
+                        {turnResult.playerCompanyAgentOutput.sideEffects.map((e, i) => (
                           <li key={i}>- {e}</li>
                         ))}
                       </ul>
@@ -323,30 +357,30 @@ export default function TurnSummaryModal({
                 </div>
               )}
 
-              {/* ── EXTERNAL AGENT ── */}
-              {turnResult.externalAgentOutput && (
+              {/* ── MARKET AGENT ── */}
+              {turnResult.marketAgentOutput && (
                 <div>
-                  <h4 className="text-sm font-bold text-gray-400 mb-2">External Agent</h4>
+                  <h4 className="text-sm font-bold text-gray-400 mb-2">Market Agent (Independent)</h4>
                   <div className="space-y-2 text-xs text-gray-500">
                     <div>
-                      <span className="text-emerald-500 font-semibold">Opportunities:</span>
+                      <span className="text-orange-500 font-semibold">Competitor Moves:</span>
                       <ul className="ml-4 mt-1 space-y-1">
-                        {turnResult.externalAgentOutput.opportunities.map((o, i) => (
-                          <li key={i}>- {o}</li>
+                        {turnResult.marketAgentOutput.competitorMoves.map((m, i) => (
+                          <li key={i}>- <span className="text-gray-400">{m.competitorName}</span> ({m.archetype}): {m.action} — {m.impact}</li>
                         ))}
                       </ul>
                     </div>
                     <div>
-                      <span className="text-red-500 font-semibold">Threats:</span>
+                      <span className="text-purple-500 font-semibold">World Events:</span>
                       <ul className="ml-4 mt-1 space-y-1">
-                        {turnResult.externalAgentOutput.threats.map((t, i) => (
-                          <li key={i}>- {t}</li>
+                        {turnResult.marketAgentOutput.worldEvents.map((ev, i) => (
+                          <li key={i}>- [{ev.category}] {ev.headline}: {ev.description}</li>
                         ))}
                       </ul>
                     </div>
                     <div>
                       <span className="text-blue-500 font-semibold">Rest of Market:</span>
-                      <span className="ml-2">{turnResult.externalAgentOutput.restOfMarketAssessment}</span>
+                      <span className="ml-2">{turnResult.marketAgentOutput.restOfMarketAssessment}</span>
                     </div>
                   </div>
                 </div>

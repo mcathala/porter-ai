@@ -57,6 +57,7 @@ export default function DashboardFeed() {
         turnResult={selectedEntry?.result ?? null}
         turnNumber={selectedEntry?.turn ?? 0}
         newDate={selectedEntry?.date ?? ""}
+        playerActions={selectedEntry?.playerActions ?? []}
       />
     </div>
   );

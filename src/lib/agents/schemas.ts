@@ -17,12 +17,15 @@ export const NewsItemSchema = z.object({
   summary: z.string().describe("Brief summary of the news (1-2 sentences)"),
   category: z
     .enum(["industry", "competitor", "internal", "market", "regulatory"])
+    .catch("market")
     .describe("Category of the news item"),
   sentiment: z
     .enum(["positive", "negative", "neutral"])
+    .catch("neutral")
     .describe("Overall sentiment of the news"),
   relevance: z
     .enum(["high", "medium", "low"])
+    .catch("medium")
     .describe("Relevance to the player's company"),
 });
 
@@ -30,10 +33,12 @@ export const CompetitorSchema = z.object({
   name: z.string().describe("Name of the competitor company"),
   archetype: z
     .enum(["dominant", "follower", "disruptor", "opportunist"])
+    .catch("follower")
     .describe("The competitor's behavioral archetype"),
   marketShare: z.number().describe("Competitor's current market share percentage"),
   momentum: z
     .enum(["positive", "neutral", "negative"])
+    .catch("neutral")
     .describe("Competitor's current momentum direction"),
 });
 
@@ -41,6 +46,7 @@ export const CompetitorMoveSchema = z.object({
   competitorName: z.string().describe("Name of the competitor company"),
   archetype: z
     .enum(["dominant", "follower", "disruptor", "opportunist"])
+    .catch("follower")
     .describe("The competitor's behavioral archetype"),
   action: z.string().describe("What action the competitor took this turn"),
   impact: z.string().describe("How this action affects the market or the player"),
@@ -50,12 +56,15 @@ export const RestOfMarketSchema = z.object({
   marketShare: z.number().describe("Residual market share held by unnamed companies"),
   fragmentation: z
     .enum(["high", "medium", "consolidated"])
+    .catch("medium")
     .describe("How fragmented the rest of the market is"),
   dynamism: z
     .enum(["active", "stable", "stagnant"])
+    .catch("stable")
     .describe("How dynamic the rest of the market is"),
   latentPressure: z
     .enum(["low", "moderate", "high"])
+    .catch("moderate")
     .describe("Pressure from unnamed market participants to emerge as named actors"),
 });
 
@@ -67,6 +76,7 @@ export const NarrativeArcSchema = z.object({
   lastAmplifiedAtTurn: z.number().describe("Turn number when this arc was last amplified"),
   status: z
     .enum(["latent", "active", "dominant"])
+    .catch("active")
     .describe("Current status derived from weight: latent (<10%), active (10-25%), dominant (>25%)"),
 });
 
@@ -79,48 +89,64 @@ export const PendingConsequenceSchema = z.object({
 });
 
 // =============================================================================
-// INTERNAL AGENT SCHEMA
+// PLAYER COMPANY AGENT SCHEMA
 // =============================================================================
 
-export const InternalAgentSchema = z.object({
+export const PlayerCompanyAgentSchema = z.object({
   strengths: z
     .array(z.string())
-    .describe("Strengths of the player's action from an internal company perspective"),
+    .describe("Internal strengths of the player's action — execution capability, culture fit, resource alignment"),
   weaknesses: z
     .array(z.string())
-    .describe("Weaknesses/risks of the player's action from an internal company perspective"),
+    .describe("Internal weaknesses/risks — cash strain, team overstretch, culture misalignment, execution complexity"),
+  opportunities: z
+    .array(z.string())
+    .describe("External opportunities the action unlocks — market positioning, competitive advantage, new segments, timing"),
+  threats: z
+    .array(z.string())
+    .describe("External risks the action exposes us to — competitive response, regulatory, market timing, over-commitment"),
   proposedKPIImpacts: z.object({
     cash: z.number().describe("Proposed change in cash (positive or negative dollar amount)"),
     marketShare: z.number().describe("Proposed change in market share (positive or negative percentage points)"),
     satisfaction: z.number().describe("Proposed change in customer satisfaction (positive or negative percentage points)"),
-  }).describe("Proposed internal KPI impacts with reasoning"),
-  internalSideEffects: z
+  }).describe("Proposed KPI impacts based on SWOT analysis"),
+  sideEffects: z
     .array(z.string())
-    .describe("Internal side effects or consequences of the action"),
+    .describe("Side effects or consequences of the action (internal and external)"),
 });
 
-export type InternalAgentOutput = z.infer<typeof InternalAgentSchema>;
+export type PlayerCompanyAgentOutput = z.infer<typeof PlayerCompanyAgentSchema>;
 
 // =============================================================================
-// EXTERNAL AGENT SCHEMA
+// MARKET AGENT SCHEMA
 // =============================================================================
 
-export const ExternalAgentSchema = z.object({
-  opportunities: z
-    .array(z.string())
-    .describe("Opportunities that the player's action creates or exploits in the market"),
-  threats: z
-    .array(z.string())
-    .describe("Threats that the player's action triggers from the external environment"),
-  competitorReactions: z
+export const WorldEventSchema = z.object({
+  headline: z.string().describe("Short headline for the event"),
+  description: z.string().describe("1-2 sentence description of the event and its market impact"),
+  category: z
+    .enum(["industry", "regulatory", "macro", "technology", "labor"])
+    .catch("industry")
+    .describe("Category of the world event"),
+  sentiment: z
+    .enum(["positive", "negative", "neutral"])
+    .catch("neutral")
+    .describe("Overall sentiment/impact on the market"),
+});
+
+export const MarketAgentSchema = z.object({
+  competitorMoves: z
     .array(CompetitorMoveSchema)
-    .describe("Each named competitor's likely behavioral response (qualitative, not numerical)"),
+    .describe("What each named competitor is doing this turn, driven by their own strategy"),
+  worldEvents: z
+    .array(WorldEventSchema)
+    .describe("Industry/market/macro events happening this turn, independent of any single company"),
   restOfMarketAssessment: z
     .string()
-    .describe("Qualitative assessment of how the rest of the market reacts"),
+    .describe("Qualitative assessment of rest of market dynamics and shifts"),
 });
 
-export type ExternalAgentOutput = z.infer<typeof ExternalAgentSchema>;
+export type MarketAgentOutput = z.infer<typeof MarketAgentSchema>;
 
 // =============================================================================
 // GAMEMASTER OUTPUT SCHEMA

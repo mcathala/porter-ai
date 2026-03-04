@@ -52,6 +52,7 @@ interface GameContextType {
   isProcessingTurn: boolean;
   isInitializing: boolean;
   currentTurnResult: TurnResult | null;
+  currentTurnActions: string[];
   showTurnSummary: boolean;
 
   // Turn 0 briefing snapshot
@@ -115,6 +116,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [currentTurnResult, setCurrentTurnResult] = useState<TurnResult | null>(
     null
   );
+  const [currentTurnActions, setCurrentTurnActions] = useState<string[]>([]);
   const [showTurnSummary, setShowTurnSummary] = useState(false);
   const [actions, setActions] = useState<string[]>([]);
   const [turnHistory, setTurnHistory] = useState<TurnHistoryEntry[]>([]);
@@ -303,7 +305,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
           addTokenUsage(result.tokenUsage);
         }
 
-        // Show turn summary
+        // Show turn summary (save actions before clearing)
+        setCurrentTurnActions([...actions]);
         setCurrentTurnResult(result);
         setShowTurnSummary(true);
 
@@ -452,6 +455,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         isProcessingTurn,
         isInitializing,
         currentTurnResult,
+        currentTurnActions,
         showTurnSummary,
         initialBriefing,
         turnHistory,

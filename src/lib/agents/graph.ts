@@ -12,17 +12,17 @@ import {
   SIZE_EXPERIENCE_KPIS,
 } from "../types/game";
 import {
-  InternalAgentOutput,
-  ExternalAgentOutput,
+  PlayerCompanyAgentOutput,
+  MarketAgentOutput,
   GamemasterOutput,
-  InternalAgentSchema,
-  ExternalAgentSchema,
+  PlayerCompanyAgentSchema,
+  MarketAgentSchema,
   GamemasterOutputSchema,
   Turn0ResultSchema,
 } from "./schemas";
 import {
-  getInternalAgentPrompt,
-  getExternalAgentPrompt,
+  getPlayerCompanyAgentPrompt,
+  getMarketAgentPrompt,
   getGamemasterPrompt,
   getTurn0GamemasterPrompt,
   getNewsCountForTimeAdvance,
@@ -36,8 +36,8 @@ const ZERO_USAGE: TokenUsage = { inputTokens: 0, outputTokens: 0, totalTokens: 0
 
 const GraphState = Annotation.Root({
   turnInput: Annotation<TurnInput>,
-  internalOutput: Annotation<InternalAgentOutput | undefined>,
-  externalOutput: Annotation<ExternalAgentOutput | undefined>,
+  playerCompanyOutput: Annotation<PlayerCompanyAgentOutput | undefined>,
+  marketOutput: Annotation<MarketAgentOutput | undefined>,
   gamemasterOutput: Annotation<GamemasterOutput | undefined>,
   turnResult: Annotation<TurnResult | undefined>,
   tokenUsage: Annotation<TokenUsage>({
@@ -91,6 +91,9 @@ async function safeInvoke<T>(
       includeRaw: true,
     });
     const response = await llm.invoke(messages) as { raw: unknown; parsed: T };
+    if (response.parsed == null) {
+      throw new Error("Structured output returned null parsed result");
+    }
     const usage = extractUsage(response.raw);
     const elapsed = ((performance.now() - invokeStart) / 1000).toFixed(1);
     console.log(`[${label}] Structured output succeeded in ${elapsed}s (tokens: ${usage.totalTokens})`);
@@ -132,20 +135,21 @@ async function safeInvoke<T>(
 }
 
 // =============================================================================
-// LAYER 1: INTERNAL AGENT
+// LAYER 1: PLAYER COMPANY AGENT
 // =============================================================================
 
-async function internalAgentNode(
+async function playerCompanyAgentNode(
   state: typeof GraphState.State
 ): Promise<Partial<typeof GraphState.State>> {
   const { turnInput } = state;
-  const { gameState, tasks } = turnInput;
+  const { gameState, tasks, timeAdvance } = turnInput;
 
-  const systemPrompt = getInternalAgentPrompt(
+  const systemPrompt = getPlayerCompanyAgentPrompt(
     gameState.playerCompany,
     gameState.difficulty,
     gameState.customMarket || gameState.market,
-    gameState.companyCulture
+    gameState.companyCulture,
+    timeAdvance
   );
 
   const userPrompt = `
@@ -155,9 +159,10 @@ async function internalAgentNode(
 - Cash: $${gameState.kpis.cash.toLocaleString()}
 - Market Share: ${gameState.kpis.marketShare}%
 - Customer Satisfaction: ${gameState.kpis.satisfaction}%
+- Time advance: ${timeAdvance}
 
 ## PLAYER'S ACTIONS THIS TURN
-${tasks.length > 0 ? tasks.map((t, i) => `${i + 1}. ${t}`).join("\n") : "No specific actions taken (routine operations)"}
+${tasks.length > 0 ? tasks.map((t, i) => `${i + 1}. ${t}`).join("\n") : "No specific actions — the company continues routine operations (business as usual)."}
 
 ## LAST TURN SUMMARY
 ${gameState.lastTurnSummary || "This is the first turn."}
@@ -168,7 +173,7 @@ ${gameState.pendingConsequences.length > 0
       : "None"
     }
 
-Analyze the STRENGTHS and WEAKNESSES of these actions from the company's internal perspective.`;
+Perform a full SWOT analysis of the player's current situation and actions. Scale proposed KPI impacts to the ${timeAdvance} time period.`;
 
   const messages = [
     { role: "system", content: systemPrompt },
@@ -176,26 +181,25 @@ Analyze the STRENGTHS and WEAKNESSES of these actions from the company's interna
   ];
 
   const start = performance.now();
-  const { result: output, usage } = await safeInvoke(InternalAgentSchema, messages, 1, "InternalAgent");
-  console.log(`[InternalAgent] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
-  return { internalOutput: output, tokenUsage: usage };
+  const { result: output, usage } = await safeInvoke(PlayerCompanyAgentSchema, messages, 1, "PlayerCompanyAgent");
+  console.log(`[PlayerCompanyAgent] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
+  return { playerCompanyOutput: output, tokenUsage: usage };
 }
 
 // =============================================================================
-// LAYER 1: EXTERNAL AGENT
+// LAYER 1: MARKET AGENT (blind to player action)
 // =============================================================================
 
-async function externalAgentNode(
+async function marketAgentNode(
   state: typeof GraphState.State
 ): Promise<Partial<typeof GraphState.State>> {
   const { turnInput } = state;
-  const { gameState, tasks } = turnInput;
+  const { gameState, timeAdvance } = turnInput;
 
-  const systemPrompt = getExternalAgentPrompt(
-    gameState.playerCompany,
+  const systemPrompt = getMarketAgentPrompt(
     gameState.difficulty,
     gameState.customMarket || gameState.market,
-    gameState.companyCulture
+    timeAdvance
   );
 
   const competitorStatus = gameState.competitors
@@ -207,10 +211,12 @@ async function externalAgentNode(
 
   const restOfMarketStatus = `- Rest of market: ${gameState.restOfMarket.marketShare}% share, fragmentation: ${gameState.restOfMarket.fragmentation}, dynamism: ${gameState.restOfMarket.dynamism}, latent pressure: ${gameState.restOfMarket.latentPressure}`;
 
+  // NOTE: No player action, no player company name, no player KPIs
   const userPrompt = `
-## CURRENT MARKET STATE
+## MARKET STATE
 - Industry: ${gameState.customMarket || gameState.market}
 - Turn: ${gameState.turn}
+- Time advance: ${timeAdvance}
 
 ## NAMED COMPETITORS
 ${competitorStatus || "No named competitors yet."}
@@ -218,24 +224,7 @@ ${competitorStatus || "No named competitors yet."}
 ## REST OF MARKET
 ${restOfMarketStatus}
 
-## PLAYER'S ACTIONS THIS TURN
-${tasks.length > 0 ? tasks.map((t, i) => `${i + 1}. ${t}`).join("\n") : "No specific actions taken (routine operations)"}
-
-## PLAYER'S COMPANY
-- Name: ${gameState.playerCompany.name}
-- Company Culture: ${gameState.companyCulture}
-- Market Share: ${gameState.kpis.marketShare}%
-
-## PENDING CONSEQUENCES (external)
-${gameState.pendingConsequences.length > 0
-      ? gameState.pendingConsequences.map((c) => `- [${c.cause}] ${c.description}`).join("\n")
-      : "None"
-    }
-
-## LAST TURN CONTEXT
-${gameState.lastTurnSummary || "This is the first turn."}
-
-Analyze the OPPORTUNITIES and THREATS of these actions, competitor reactions, and rest of market dynamics.`;
+Simulate what each competitor does this turn and what world events occur in this industry during this ${timeAdvance}. Remember: you have NO knowledge of what any specific player is doing. Only generate world events that would genuinely happen in this time window.`;
 
   const messages = [
     { role: "system", content: systemPrompt },
@@ -243,9 +232,9 @@ Analyze the OPPORTUNITIES and THREATS of these actions, competitor reactions, an
   ];
 
   const start = performance.now();
-  const { result: output, usage } = await safeInvoke(ExternalAgentSchema, messages, 1, "ExternalAgent");
-  console.log(`[ExternalAgent] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
-  return { externalOutput: output, tokenUsage: usage };
+  const { result: output, usage } = await safeInvoke(MarketAgentSchema, messages, 1, "MarketAgent");
+  console.log(`[MarketAgent] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
+  return { marketOutput: output, tokenUsage: usage };
 }
 
 // =============================================================================
@@ -255,7 +244,7 @@ Analyze the OPPORTUNITIES and THREATS of these actions, competitor reactions, an
 async function gamemasterNode(
   state: typeof GraphState.State
 ): Promise<Partial<typeof GraphState.State>> {
-  const { turnInput, internalOutput, externalOutput } = state;
+  const { turnInput, playerCompanyOutput, marketOutput } = state;
   const { gameState, timeAdvance } = turnInput;
 
   const newsCount = getNewsCountForTimeAdvance(timeAdvance);
@@ -284,11 +273,11 @@ ${turnInput.tasks.length > 0 ? turnInput.tasks.map((t, i) => `${i + 1}. ${t}`).j
 - Market Share: ${gameState.kpis.marketShare}%
 - Satisfaction: ${gameState.kpis.satisfaction}%
 
-### Internal Agent Analysis (Strengths / Weaknesses)
-${JSON.stringify(internalOutput, null, 2)}
+### Player Company Agent Analysis (SWOT of player's action)
+${JSON.stringify(playerCompanyOutput, null, 2)}
 
-### External Agent Analysis (Opportunities / Threats)
-${JSON.stringify(externalOutput, null, 2)}
+### Market Agent Analysis (Independent market activity)
+${JSON.stringify(marketOutput, null, 2)}
 
 ### Current Named Competitors
 ${gameState.competitors.length > 0
@@ -299,7 +288,7 @@ ${gameState.competitors.length > 0
 ### Current Rest of Market
 ${JSON.stringify(gameState.restOfMarket, null, 2)}
 
-### Current Narrative Arcs
+### Current Narrative Arcs (player-only storylines)
 ${narrativeArcsStatus}
 
 ### Pending Consequences to Evaluate
@@ -315,9 +304,9 @@ ${gameState.companyCulture}
 ${timeAdvance}
 
 ### News Items Count
-Generate exactly ${newsCount} news items for this time period.
+Generate exactly ${newsCount} news items for this time period (use the Market Agent's world events as the primary source).
 
-Resolve KPIs, update narratives (weights must sum to 100), manage competitors, handle consequences, and write the player-facing narrative.`;
+Synthesize the Player Company Agent's SWOT with the Market Agent's independent market activity. Resolve KPIs, update narratives (player-only, weights must sum to 100), manage competitors, handle consequences, and write the player-facing narrative.`;
 
   const messages = [
     { role: "system", content: systemPrompt },
@@ -325,7 +314,31 @@ Resolve KPIs, update narratives (weights must sum to 100), manage competitors, h
   ];
 
   const start = performance.now();
-  const { result: output, usage } = await safeInvoke(GamemasterOutputSchema, messages, 2, "Gamemaster");
+  let { result: output, usage } = await safeInvoke(GamemasterOutputSchema, messages, 2, "Gamemaster");
+
+  // If the LLM returned null/undefined, create a minimal fallback
+  if (!output) {
+    console.error("[gamemasterNode] LLM returned null output, using full fallback");
+    output = {
+      kpiDeltas: {
+        cash: { value: gameState.kpis.cash, change: 0, changePercent: 0, reason: "No changes this turn." },
+        marketShare: { value: gameState.kpis.marketShare, change: 0, changePercent: 0, reason: "No changes this turn." },
+        satisfaction: { value: gameState.kpis.satisfaction, change: 0, changePercent: 0, reason: "No changes this turn." },
+      },
+      updatedCompetitors: gameState.competitors,
+      updatedRestOfMarket: gameState.restOfMarket,
+      updatedNarratives: gameState.narrativeArcs.length > 0
+        ? gameState.narrativeArcs
+        : [{ id: "arc-initial", name: "Market Entry", weight: 100, createdAtTurn: gameState.turn, lastAmplifiedAtTurn: gameState.turn, status: "dominant" as const }],
+      newConsequences: [],
+      triggeredConsequences: [],
+      newDate: "",
+      turnSummary: "The turn proceeded without major incident.",
+      newsItems: [],
+      nextTurnContext: "The game continues.",
+      companyCulture: gameState.companyCulture,
+    };
+  }
 
   // Fallback: use current state values if the LLM omitted fields
   if (!output.updatedCompetitors || output.updatedCompetitors.length === 0) {
@@ -391,7 +404,7 @@ Resolve KPIs, update narratives (weights must sum to 100), manage competitors, h
 function assembleResultNode(
   state: typeof GraphState.State
 ): Partial<typeof GraphState.State> {
-  const { gamemasterOutput, externalOutput, internalOutput, tokenUsage } = state;
+  const { gamemasterOutput, marketOutput, playerCompanyOutput, tokenUsage } = state;
 
   if (!gamemasterOutput) {
     throw new Error("Gamemaster output is missing");
@@ -401,7 +414,7 @@ function assembleResultNode(
     kpiDeltas: gamemasterOutput.kpiDeltas,
     turnSummary: gamemasterOutput.turnSummary,
     newsItems: gamemasterOutput.newsItems,
-    competitorMoves: externalOutput?.competitorReactions || [],
+    competitorMoves: marketOutput?.competitorMoves || [],
     updatedCompetitors: gamemasterOutput.updatedCompetitors,
     updatedRestOfMarket: gamemasterOutput.updatedRestOfMarket,
     updatedNarratives: gamemasterOutput.updatedNarratives,
@@ -421,19 +434,21 @@ function assembleResultNode(
           ? "gpt-oss:120b-cloud"
           : "openai/gpt-oss-20b"),
     },
-    internalAgentOutput: internalOutput
+    playerCompanyAgentOutput: playerCompanyOutput
       ? {
-          strengths: internalOutput.strengths,
-          weaknesses: internalOutput.weaknesses,
-          proposedKPIImpacts: internalOutput.proposedKPIImpacts,
-          internalSideEffects: internalOutput.internalSideEffects,
+          strengths: playerCompanyOutput.strengths,
+          weaknesses: playerCompanyOutput.weaknesses,
+          opportunities: playerCompanyOutput.opportunities,
+          threats: playerCompanyOutput.threats,
+          proposedKPIImpacts: playerCompanyOutput.proposedKPIImpacts,
+          sideEffects: playerCompanyOutput.sideEffects,
         }
       : undefined,
-    externalAgentOutput: externalOutput
+    marketAgentOutput: marketOutput
       ? {
-          opportunities: externalOutput.opportunities,
-          threats: externalOutput.threats,
-          restOfMarketAssessment: externalOutput.restOfMarketAssessment,
+          competitorMoves: marketOutput.competitorMoves,
+          worldEvents: marketOutput.worldEvents,
+          restOfMarketAssessment: marketOutput.restOfMarketAssessment,
         }
       : undefined,
   };
@@ -450,20 +465,20 @@ function assembleResultNode(
 export function buildTurnGraph() {
   const graph = new StateGraph(GraphState)
     // Layer 1 nodes (run in parallel)
-    .addNode("internalAgent", internalAgentNode)
-    .addNode("externalAgent", externalAgentNode)
-    // Layer 2 (Gamemaster now also handles narrative)
+    .addNode("playerCompanyAgent", playerCompanyAgentNode)
+    .addNode("marketAgent", marketAgentNode)
+    // Layer 2 (Gamemaster synthesizes both agents)
     .addNode("gamemaster", gamemasterNode)
     // Final assembly
     .addNode("assembleResult", assembleResultNode)
 
     // Edges from START — Layer 1 runs in parallel
-    .addEdge(START, "internalAgent")
-    .addEdge(START, "externalAgent")
+    .addEdge(START, "playerCompanyAgent")
+    .addEdge(START, "marketAgent")
 
     // Layer 1 → Layer 2 (both must complete before Gamemaster)
-    .addEdge("internalAgent", "gamemaster")
-    .addEdge("externalAgent", "gamemaster")
+    .addEdge("playerCompanyAgent", "gamemaster")
+    .addEdge("marketAgent", "gamemaster")
 
     // Layer 2 → Assembly
     .addEdge("gamemaster", "assembleResult")
@@ -486,8 +501,8 @@ export async function executeTurn(turnInput: TurnInput): Promise<TurnResult> {
 
   const initialState: typeof GraphState.State = {
     turnInput,
-    internalOutput: undefined,
-    externalOutput: undefined,
+    playerCompanyOutput: undefined,
+    marketOutput: undefined,
     gamemasterOutput: undefined,
     turnResult: undefined,
     tokenUsage: { ...ZERO_USAGE },
