@@ -6,6 +6,7 @@
   --color-background-dark: #101922;
 
   --font-display: "Inter", "sans-serif";
+  --font-heading: "Space Grotesk", "sans-serif";
 
   /* Border Radius overrides - Tailwind v4 uses --radius-* tokens */
   --radius-DEFAULT: 0.25rem;
@@ -59,17 +60,6 @@ input[type="radio"]:checked+div .check-icon {
 }
 
 /* Landing page animations */
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @keyframes glow-pulse {
   0%, 100% {
     opacity: 0.4;
@@ -79,43 +69,7 @@ input[type="radio"]:checked+div .check-icon {
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-.animate-fade-up {
-  animation: fade-up 0.7s ease-out both;
-}
-
-.animate-fade-up-delay-1 {
-  animation: fade-up 0.7s ease-out 0.15s both;
-}
-
-.animate-fade-up-delay-2 {
-  animation: fade-up 0.7s ease-out 0.3s both;
-}
-
-.animate-fade-up-delay-3 {
-  animation: fade-up 0.7s ease-out 0.45s both;
-}
-
 .animate-glow-pulse {
   animation: glow-pulse 3s ease-in-out infinite;
 }
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-.animate-float-delay {
-  animation: float 4s ease-in-out 1s infinite;
-}
-
-.animate-float-delay-2 {
-  animation: float 4s ease-in-out 2s infinite;
-}
