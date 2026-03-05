@@ -272,6 +272,7 @@ describe("Automated Playtest (3 turns)", () => {
           cash: result.kpiDeltas.cash.value,
           marketShare: result.kpiDeltas.marketShare.value,
           satisfaction: result.kpiDeltas.satisfaction.value,
+          brandAwareness: result.kpiDeltas.brandAwareness.value,
         },
         companyCulture: result.companyCulture,
         competitors: result.updatedCompetitors,

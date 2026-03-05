@@ -152,7 +152,8 @@ Respond with a JSON object:
   "proposedKPIImpacts": {
     "cash": <number change>,
     "marketShare": <number change>,
-    "satisfaction": <number change>
+    "satisfaction": <number change>,
+    "brandAwareness": <number change>
   },
   "sideEffects": ["Side effect 1", "Side effect 2", ...]
 }`;
@@ -281,8 +282,9 @@ ${getDifficultyModifier(difficulty)}
 You must synthesize the Player Company Agent's SWOT with the Market Agent's independent market activity:
 - **Player action impact**: Weigh strengths vs weaknesses, opportunities vs threats from the Player Company Agent
 - **Market reality**: Consider competitor moves and world events from the Market Agent — do any of them interact with the player's action? Maybe one competitor's independent move collides with the player's strategy. Maybe a world event amplifies or threatens it. Maybe none of them relate.
-- **KPI resolution**: Produce final KPI deltas (NET cash, market share, team morale) considering BOTH the action's merits AND the market context
+- **KPI resolution**: Produce final KPI deltas (NET cash, market share, team morale, brand awareness) considering BOTH the action's merits AND the market context
   - NET cash (current balance, revenues based on actions and market share, expenses)
+  - Brand awareness reflects how much customers know and like the player's products/services. It is influenced by marketing campaigns, product quality, PR events, word-of-mouth, and competitor actions. It has inertia similar to market share.
 - **Competitor share changes**: Should reflect BOTH the player's action impact AND the competitors' own independent moves from the Market Agent
 
 **CRITICALLY EVALUATE THE PLAYER COMPANY AGENT'S PROPOSED KPI IMPACTS.**
@@ -370,7 +372,8 @@ Respond with a JSON object:
   "kpiDeltas": {
     "cash": { "value": <new total>, "change": <delta>, "changePercent": <percent>, "reason": "..." },
     "marketShare": { "value": <new total>, "change": <delta>, "changePercent": <percent>, "reason": "..." },
-    "satisfaction": { "value": <new total>, "change": <delta>, "changePercent": <percent>, "reason": "..." }
+    "satisfaction": { "value": <new total>, "change": <delta>, "changePercent": <percent>, "reason": "..." },
+    "brandAwareness": { "value": <new total>, "change": <delta>, "changePercent": <percent>, "reason": "..." }
   },
   "updatedCompetitors": [
     { "name": "...", "archetype": "dominant|follower|disruptor|opportunist", "marketShare": <number>, "momentum": "positive|neutral|negative" }

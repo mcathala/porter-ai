@@ -13,6 +13,7 @@ export interface KPIs {
   cash: number;           // In dollars
   marketShare: number;    // Percentage (0-100)
   satisfaction: number;   // Percentage (0-100)
+  brandAwareness: number; // Percentage (0-100) — how much customers like/know your product
 }
 
 export interface KPIDelta {
@@ -32,19 +33,19 @@ export interface PlayerCompany {
 // Size x Experience → Starting KPIs matrix
 export const SIZE_EXPERIENCE_KPIS: Record<CompanySize, Record<CompanyExperience, KPIs>> = {
   small: {
-    new:    { cash: 500_000,   marketShare: 2,  satisfaction: 90 },
-    medium: { cash: 2_000_000, marketShare: 5,  satisfaction: 85 },
-    old:    { cash: 5_000_000, marketShare: 8,  satisfaction: 75 },
+    new:    { cash: 500_000,   marketShare: 2,  satisfaction: 90, brandAwareness: 10 },
+    medium: { cash: 2_000_000, marketShare: 5,  satisfaction: 85, brandAwareness: 25 },
+    old:    { cash: 5_000_000, marketShare: 8,  satisfaction: 75, brandAwareness: 40 },
   },
   medium: {
-    new:    { cash: 5_000_000,  marketShare: 8,  satisfaction: 85 },
-    medium: { cash: 15_000_000, marketShare: 18, satisfaction: 75 },
-    old:    { cash: 30_000_000, marketShare: 25, satisfaction: 65 },
+    new:    { cash: 5_000_000,  marketShare: 8,  satisfaction: 85, brandAwareness: 30 },
+    medium: { cash: 15_000_000, marketShare: 18, satisfaction: 75, brandAwareness: 50 },
+    old:    { cash: 30_000_000, marketShare: 25, satisfaction: 65, brandAwareness: 65 },
   },
   large: {
-    new:    { cash: 25_000_000,  marketShare: 15, satisfaction: 80 },
-    medium: { cash: 75_000_000,  marketShare: 30, satisfaction: 70 },
-    old:    { cash: 150_000_000, marketShare: 45, satisfaction: 60 },
+    new:    { cash: 25_000_000,  marketShare: 15, satisfaction: 80, brandAwareness: 45 },
+    medium: { cash: 75_000_000,  marketShare: 30, satisfaction: 70, brandAwareness: 70 },
+    old:    { cash: 150_000_000, marketShare: 45, satisfaction: 60, brandAwareness: 85 },
   },
 };
 
@@ -167,6 +168,7 @@ export interface TurnResult {
     cash: KPIDelta;
     marketShare: KPIDelta;
     satisfaction: KPIDelta;
+    brandAwareness: KPIDelta;
   };
 
   // Narrative
@@ -209,7 +211,7 @@ export interface TurnResult {
     weaknesses: string[];
     opportunities: string[];
     threats: string[];
-    proposedKPIImpacts: { cash: number; marketShare: number; satisfaction: number };
+    proposedKPIImpacts: { cash: number; marketShare: number; satisfaction: number; brandAwareness: number };
     sideEffects: string[];
   };
   marketAgentOutput?: {

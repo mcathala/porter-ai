@@ -283,6 +283,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
             cash: result.kpiDeltas.cash.value,
             marketShare: result.kpiDeltas.marketShare.value,
             satisfaction: result.kpiDeltas.satisfaction.value,
+            brandAwareness: result.kpiDeltas.brandAwareness.value,
           },
           lastTurnSummary: result.nextTurnContext,
           companyCulture: result.companyCulture || prev.companyCulture,
@@ -519,6 +520,7 @@ function createInitialGameState(
       cash: startingKpis.cash,
       marketShare: startingKpis.marketShare,
       satisfaction: startingKpis.satisfaction,
+      brandAwareness: startingKpis.brandAwareness,
     },
     companyCulture: "", // Populated by server-side Turn 0
     competitors: [], // Populated by server-side Turn 0

@@ -118,7 +118,7 @@ export default function TurnSummaryModal({
               </span>
               Michael&apos;s Report
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Cash */}
               <div className="bg-[#111a22] rounded-2xl p-5 border border-[#233648]/60">
                 <div className="flex items-center justify-between mb-2">
@@ -179,6 +179,27 @@ export default function TurnSummaryModal({
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
                   {turnResult.kpiDeltas.satisfaction.reason}
+                </p>
+              </div>
+
+              {/* Brand Awareness */}
+              <div className="bg-[#111a22] rounded-2xl p-5 border border-[#233648]/60">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400 text-sm">Brand Awareness</span>
+                  <div
+                    className={`flex items-center gap-1 text-sm font-bold ${getChangeColor(turnResult.kpiDeltas.brandAwareness.change)}`}
+                  >
+                    <span className="material-symbols-outlined text-[16px]">
+                      {getChangeIcon(turnResult.kpiDeltas.brandAwareness.change)}
+                    </span>
+                    {formatChange(turnResult.kpiDeltas.brandAwareness.change, true)}
+                  </div>
+                </div>
+                <div className="text-2xl font-bold font-heading text-white">
+                  {turnResult.kpiDeltas.brandAwareness.value.toFixed(0)}%
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  {turnResult.kpiDeltas.brandAwareness.reason}
                 </p>
               </div>
             </div>
@@ -342,7 +363,8 @@ export default function TurnSummaryModal({
                       <span className="ml-2">
                         Cash: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.cash},
                         Share: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.marketShare},
-                        Team Morale: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.satisfaction}
+                        Team Morale: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.satisfaction},
+                        Brand: {turnResult.playerCompanyAgentOutput.proposedKPIImpacts.brandAwareness}
                       </span>
                     </div>
                     <div>
@@ -407,6 +429,7 @@ export default function TurnSummaryModal({
                       <div>Cash: {turnResult.kpiDeltas.cash.value} ({turnResult.kpiDeltas.cash.change >= 0 ? "+" : ""}{turnResult.kpiDeltas.cash.change}) — {turnResult.kpiDeltas.cash.reason}</div>
                       <div>Market Share: {turnResult.kpiDeltas.marketShare.value}% ({turnResult.kpiDeltas.marketShare.change >= 0 ? "+" : ""}{turnResult.kpiDeltas.marketShare.change}%) — {turnResult.kpiDeltas.marketShare.reason}</div>
                       <div>Team Morale: {turnResult.kpiDeltas.satisfaction.value}% ({turnResult.kpiDeltas.satisfaction.change >= 0 ? "+" : ""}{turnResult.kpiDeltas.satisfaction.change}%) — {turnResult.kpiDeltas.satisfaction.reason}</div>
+                      <div>Brand Awareness: {turnResult.kpiDeltas.brandAwareness.value}% ({turnResult.kpiDeltas.brandAwareness.change >= 0 ? "+" : ""}{turnResult.kpiDeltas.brandAwareness.change}%) — {turnResult.kpiDeltas.brandAwareness.reason}</div>
                     </div>
                   </div>
 

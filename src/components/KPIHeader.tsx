@@ -89,6 +89,21 @@ export default function KPIHeader() {
               </span>
             </div>
           </div>
+
+          {/* Brand Awareness */}
+          <div className="flex items-center gap-2 sm:gap-3 rounded-xl bg-[#1a2836] px-2.5 sm:px-4 py-1.5 sm:py-2 border border-[#2a3f54] shrink-0">
+            <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
+              campaign
+            </span>
+            <div className="flex flex-col">
+              <span className="text-[10px] sm:text-xs font-medium text-gray-400 hidden sm:block">
+                Brand
+              </span>
+              <span className="text-sm sm:text-base font-bold font-heading text-white whitespace-nowrap">
+                {kpis.brandAwareness.toFixed(0)}%
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Turn Counter - always visible, company name hidden on mobile */}

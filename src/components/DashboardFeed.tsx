@@ -123,6 +123,11 @@ function TurnHistoryCard({ entry, onClick }: { entry: TurnHistoryEntry; onClick:
               change={result.kpiDeltas.satisfaction.change}
               isPercent={true}
             />
+            <KPIBadge
+              label="Brand"
+              change={result.kpiDeltas.brandAwareness.change}
+              isPercent={true}
+            />
           </div>
 
           {/* Player Actions */}

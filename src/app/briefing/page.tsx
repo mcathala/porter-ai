@@ -97,10 +97,9 @@ export default function BriefingPage() {
           </section>
           </FadeIn>
 
-          <GradientDivider />
-
           {/* Industry & Difficulty */}
           <FadeIn delay={0.1}>
+          <GradientDivider />
           <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex items-center gap-4 rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5">
               <span className="material-symbols-outlined text-primary text-3xl">domain</span>
@@ -119,16 +118,15 @@ export default function BriefingPage() {
           </section>
           </FadeIn>
 
-          <GradientDivider />
-
           {/* Starting KPIs */}
           <FadeIn delay={0.2}>
+          <GradientDivider />
           <section>
             <h2 className="text-xl font-bold font-heading tracking-[-0.02em] mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">monitoring</span>
               Starting Position
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-emerald-400 text-lg">payments</span>
@@ -146,9 +144,16 @@ export default function BriefingPage() {
               <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-amber-400 text-lg">sentiment_satisfied</span>
-                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Customer Satisfaction</p>
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Team Morale</p>
                 </div>
                 <p className="text-2xl font-bold font-heading text-white mt-1">{kpis.satisfaction.toFixed(0)}%</p>
+              </div>
+              <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-purple-400 text-lg">campaign</span>
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Brand Awareness</p>
+                </div>
+                <p className="text-2xl font-bold font-heading text-white mt-1">{kpis.brandAwareness.toFixed(0)}%</p>
               </div>
             </div>
           </section>

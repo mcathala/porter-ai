@@ -115,7 +115,7 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
               <span className="material-symbols-outlined text-primary">monitoring</span>
               Starting Position
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="rounded-2xl bg-[#111a22] border border-[#233648]/60 p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-emerald-400 text-lg">payments</span>
@@ -136,6 +136,13 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Team Morale</p>
                 </div>
                 <p className="text-2xl font-bold font-heading text-white mt-1">{kpis.satisfaction.toFixed(0)}%</p>
+              </div>
+              <div className="rounded-2xl bg-[#111a22] border border-[#233648]/60 p-5 flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-purple-400 text-lg">campaign</span>
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Brand Awareness</p>
+                </div>
+                <p className="text-2xl font-bold font-heading text-white mt-1">{kpis.brandAwareness.toFixed(0)}%</p>
               </div>
             </div>
           </div>

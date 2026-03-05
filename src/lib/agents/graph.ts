@@ -159,6 +159,7 @@ async function playerCompanyAgentNode(
 - Cash: $${gameState.kpis.cash.toLocaleString()}
 - Market Share: ${gameState.kpis.marketShare}%
 - Customer Satisfaction: ${gameState.kpis.satisfaction}%
+- Brand Awareness: ${gameState.kpis.brandAwareness}%
 - Time advance: ${timeAdvance}
 
 ## PLAYER'S ACTIONS THIS TURN
@@ -272,6 +273,7 @@ ${turnInput.tasks.length > 0 ? turnInput.tasks.map((t, i) => `${i + 1}. ${t}`).j
 - Cash: $${gameState.kpis.cash.toLocaleString()}
 - Market Share: ${gameState.kpis.marketShare}%
 - Satisfaction: ${gameState.kpis.satisfaction}%
+- Brand Awareness: ${gameState.kpis.brandAwareness}%
 
 ### Player Company Agent Analysis (SWOT of player's action)
 ${JSON.stringify(playerCompanyOutput, null, 2)}
@@ -324,6 +326,7 @@ Synthesize the Player Company Agent's SWOT with the Market Agent's independent m
         cash: { value: gameState.kpis.cash, change: 0, changePercent: 0, reason: "No changes this turn." },
         marketShare: { value: gameState.kpis.marketShare, change: 0, changePercent: 0, reason: "No changes this turn." },
         satisfaction: { value: gameState.kpis.satisfaction, change: 0, changePercent: 0, reason: "No changes this turn." },
+        brandAwareness: { value: gameState.kpis.brandAwareness, change: 0, changePercent: 0, reason: "No changes this turn." },
       },
       updatedCompetitors: gameState.competitors,
       updatedRestOfMarket: gameState.restOfMarket,
