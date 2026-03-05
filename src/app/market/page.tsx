@@ -202,7 +202,7 @@ function CompanySetupContent() {
               </p>
             </div>
 
-            {/* Company Name & Mission */}
+            {/* Company Name & Target Market */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label className="block text-sm font-medium text-[#92adc9] mb-2">Company Name</label>
@@ -215,25 +215,25 @@ function CompanySetupContent() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#92adc9] mb-2">Mission / Vision</label>
+                <label className="block text-sm font-medium text-[#92adc9] mb-2">Target Market</label>
                 <input
                   type="text"
-                  value={companyMission}
-                  onChange={(e) => setCompanyMission(e.target.value)}
-                  placeholder="e.g., Make the fastest, most exclusive designed cars..."
+                  value={customMarket}
+                  onChange={(e) => setCustomMarket(e.target.value)}
+                  placeholder="e.g., Automotive, HealthTech, Fashion,..."
                   className="w-full bg-[#1a2634] border-2 border-[#324d67] rounded-xl px-4 py-3 text-white placeholder:text-[#5f7a94] focus:border-primary focus:ring-1 focus:ring-primary transition-colors focus:outline-none"
                 />
               </div>
             </div>
 
-            {/* Target Market */}
+            {/* Mission */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-[#92adc9] mb-2">Target Market</label>
+              <label className="block text-sm font-medium text-[#92adc9] mb-2">Mission</label>
               <input
                 type="text"
-                value={customMarket}
-                onChange={(e) => setCustomMarket(e.target.value)}
-                placeholder="e.g., Automotive, HealthTech, Fashion,..."
+                value={companyMission}
+                onChange={(e) => setCompanyMission(e.target.value)}
+                placeholder="e.g., Make the fastest, most exclusive designed cars..."
                 className="w-full bg-[#1a2634] border-2 border-[#324d67] rounded-xl px-4 py-3 text-white placeholder:text-[#5f7a94] focus:border-primary focus:ring-1 focus:ring-primary transition-colors focus:outline-none"
               />
             </div>
