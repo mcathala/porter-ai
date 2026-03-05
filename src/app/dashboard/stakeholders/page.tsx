@@ -140,7 +140,7 @@ export default function StakeholdersPage() {
                     <div className="p-4 rounded-2xl bg-yellow-400/10 border border-yellow-400/20">
                         <span className="material-symbols-outlined text-yellow-400 text-5xl">construction</span>
                     </div>
-                    <h2 className="text-white text-2xl font-black">Coming Soon</h2>
+                    <h2 className="text-white text-2xl font-bold font-heading tracking-[-0.02em]">Coming Soon</h2>
                     <p className="text-[#92adc9] text-sm max-w-xs">
                         Stakeholder interactions are currently under development. Stay tuned!
                     </p>
@@ -262,7 +262,7 @@ export default function StakeholdersPage() {
                             {activeStakeholder.name.charAt(0)}
                         </div>
                         <div>
-                            <h2 className="text-base sm:text-lg font-bold text-white leading-none">
+                            <h2 className="text-base sm:text-lg font-bold font-heading text-white leading-none">
                                 {activeStakeholder.name}
                             </h2>
                             <div className="flex items-center gap-2 mt-1">

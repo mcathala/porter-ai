@@ -4,6 +4,8 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useGame } from "@/context/GameContext";
+import FadeIn from "@/components/FadeIn";
+import PorterLogo from "@/components/PorterLogo";
 import {
   CompanySize,
   CompanyExperience,
@@ -149,7 +151,7 @@ function CompanySetupContent() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#101922]/90 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-4">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            <p className="text-white text-lg font-bold">Initializing Simulation</p>
+            <p className="text-white text-lg font-bold font-heading">Initializing Simulation</p>
             <p className="text-[#92adc9] text-sm">Generating market landscape and competitors...</p>
           </div>
         </div>
@@ -159,15 +161,15 @@ function CompanySetupContent() {
         {/* Top Navigation */}
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#233648] px-4 sm:px-10 py-3 bg-[#111a22]">
           <div className="flex items-center gap-4 text-white">
-            <div className="size-8 flex items-center justify-center rounded-lg bg-primary text-white">
-              <span className="material-symbols-outlined text-xl">rocket_launch</span>
+            <div className="size-8 flex items-center justify-center rounded-xl bg-primary text-white">
+              <PorterLogo size={20} variant="white" />
             </div>
-            <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">PorterAi</h2>
+            <h2 className="text-white text-lg font-bold font-heading leading-tight tracking-[-0.02em]">PorterAi</h2>
           </div>
         </header>
 
         <main className="flex flex-1 justify-center py-8 px-6 sm:px-10">
-          <div className="flex flex-col w-full max-w-[960px]">
+          <FadeIn className="flex flex-col w-full max-w-[960px]">
             {/* Progress Bar */}
             <div className="flex flex-col gap-3 mb-8">
               <div className="flex justify-between items-center">
@@ -185,13 +187,13 @@ function CompanySetupContent() {
             {/* Page Heading */}
             <div className="flex flex-col gap-2 mb-4">
               <div className="flex items-center justify-between">
-                <h1 className="text-white text-4xl font-black leading-tight tracking-[-0.033em]">
+                <h1 className="text-white text-4xl font-bold font-heading leading-tight tracking-[-0.02em]">
                   Set Up Your Company
                 </h1>
                 <button
                   onClick={handleYolo}
                   disabled={isInitializing}
-                  className="flex items-center justify-center gap-2 h-10 px-5 rounded-lg border-2 border-purple-500/50 text-purple-300 font-bold text-sm hover:bg-purple-500/10 transition-all disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 h-10 px-5 rounded-xl border border-purple-500/50 text-purple-300 font-bold text-sm hover:bg-purple-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
                 >
                   <span className="material-symbols-outlined text-lg">casino</span>
                   Random
@@ -211,7 +213,7 @@ function CompanySetupContent() {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="e.g., NovaTech, Apex Industries..."
-                  className="w-full bg-[#1a2634] border-2 border-[#324d67] rounded-xl px-4 py-3 text-white placeholder:text-[#5f7a94] focus:border-primary focus:ring-1 focus:ring-primary transition-colors focus:outline-none"
+                  className="w-full bg-[#141f2b]/60 border border-[#233648]/60 rounded-2xl px-4 py-3 text-white placeholder:text-[#5f7a94] focus:border-primary focus:ring-1 focus:ring-primary transition-colors focus:outline-none"
                 />
               </div>
               <div>
@@ -221,7 +223,7 @@ function CompanySetupContent() {
                   value={customMarket}
                   onChange={(e) => setCustomMarket(e.target.value)}
                   placeholder="e.g., Automotive, HealthTech, Fashion,..."
-                  className="w-full bg-[#1a2634] border-2 border-[#324d67] rounded-xl px-4 py-3 text-white placeholder:text-[#5f7a94] focus:border-primary focus:ring-1 focus:ring-primary transition-colors focus:outline-none"
+                  className="w-full bg-[#141f2b]/60 border border-[#233648]/60 rounded-2xl px-4 py-3 text-white placeholder:text-[#5f7a94] focus:border-primary focus:ring-1 focus:ring-primary transition-colors focus:outline-none"
                 />
               </div>
             </div>
@@ -234,7 +236,7 @@ function CompanySetupContent() {
                 value={companyMission}
                 onChange={(e) => setCompanyMission(e.target.value)}
                 placeholder="e.g., Make the fastest, most exclusive designed cars..."
-                className="w-full bg-[#1a2634] border-2 border-[#324d67] rounded-xl px-4 py-3 text-white placeholder:text-[#5f7a94] focus:border-primary focus:ring-1 focus:ring-primary transition-colors focus:outline-none"
+                className="w-full bg-[#141f2b]/60 border border-[#233648]/60 rounded-2xl px-4 py-3 text-white placeholder:text-[#5f7a94] focus:border-primary focus:ring-1 focus:ring-primary transition-colors focus:outline-none"
               />
             </div>
 
@@ -252,7 +254,7 @@ function CompanySetupContent() {
                       checked={selectedSize === opt.value}
                       onChange={() => setSelectedSize(opt.value)}
                     />
-                    <div className="flex flex-col items-center gap-1 p-4 rounded-xl border-2 border-[#324d67] bg-[#1a2634] peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 text-center">
+                    <div className="flex flex-col items-center gap-1 p-4 rounded-2xl border border-[#233648]/60 bg-[#141f2b]/60 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 text-center">
                       <span className="text-base font-bold text-white">{opt.label}</span>
                       <span className="text-xs text-[#92adc9]">{opt.description}</span>
                     </div>
@@ -275,7 +277,7 @@ function CompanySetupContent() {
                       checked={selectedExperience === opt.value}
                       onChange={() => setSelectedExperience(opt.value)}
                     />
-                    <div className="flex flex-col items-center gap-1 p-4 rounded-xl border-2 border-[#324d67] bg-[#1a2634] peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 text-center">
+                    <div className="flex flex-col items-center gap-1 p-4 rounded-2xl border border-[#233648]/60 bg-[#141f2b]/60 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 text-center">
                       <span className="text-base font-bold text-white">{opt.label}</span>
                       <span className="text-xs text-[#92adc9]">{opt.description}</span>
                     </div>
@@ -295,13 +297,13 @@ function CompanySetupContent() {
               <button
                 onClick={handleFinalize}
                 disabled={isInitializing}
-                className="flex items-center justify-center gap-2 h-12 px-8 rounded-lg bg-primary text-white font-bold text-base shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all disabled:opacity-50"
+                className="flex items-center justify-center gap-2 h-12 px-8 rounded-xl bg-primary text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
               >
                 <span className="material-symbols-outlined text-xl">play_arrow</span>
                 Begin Simulation
               </button>
             </div>
-          </div>
+          </FadeIn>
         </main>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { useRef } from "react";
+import PorterLogo from "@/components/PorterLogo";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -171,12 +172,10 @@ export default function LandingPage() {
       {/* Header */}
       <header className="relative z-10 flex items-center justify-between whitespace-nowrap border-b border-solid border-[#233648] px-4 sm:px-10 py-3 bg-[#111a22]/80 backdrop-blur-md">
         <div className="flex items-center gap-4 text-white">
-          <div className="size-8 flex items-center justify-center rounded-lg bg-primary text-white">
-            <span className="material-symbols-outlined text-xl">
-              rocket_launch
-            </span>
+          <div className="size-8 flex items-center justify-center rounded-xl bg-primary text-white">
+            <PorterLogo size={20} variant="white" />
           </div>
-          <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
+          <h2 className="text-white text-lg font-bold font-heading leading-tight tracking-[-0.02em]">
             playporter.ai
           </h2>
         </div>

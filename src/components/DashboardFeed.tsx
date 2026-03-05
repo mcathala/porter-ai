@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useGame, TurnHistoryEntry } from "@/context/GameContext";
 import { NewsItem, CompetitorMove } from "@/lib/types/game";
 import TurnSummaryModal from "./TurnSummaryModal";
+import PorterLogo from "./PorterLogo";
 
 export default function DashboardFeed() {
   const { turnHistory, gameState } = useGame();
@@ -14,11 +15,9 @@ export default function DashboardFeed() {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-primary mb-6">
-          <span className="material-symbols-outlined text-4xl">
-            rocket_launch
-          </span>
+          <PorterLogo size={36} variant="blue" />
         </div>
-        <h3 className="text-xl font-bold text-white mb-2">
+        <h3 className="text-xl font-bold font-heading text-white mb-2">
           Welcome, CEO
         </h3>
         <p className="text-gray-400 max-w-md mb-6">
@@ -36,7 +35,7 @@ export default function DashboardFeed() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-lg font-bold text-white">Recent Results</h2>
+        <h2 className="text-lg font-bold font-heading text-white">Recent Results</h2>
         <span className="text-sm text-gray-500">
           {turnHistory.length} turn{turnHistory.length !== 1 ? "s" : ""} completed
         </span>
@@ -75,7 +74,7 @@ function TurnHistoryCard({ entry, onClick }: { entry: TurnHistoryEntry; onClick:
   return (
     <div className="space-y-4">
       {/* Turn Summary Card */}
-      <div onClick={onClick} className="group relative flex gap-4 rounded-xl bg-[#1a2632] p-5 transition-all hover:bg-[#233648] border border-transparent hover:border-[#2f455a] cursor-pointer">
+      <div onClick={onClick} className="group relative flex gap-4 rounded-2xl bg-[#1a2836] p-5 transition-all hover:bg-[#1f3040] border border-[#2a3f54] hover:border-[#3a5570] cursor-pointer">
         <div className="absolute -left-[33px] top-6 flex h-8 w-8 items-center justify-center rounded-full bg-[#233648] ring-4 ring-[#101922] text-gray-400 text-xs font-bold">
           {turn}
         </div>
@@ -98,7 +97,7 @@ function TurnHistoryCard({ entry, onClick }: { entry: TurnHistoryEntry; onClick:
         </div>
         <div className="flex flex-1 flex-col gap-2">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-white">Turn {turn} Summary</h3>
+            <h3 className="font-semibold font-heading text-white">Turn {turn} Summary</h3>
             <span className="text-xs text-gray-500">{formatDate(date)}</span>
           </div>
           <p className="text-sm text-gray-300 leading-relaxed">

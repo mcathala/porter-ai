@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import PorterLogo from "./PorterLogo";
 
 export default function Sidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -28,14 +29,12 @@ export default function Sidebar() {
                         className={`flex items-center gap-3 ${isCollapsed ? "justify-center" : ""
                             }`}
                     >
-                        <div className="bg-primary/20 flex items-center justify-center rounded-lg size-10 flex-shrink-0">
-                            <span className="material-symbols-outlined text-primary text-[24px]">
-                                rocket_launch
-                            </span>
+                        <div className="bg-primary/20 flex items-center justify-center rounded-xl size-10 flex-shrink-0">
+                            <PorterLogo size={24} variant="blue" />
                         </div>
                         {!isCollapsed && (
                             <div className="flex flex-col">
-                                <h1 className="text-white text-base font-bold leading-tight">
+                                <h1 className="text-white text-base font-bold font-heading leading-tight tracking-[-0.02em]">
                                     PorterAi
                                 </h1>
                                 <p className="text-[#92adc9] text-xs font-normal">

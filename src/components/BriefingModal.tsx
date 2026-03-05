@@ -60,16 +60,16 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="bg-[#1a2632] w-full max-w-4xl rounded-2xl shadow-2xl border border-[#233648] overflow-hidden flex flex-col max-h-[90vh] relative z-10 animate-in zoom-in-95 duration-200 text-white">
+      <div className="bg-[#141f2b] w-full max-w-4xl rounded-2xl shadow-2xl border border-[#233648]/60 overflow-hidden flex flex-col max-h-[90vh] relative z-10 animate-in zoom-in-95 duration-200 text-white">
         {/* Header */}
-        <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#233648] bg-gradient-to-r from-[#1a2632] to-[#1f3044]">
+        <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#233648]/60 bg-gradient-to-r from-[#141f2b] to-[#1a2d3f]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-xl bg-primary/20 text-primary">
                 <span className="material-symbols-outlined text-2xl">business</span>
               </div>
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-white">
+                <h2 className="text-xl sm:text-2xl font-bold font-heading text-white">
                   {playerCompany.name}
                 </h2>
                 <p className="text-gray-400 text-sm">{sizeLabel} company, {experienceLabel} &middot; Mission Briefing</p>
@@ -77,7 +77,7 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
             </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+              className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-xl"
             >
               <span className="material-symbols-outlined text-[24px]">close</span>
             </button>
@@ -93,14 +93,14 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
 
           {/* Industry & Difficulty */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex items-center gap-4 rounded-xl bg-[#111a22] border border-[#233648] p-5">
+            <div className="flex items-center gap-4 rounded-2xl bg-[#111a22] border border-[#233648]/60 p-5">
               <span className="material-symbols-outlined text-primary text-2xl">domain</span>
               <div>
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Industry</p>
                 <p className="text-base font-bold text-white">{marketLabel}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 rounded-xl bg-[#111a22] border border-[#233648] p-5">
+            <div className="flex items-center gap-4 rounded-2xl bg-[#111a22] border border-[#233648]/60 p-5">
               <span className="material-symbols-outlined text-primary text-2xl">speed</span>
               <div>
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Difficulty</p>
@@ -111,31 +111,31 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
 
           {/* Starting KPIs */}
           <div>
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold font-heading text-white mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">monitoring</span>
               Starting Position
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="rounded-xl bg-[#111a22] border border-[#233648] p-5 flex flex-col gap-1">
+              <div className="rounded-2xl bg-[#111a22] border border-[#233648]/60 p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-emerald-400 text-lg">payments</span>
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Cash Balance</p>
                 </div>
-                <p className="text-2xl font-black text-white mt-1">{formatCurrency(kpis.cash)}</p>
+                <p className="text-2xl font-bold font-heading text-white mt-1">{formatCurrency(kpis.cash)}</p>
               </div>
-              <div className="rounded-xl bg-[#111a22] border border-[#233648] p-5 flex flex-col gap-1">
+              <div className="rounded-2xl bg-[#111a22] border border-[#233648]/60 p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-blue-400 text-lg">pie_chart</span>
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Market Share</p>
                 </div>
-                <p className="text-2xl font-black text-white mt-1">{kpis.marketShare.toFixed(1)}%</p>
+                <p className="text-2xl font-bold font-heading text-white mt-1">{kpis.marketShare.toFixed(1)}%</p>
               </div>
-              <div className="rounded-xl bg-[#111a22] border border-[#233648] p-5 flex flex-col gap-1">
+              <div className="rounded-2xl bg-[#111a22] border border-[#233648]/60 p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-amber-400 text-lg">sentiment_satisfied</span>
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Team Morale</p>
                 </div>
-                <p className="text-2xl font-black text-white mt-1">{kpis.satisfaction.toFixed(0)}%</p>
+                <p className="text-2xl font-bold font-heading text-white mt-1">{kpis.satisfaction.toFixed(0)}%</p>
               </div>
             </div>
           </div>
@@ -143,11 +143,11 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
           {/* Market Intelligence Report */}
           {briefing.marketSummary && (
             <div>
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold font-heading text-white mb-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">newspaper</span>
                 Market Intelligence Report
               </h3>
-              <div className="rounded-xl bg-[#111a22] border border-[#233648] p-6">
+              <div className="rounded-2xl bg-[#111a22] border border-[#233648]/60 p-6">
                 <p className="text-[#c0d0e0] text-base leading-relaxed whitespace-pre-line">
                   {briefing.marketSummary}
                 </p>
@@ -158,7 +158,7 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
           {/* Competitors */}
           {briefing.competitors.length > 0 && (
             <div>
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold font-heading text-white mb-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">groups</span>
                 Initial Competitive Landscape
               </h3>
@@ -168,7 +168,7 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
                   return (
                     <div
                       key={i}
-                      className="rounded-xl bg-[#111a22] border border-[#233648] p-5 flex flex-col gap-3"
+                      className="rounded-2xl bg-[#111a22] border border-[#233648]/60 p-5 flex flex-col gap-3"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -178,7 +178,7 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
                             </span>
                           </div>
                           <div>
-                            <p className="text-base font-bold text-white">{c.name}</p>
+                            <p className="text-base font-bold font-heading text-white">{c.name}</p>
                             <p className="text-xs text-gray-400 capitalize">{c.archetype}</p>
                           </div>
                         </div>
@@ -224,10 +224,10 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
         </div>
 
         {/* Footer */}
-        <div className="px-4 sm:px-8 py-4 sm:py-5 border-t border-[#233648] bg-[#1a2632] flex justify-end">
+        <div className="px-4 sm:px-8 py-4 sm:py-5 border-t border-[#233648]/60 bg-[#141f2b] flex justify-end">
           <button
             onClick={onClose}
-            className="px-8 py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/25 hover:bg-primary/90 transition-all flex items-center gap-2"
+            className="px-8 py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2"
           >
             <span className="material-symbols-outlined text-[20px]">close</span>
             Close

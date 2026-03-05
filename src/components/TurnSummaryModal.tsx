@@ -92,7 +92,7 @@ export default function TurnSummaryModal({
         <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#233648] bg-gradient-to-r from-[#1a2632] to-[#1f3044]">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-white">
+              <h2 className="text-xl sm:text-2xl font-bold font-heading text-white">
                 {formatDate(newDate)}
               </h2>
               <p className="text-gray-400 text-sm mt-1">Turn {turnNumber}</p>
@@ -112,7 +112,7 @@ export default function TurnSummaryModal({
         <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 sm:space-y-8">
           {/* Key Metrics */}
           <div>
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold font-heading text-white mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">
                 analytics
               </span>
@@ -120,7 +120,7 @@ export default function TurnSummaryModal({
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Cash */}
-              <div className="bg-[#111a22] rounded-xl p-5 border border-[#233648]">
+              <div className="bg-[#111a22] rounded-2xl p-5 border border-[#233648]/60">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400 text-sm">Cash Balance</span>
                   <div
@@ -132,7 +132,7 @@ export default function TurnSummaryModal({
                     {formatChange(turnResult.kpiDeltas.cash.change)}
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-white">
+                <div className="text-2xl font-bold font-heading text-white">
                   {formatCurrency(turnResult.kpiDeltas.cash.value)}
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
@@ -141,7 +141,7 @@ export default function TurnSummaryModal({
               </div>
 
               {/* Market Share */}
-              <div className="bg-[#111a22] rounded-xl p-5 border border-[#233648]">
+              <div className="bg-[#111a22] rounded-2xl p-5 border border-[#233648]/60">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400 text-sm">Market Share</span>
                   <div
@@ -153,7 +153,7 @@ export default function TurnSummaryModal({
                     {formatChange(turnResult.kpiDeltas.marketShare.change, true)}
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-white">
+                <div className="text-2xl font-bold font-heading text-white">
                   {turnResult.kpiDeltas.marketShare.value.toFixed(1)}%
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
@@ -162,7 +162,7 @@ export default function TurnSummaryModal({
               </div>
 
               {/* Satisfaction */}
-              <div className="bg-[#111a22] rounded-xl p-5 border border-[#233648]">
+              <div className="bg-[#111a22] rounded-2xl p-5 border border-[#233648]/60">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400 text-sm">Team Morale</span>
                   <div
@@ -174,7 +174,7 @@ export default function TurnSummaryModal({
                     {formatChange(turnResult.kpiDeltas.satisfaction.change, true)}
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-white">
+                <div className="text-2xl font-bold font-heading text-white">
                   {turnResult.kpiDeltas.satisfaction.value.toFixed(0)}%
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
@@ -187,7 +187,7 @@ export default function TurnSummaryModal({
           {/* News & Events */}
           {turnResult.newsItems.length > 0 && (
             <div>
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold font-heading text-white mb-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-blue-400">
                   newspaper
                 </span>
@@ -197,7 +197,7 @@ export default function TurnSummaryModal({
                 {turnResult.newsItems.map((news, index) => (
                   <div
                     key={news.id || index}
-                    className="bg-[#111a22] rounded-xl p-4 border border-[#233648]"
+                    className="bg-[#111a22] rounded-2xl p-4 border border-[#233648]/60"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
@@ -230,7 +230,7 @@ export default function TurnSummaryModal({
           {/* Competitor Activity */}
           {turnResult.competitorMoves.length > 0 && (
             <div>
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold font-heading text-white mb-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-orange-400">
                   groups
                 </span>
@@ -240,7 +240,7 @@ export default function TurnSummaryModal({
                 {turnResult.competitorMoves.map((move, index) => (
                   <div
                     key={index}
-                    className="bg-[#111a22] rounded-xl p-4 border border-[#233648] flex items-start gap-4"
+                    className="bg-[#111a22] rounded-2xl p-4 border border-[#233648]/60 flex items-start gap-4"
                   >
                     <div className="p-2 rounded-lg bg-orange-500/10 text-orange-400">
                       <span className="material-symbols-outlined">
@@ -518,7 +518,7 @@ export default function TurnSummaryModal({
         <div className="px-4 sm:px-8 py-4 sm:py-5 border-t border-[#233648] bg-[#1a2632] flex justify-end">
           <button
             onClick={onClose}
-            className="px-8 py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/25 hover:bg-primary/90 transition-all flex items-center gap-2"
+            className="px-8 py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2"
           >
             <span className="material-symbols-outlined text-[20px]">
               arrow_forward

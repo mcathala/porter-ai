@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import FadeIn from "@/components/FadeIn";
+import PorterLogo from "@/components/PorterLogo";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -18,19 +20,17 @@ export default function OnboardingPage() {
         {/* Top Navigation */}
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#233648] px-4 sm:px-10 py-3 bg-[#111a22]">
           <div className="flex items-center gap-4 text-white">
-            <div className="size-8 flex items-center justify-center rounded-lg bg-primary text-white">
-              <span className="material-symbols-outlined text-xl">
-                rocket_launch
-              </span>
+            <div className="size-8 flex items-center justify-center rounded-xl bg-primary text-white">
+              <PorterLogo size={20} variant="white" />
             </div>
-            <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
+            <h2 className="text-white text-lg font-bold font-heading leading-tight tracking-[-0.02em]">
               PorterAi
             </h2>
           </div>
         </header>
 
         <main className="flex flex-1 justify-center py-8 px-6 sm:px-10">
-          <div className="flex flex-col w-full max-w-[960px]">
+          <FadeIn className="flex flex-col w-full max-w-[960px]">
             {/* Progress Bar Section */}
             <div className="flex flex-col gap-3 mb-8">
               <div className="flex justify-between items-center">
@@ -51,7 +51,7 @@ export default function OnboardingPage() {
 
             {/* Page Heading */}
             <div className="flex flex-col gap-2 mb-8">
-              <h1 className="text-white text-4xl font-black leading-tight tracking-[-0.033em]">
+              <h1 className="text-white text-4xl font-bold font-heading leading-tight tracking-[-0.02em]">
                 Select Your Challenge Level
               </h1>
               <p className="text-[#92adc9] text-lg font-normal">
@@ -71,7 +71,7 @@ export default function OnboardingPage() {
                   checked={selected === "easy"}
                   onChange={() => setSelected("easy")}
                 />
-                <div className="h-full flex flex-col gap-4 p-6 rounded-xl border-2 border-[#324d67] bg-[#1a2634] peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 shadow-sm">
+                <div className="h-full flex flex-col gap-4 p-6 rounded-2xl border border-[#233648]/60 bg-[#141f2b]/60 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 shadow-sm">
                   <div className="flex justify-between items-start">
                     <div className="p-3 rounded-lg bg-indigo-500/20 text-indigo-400">
                       <span className="material-symbols-outlined text-3xl">
@@ -85,7 +85,7 @@ export default function OnboardingPage() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-white text-xl font-bold mb-2">
+                    <h3 className="text-white text-xl font-bold font-heading mb-2">
                       Easy
                     </h3>
                     <p className="text-[#92adc9] text-sm leading-relaxed">
@@ -110,7 +110,7 @@ export default function OnboardingPage() {
                   checked={selected === "standard"}
                   onChange={() => setSelected("standard")}
                 />
-                <div className="h-full flex flex-col gap-4 p-6 rounded-xl border-2 border-[#324d67] bg-[#1a2634] peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 shadow-sm">
+                <div className="h-full flex flex-col gap-4 p-6 rounded-2xl border border-[#233648]/60 bg-[#141f2b]/60 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 shadow-sm">
                   <div className="flex justify-between items-start">
                     <div className="p-3 rounded-lg bg-primary/20 text-primary">
                       <span className="material-symbols-outlined text-3xl">
@@ -124,7 +124,7 @@ export default function OnboardingPage() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-white text-xl font-bold mb-2">
+                    <h3 className="text-white text-xl font-bold font-heading mb-2">
                       Standard
                     </h3>
                     <p className="text-[#92adc9] text-sm leading-relaxed">
@@ -149,7 +149,7 @@ export default function OnboardingPage() {
                   checked={selected === "hard"}
                   onChange={() => setSelected("hard")}
                 />
-                <div className="h-full flex flex-col gap-4 p-6 rounded-xl border-2 border-[#324d67] bg-[#1a2634] peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 shadow-sm">
+                <div className="h-full flex flex-col gap-4 p-6 rounded-2xl border border-[#233648]/60 bg-[#141f2b]/60 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 shadow-sm">
                   <div className="flex justify-between items-start">
                     <div className="p-3 rounded-lg bg-orange-500/20 text-orange-400">
                       <span className="material-symbols-outlined text-3xl">
@@ -163,7 +163,7 @@ export default function OnboardingPage() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-white text-xl font-bold mb-2">
+                    <h3 className="text-white text-xl font-bold font-heading mb-2">
                       Hard
                     </h3>
                     <p className="text-[#92adc9] text-sm leading-relaxed">
@@ -186,12 +186,12 @@ export default function OnboardingPage() {
               </Link>
               <button
                 onClick={handleContinue}
-                className="flex items-center justify-center h-12 px-8 rounded-lg bg-primary text-white font-bold text-base shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all"
+                className="flex items-center justify-center h-12 px-8 rounded-xl bg-primary text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
                 Continue
               </button>
             </div>
-          </div>
+          </FadeIn>
         </main>
       </div>
     </div>

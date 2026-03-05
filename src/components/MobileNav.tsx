@@ -31,7 +31,7 @@ export default function MobileNav() {
                             {item.icon}
                         </span>
                         <div className="flex items-center gap-1">
-                            <span className="text-[10px] font-medium">{item.label}</span>
+                            <span className="text-[10px] font-medium font-heading">{item.label}</span>
                             {comingSoon && (
                                 <span className="text-[8px] font-semibold text-yellow-400">*</span>
                             )}

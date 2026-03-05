@@ -46,7 +46,7 @@ export default function KPIHeader() {
         {/* KPI Cards - scrollable on mobile */}
         <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar min-w-0">
           {/* Cash Balance */}
-          <div className="flex items-center gap-2 sm:gap-3 rounded-lg bg-[#1a2632] px-2.5 sm:px-4 py-1.5 sm:py-2 border border-[#233648] shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 rounded-xl bg-[#1a2836] px-2.5 sm:px-4 py-1.5 sm:py-2 border border-[#2a3f54] shrink-0">
             <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
               payments
             </span>
@@ -54,14 +54,14 @@ export default function KPIHeader() {
               <span className="text-[10px] sm:text-xs font-medium text-gray-400 hidden sm:block">
                 Cash
               </span>
-              <span className="text-sm sm:text-base font-bold text-white whitespace-nowrap">
+              <span className="text-sm sm:text-base font-bold font-heading text-white whitespace-nowrap">
                 {formatCurrency(kpis.cash)}
               </span>
             </div>
           </div>
 
           {/* Market Share */}
-          <div className="flex items-center gap-2 sm:gap-3 rounded-lg bg-[#1a2632] px-2.5 sm:px-4 py-1.5 sm:py-2 border border-[#233648] shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 rounded-xl bg-[#1a2836] px-2.5 sm:px-4 py-1.5 sm:py-2 border border-[#2a3f54] shrink-0">
             <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
               pie_chart
             </span>
@@ -69,14 +69,14 @@ export default function KPIHeader() {
               <span className="text-[10px] sm:text-xs font-medium text-gray-400 hidden sm:block">
                 Share
               </span>
-              <span className="text-sm sm:text-base font-bold text-white whitespace-nowrap">
+              <span className="text-sm sm:text-base font-bold font-heading text-white whitespace-nowrap">
                 {kpis.marketShare.toFixed(1)}%
               </span>
             </div>
           </div>
 
           {/* Customer Satisfaction */}
-          <div className="flex items-center gap-2 sm:gap-3 rounded-lg bg-[#1a2632] px-2.5 sm:px-4 py-1.5 sm:py-2 border border-[#233648] shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 rounded-xl bg-[#1a2836] px-2.5 sm:px-4 py-1.5 sm:py-2 border border-[#2a3f54] shrink-0">
             <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
               sentiment_satisfied
             </span>
@@ -84,7 +84,7 @@ export default function KPIHeader() {
               <span className="text-[10px] sm:text-xs font-medium text-gray-400 hidden sm:block">
                 Team Morale
               </span>
-              <span className="text-sm sm:text-base font-bold text-white whitespace-nowrap">
+              <span className="text-sm sm:text-base font-bold font-heading text-white whitespace-nowrap">
                 {kpis.satisfaction.toFixed(0)}%
               </span>
             </div>
@@ -95,24 +95,24 @@ export default function KPIHeader() {
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             onClick={() => setShowBriefing(true)}
-            className="hidden sm:flex items-center gap-2 bg-[#1a2632] px-4 py-2 rounded-lg border border-[#233648] hover:border-primary/50 hover:bg-[#1f2f3f] transition-colors cursor-pointer"
+            className="hidden sm:flex items-center gap-2 bg-[#141f2b]/60 px-4 py-2 rounded-xl border border-[#233648]/60 hover:border-primary/50 hover:bg-[#1f2f3f] transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
             <span className="material-symbols-outlined text-primary text-lg">
               business
             </span>
-            <span className="text-sm font-bold text-white">{gameState.playerCompany.name}</span>
+            <span className="text-sm font-bold font-heading text-white">{gameState.playerCompany.name}</span>
           </button>
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-[#1a2632] px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg border border-[#233648]">
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-[#141f2b]/60 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-[#233648]/60">
             <span className="material-symbols-outlined text-primary text-base sm:text-lg">
               schedule
             </span>
-            <span className="font-mono text-base sm:text-lg font-bold text-white">{turn}</span>
+            <span className="font-mono text-base sm:text-lg font-bold font-heading text-white">{turn}</span>
           </div>
           {totalTokenUsage.totalTokens > 0 && (
             <div className="relative" ref={tokenRef}>
               <button
                 onClick={() => setShowTokenDetails((v) => !v)}
-                className="hidden sm:flex items-center gap-2 bg-[#1a2632] px-3 py-1.5 sm:py-2 rounded-lg border border-[#233648] hover:border-primary/50 hover:bg-[#1f2f3f] transition-colors cursor-pointer"
+                className="hidden sm:flex items-center gap-2 bg-[#141f2b]/60 px-3 py-1.5 sm:py-2 rounded-xl border border-[#233648]/60 hover:border-primary/50 hover:bg-[#1f2f3f] transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
                 <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
                   token
@@ -122,7 +122,7 @@ export default function KPIHeader() {
                 </span>
               </button>
               {showTokenDetails && (
-                <div className="absolute right-0 top-full mt-2 z-50 bg-[#1a2632] border border-[#233648] rounded-lg shadow-xl p-3 min-w-[180px]">
+                <div className="absolute right-0 top-full mt-2 z-50 bg-[#141f2b]/60 backdrop-blur-md border border-[#233648]/60 rounded-xl shadow-xl p-3 min-w-[180px]">
                   <div className="text-xs font-medium text-gray-400 mb-2">Token Usage</div>
                   <div className="flex flex-col gap-1.5">
                     <div className="flex justify-between items-center">

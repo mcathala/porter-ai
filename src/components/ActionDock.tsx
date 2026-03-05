@@ -75,7 +75,7 @@ export default function ActionDock() {
               autorenew
             </span>
             <div className="flex flex-col items-center gap-1">
-              <h3 className="text-xl font-bold text-white tracking-wide">Processing Turn</h3>
+              <h3 className="text-xl font-bold font-heading text-white tracking-wide">Processing Turn</h3>
               <p className="text-sm text-gray-400">Simulating market changes and opponent moves...</p>
             </div>
           </div>
@@ -112,16 +112,16 @@ export default function ActionDock() {
             <button
               onClick={() => setIsDialogOpen(true)}
               disabled={isProcessingTurn}
-              className="group flex items-center gap-2 sm:gap-3 px-4 sm:px-8 py-2.5 sm:py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-[0_0_15px_rgba(37,99,235,0.2)] hover:shadow-[0_0_25px_rgba(37,99,235,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-none justify-center"
+              className="group flex items-center gap-2 sm:gap-3 px-4 sm:px-8 py-2.5 sm:py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-lg shadow-blue-600/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-none justify-center"
             >
               <span className="material-symbols-outlined text-[20px] sm:text-[24px] text-blue-200 group-hover:text-white transition-colors">
                 add_circle
               </span>
-              <span className="font-bold text-sm sm:text-lg tracking-wide">Take Action</span>
+              <span className="font-bold font-heading text-sm sm:text-lg tracking-wide">Take Action</span>
             </button>
 
             {actions.length > 0 && (
-              <div className="text-xs sm:text-sm font-medium text-gray-400 flex items-center gap-2 bg-[#1a2632] px-3 sm:px-4 py-2 rounded-lg border border-[#233648] shrink-0 hidden sm:flex">
+              <div className="text-xs sm:text-sm font-medium font-heading text-gray-400 flex items-center gap-2 bg-[#141f2b]/60 px-3 sm:px-4 py-2 rounded-xl border border-[#233648]/60 shrink-0 hidden sm:flex">
                 <span className="material-symbols-outlined text-[16px] text-blue-400">
                   checklist
                 </span>
@@ -150,9 +150,9 @@ export default function ActionDock() {
             <button
               onClick={() => setIsTurnDialogOpen(true)}
               disabled={isProcessingTurn}
-              className="group relative flex items-center gap-2 sm:gap-3 px-4 sm:px-8 py-2.5 sm:py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full sm:w-auto justify-center"
+              className="group relative flex items-center gap-2 sm:gap-3 px-4 sm:px-8 py-2.5 sm:py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full sm:w-auto justify-center"
             >
-              <span className="font-bold text-sm sm:text-lg tracking-wide">
+              <span className="font-bold font-heading text-sm sm:text-lg tracking-wide">
                 {isProcessingTurn ? "Simulating..." : "Next Turn"}
               </span>
               <span className={`material-symbols-outlined text-[20px] sm:text-[24px] ${isProcessingTurn ? 'animate-spin' : 'group-hover:translate-x-1 transition-transform'}`}>
