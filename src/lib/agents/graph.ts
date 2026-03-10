@@ -197,10 +197,12 @@ async function marketAgentNode(
   const { turnInput } = state;
   const { gameState, timeAdvance } = turnInput;
 
+  const playerName = gameState.playerCompany.name;
   const systemPrompt = getMarketAgentPrompt(
     gameState.difficulty,
     gameState.customMarket || gameState.market,
-    timeAdvance
+    timeAdvance,
+    playerName
   );
 
   const competitorStatus = gameState.competitors
@@ -235,6 +237,19 @@ Simulate what each competitor does this turn and what world events occur in this
   const start = performance.now();
   const { result: output, usage } = await safeInvoke(MarketAgentSchema, messages, 1, "MarketAgent");
   console.log(`[MarketAgent] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
+
+  // Safety net: strip any competitor move that references the player's own company
+  if (output && playerName) {
+    const playerNameLower = playerName.toLowerCase();
+    const before = output.competitorMoves.length;
+    output.competitorMoves = output.competitorMoves.filter(
+      (cm) => !cm.competitorName.toLowerCase().includes(playerNameLower)
+    );
+    if (output.competitorMoves.length < before) {
+      console.warn(`[MarketAgent] Filtered ${before - output.competitorMoves.length} self-referencing competitor move(s) for "${playerName}"`);
+    }
+  }
+
   return { marketOutput: output, tokenUsage: usage };
 }
 

@@ -166,7 +166,8 @@ Respond with a JSON object:
 export function getMarketAgentPrompt(
   difficulty: Difficulty,
   market: string,
-  timeAdvance: string
+  timeAdvance: string,
+  playerCompanyName?: string
 ): string {
   return `You are the MARKET AGENT in a business simulation game. You simulate what is happening in the market THIS TURN — competitor behavior, world events, and market dynamics.
 
@@ -221,7 +222,7 @@ Assess shifts in the fragmented/unnamed portion of the market: is it consolidati
 ## CRITICAL RULES
 - QUALITATIVE only. Describe BEHAVIOR, not numerical outcomes. The Gamemaster decides numbers.
 - REALISM is essential. Only generate events and moves that would plausibly occur in this time window.
-- You have NO knowledge of what any player did this turn.
+- You have NO knowledge of what any player did this turn.${playerCompanyName ? `\n- NEVER generate a competitor move for "${playerCompanyName}" — that is the player's company, NOT a competitor. Only generate moves for the named competitors listed above.` : ""}
 
 ## OUTPUT FORMAT
 Respond with a JSON object:
