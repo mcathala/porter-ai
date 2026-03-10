@@ -126,8 +126,8 @@ export const WorldEventSchema = z.object({
   headline: z.string().describe("Short headline for the event"),
   description: z.string().describe("1-2 sentence description of the event and its market impact"),
   category: z
-    .enum(["industry", "regulatory", "macro", "technology", "labor"])
-    .catch("industry")
+    .enum(["consumer_trend", "macro", "technology", "supply_chain", "competitive", "talent", "regulatory"])
+    .catch("competitive")
     .describe("Category of the world event"),
   sentiment: z
     .enum(["positive", "negative", "neutral"])

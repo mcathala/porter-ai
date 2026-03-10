@@ -213,8 +213,18 @@ Generate between 0 and 3 events that would GENUINELY happen in this industry dur
 
 Do NOT generate one event per category as a checklist. Only generate an event if it would genuinely be newsworthy during this period. It's perfectly fine to generate 0 or 1 events. Quality and realism over quantity.
 
-Possible categories (pick ONLY what's relevant, not all of them):
-- Regulatory changes, technology breakthroughs, macro shifts, industry trends, labor dynamics
+**Each event should be an ACTIONABLE SIGNAL** — something that creates a strategic decision point. The player should read the event and think "I could act on this." For example: a shift in consumer demand suggests a product pivot, an economic downturn hints at acquisition opportunities, a supply chain disruption suggests diversifying suppliers.
+
+Available categories (pick ONLY what's relevant, not all of them):
+- **consumer_trend**: Shifting consumer behavior, viral cultural moment, or demand pattern change — suggests product/marketing opportunities
+- **macro**: Economic shift (recession, boom, interest rates, funding climate) — affects pricing, investment, and growth strategy
+- **technology**: Tech breakthrough or disruption — opens new capabilities or threatens existing approaches
+- **supply_chain**: Disruption or opportunity in sourcing, logistics, or raw materials — affects costs and operations
+- **competitive**: Notable industry consolidation, a new entrant, or a competitor failure — reshapes the playing field
+- **talent**: Labor market shift, skills shortage, or workforce trend — affects hiring and retention strategy
+- **regulatory**: New law or policy change — RARE, only generate when truly significant. Most turns should NOT have a regulatory event.
+
+**DIVERSITY IS CRITICAL.** Vary the categories across turns. If recent turns featured technology or regulatory events, lean toward consumer_trend, macro, supply_chain, competitive, or talent instead. The world is multidimensional — do not fixate on one or two categories.
 
 ## REST OF MARKET DYNAMICS
 Assess shifts in the fragmented/unnamed portion of the market: is it consolidating? Are new players emerging? Is there pressure from startups?
@@ -239,7 +249,7 @@ Respond with a JSON object:
     {
       "headline": "Short headline",
       "description": "1-2 sentence description of the event and its market impact",
-      "category": "industry|regulatory|macro|technology|labor",
+      "category": "consumer_trend|macro|technology|supply_chain|competitive|talent|regulatory",
       "sentiment": "positive|negative|neutral"
     }
   ],

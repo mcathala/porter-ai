@@ -215,6 +215,10 @@ async function marketAgentNode(
   const restOfMarketStatus = `- Rest of market: ${gameState.restOfMarket.marketShare}% share, fragmentation: ${gameState.restOfMarket.fragmentation}, dynamism: ${gameState.restOfMarket.dynamism}, latent pressure: ${gameState.restOfMarket.latentPressure}`;
 
   // NOTE: No player action, no player company name, no player KPIs
+  const lastTurnContext = gameState.lastTurnSummary
+    ? `\n## PREVIOUS TURN CONTEXT\n${gameState.lastTurnSummary}\n\nUse this to vary your world event categories — avoid repeating the same types of events as last turn.`
+    : "";
+
   const userPrompt = `
 ## MARKET STATE
 - Industry: ${gameState.customMarket || gameState.market}
@@ -226,6 +230,7 @@ ${competitorStatus || "No named competitors yet."}
 
 ## REST OF MARKET
 ${restOfMarketStatus}
+${lastTurnContext}
 
 Simulate what each competitor does this turn and what world events occur in this industry during this ${timeAdvance}. Remember: you have NO knowledge of what any specific player is doing. Only generate world events that would genuinely happen in this time window.`;
 
