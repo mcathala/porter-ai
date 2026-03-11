@@ -216,12 +216,14 @@ Guidelines:
 - A week should have at most 1-2 competitor moves total
 
 ## WORLD EVENTS
-Generate between 0 and 3 events that would GENUINELY happen in this industry during this specific time period. Think like a real news feed:
-- Most weeks, only 0-1 noteworthy things happen in any given industry
-- A month might see 1-2 events
-- A quarter could see 2-3 significant developments
+Generate events that would GENUINELY happen in this industry during this specific time period.
 
-Do NOT generate one event per category as a checklist. Only generate an event if it would genuinely be newsworthy during this period. It's perfectly fine to generate 0 or 1 events. Quality and realism over quantity.
+**How many events?** Do NOT always generate 2. The count MUST vary:
+- **Week**: 0 or 1 event. Most weeks nothing newsworthy happens. Generate 0 events if the week was calm.
+- **Month**: 0 to 2 events. Some months are quiet (0), most have 1, occasionally 2.
+- **Quarter**: 1 to 3 events. More time means more can happen, but not every quarter is turbulent.
+
+Do NOT generate one event per category as a checklist. Only generate an event if it would genuinely be newsworthy during this period. Generating 0 events is a VALID and REALISTIC outcome — use it.
 
 **Each event should be an ACTIONABLE SIGNAL** — something that creates a strategic decision point. The player should read the event and think "I could act on this." For example: a shift in consumer demand suggests a product pivot, an economic downturn hints at acquisition opportunities, a supply chain disruption suggests diversifying suppliers.
 
@@ -424,6 +426,8 @@ Rules:
 - Status is derived from weight: latent (<10%), active (10-25%), dominant (>25%)
 
 ## C. COMPETITOR MANAGEMENT
+
+CRITICAL: The player's company ("${playerCompany.name}") is NOT a competitor. NEVER include "${playerCompany.name}" in the updatedCompetitors array. Only list the named market competitors.
 
 ### Momentum Updates
 Competitors are NOT always succeeding. Update each competitor's momentum based on their actions and outcomes THIS turn:

@@ -214,6 +214,17 @@ async function marketAgentNode(
 
   const restOfMarketStatus = `- Rest of market: ${gameState.restOfMarket.marketShare}% share, fragmentation: ${gameState.restOfMarket.fragmentation}, dynamism: ${gameState.restOfMarket.dynamism}, latent pressure: ${gameState.restOfMarket.latentPressure}`;
 
+  // Randomized event count hint to break the LLM's tendency to always generate 2
+  const eventCountHints: Record<string, number[]> = {
+    week: [0, 0, 0, 1, 1],       // mostly 0, sometimes 1
+    month: [0, 1, 1, 1, 2],      // mostly 1, sometimes 0 or 2
+    quarter: [1, 1, 2, 2, 3],    // mostly 1-2, sometimes 3
+    year: [2, 2, 3, 3, 4],       // mostly 2-3, sometimes 4
+    event: [0, 1, 1, 1, 2],      // same as month
+  };
+  const hints = eventCountHints[timeAdvance] || eventCountHints.month;
+  const suggestedEventCount = hints[Math.floor(Math.random() * hints.length)];
+
   // NOTE: No player action, no player company name, no player KPIs
   const lastTurnContext = gameState.lastTurnSummary
     ? `\n## PREVIOUS TURN CONTEXT\n${gameState.lastTurnSummary}\n\nUse this to vary your world event categories — avoid repeating the same types of events as last turn.`
@@ -232,7 +243,9 @@ ${competitorStatus || "No named competitors yet."}
 ${restOfMarketStatus}
 ${lastTurnContext}
 
-Simulate what each competitor does this turn and what world events occur in this industry during this ${timeAdvance}. Remember: you have NO knowledge of what any specific player is doing. Only generate world events that would genuinely happen in this time window.`;
+Simulate what each competitor does this turn and what world events occur in this industry during this ${timeAdvance}. Remember: you have NO knowledge of what any specific player is doing. Only generate world events that would genuinely happen in this time window.
+
+**Event count this turn: generate exactly ${suggestedEventCount} world event${suggestedEventCount !== 1 ? "s" : ""}.**`;
 
   const messages = [
     { role: "system", content: systemPrompt },
@@ -423,6 +436,16 @@ Synthesize the Player Company Agent's SWOT with the Market Agent's independent m
     };
     base.setDate(base.getDate() + (advanceDays[timeAdvance] ?? 7));
     output.newDate = base.toISOString().split("T")[0];
+  }
+
+  // Filter player company from updatedCompetitors (GM sometimes includes it)
+  const playerNameLower = gameState.playerCompany.name.toLowerCase();
+  const competitorsBefore = output.updatedCompetitors.length;
+  output.updatedCompetitors = output.updatedCompetitors.filter(
+    (c) => !c.name.toLowerCase().includes(playerNameLower)
+  );
+  if (output.updatedCompetitors.length < competitorsBefore) {
+    console.warn(`[Gamemaster] Filtered ${competitorsBefore - output.updatedCompetitors.length} self-referencing competitor(s) for "${gameState.playerCompany.name}"`);
   }
 
   // Normalize market shares so they sum to exactly 100%
