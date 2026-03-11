@@ -410,6 +410,27 @@ Synthesize the Player Company Agent's SWOT with the Market Agent's independent m
     output.newDate = base.toISOString().split("T")[0];
   }
 
+  // Normalize market shares so they sum to exactly 100%
+  const playerShare = output.kpiDeltas.marketShare.value;
+  const competitorShares = output.updatedCompetitors.map((c) => c.marketShare);
+  const restShare = output.updatedRestOfMarket.marketShare;
+  const total = playerShare + competitorShares.reduce((a, b) => a + b, 0) + restShare;
+
+  if (Math.abs(total - 100) > 0.5) {
+    const ratio = 100 / total;
+    const previousShare = gameState.kpis.marketShare;
+    output.kpiDeltas.marketShare.value = +(playerShare * ratio).toFixed(1);
+    output.kpiDeltas.marketShare.change = +(output.kpiDeltas.marketShare.value - previousShare).toFixed(1);
+    output.kpiDeltas.marketShare.changePercent = previousShare > 0
+      ? +((output.kpiDeltas.marketShare.change / previousShare) * 100).toFixed(1)
+      : 0;
+    output.updatedCompetitors.forEach((c) => {
+      c.marketShare = +(c.marketShare * ratio).toFixed(1);
+    });
+    output.updatedRestOfMarket.marketShare = +(restShare * ratio).toFixed(1);
+    console.warn(`[Gamemaster] Market share normalized: ${total.toFixed(1)}% → 100% (ratio: ${ratio.toFixed(3)})`);
+  }
+
   console.log(`[Gamemaster] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
   return { gamemasterOutput: output, tokenUsage: usage };
 }
