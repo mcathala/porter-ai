@@ -25,7 +25,6 @@ import {
   getMarketAgentPrompt,
   getGamemasterPrompt,
   getTurn0GamemasterPrompt,
-  getNewsCountForTimeAdvance,
 } from "./prompts";
 
 // =============================================================================
@@ -268,8 +267,6 @@ async function gamemasterNode(
   const { turnInput, playerCompanyOutput, marketOutput } = state;
   const { gameState, timeAdvance } = turnInput;
 
-  const newsCount = getNewsCountForTimeAdvance(timeAdvance);
-
   const systemPrompt = getGamemasterPrompt(
     gameState.playerCompany,
     gameState.difficulty,
@@ -324,9 +321,6 @@ ${gameState.companyCulture}
 
 ### Time Advance
 ${timeAdvance}
-
-### News Items Count
-Generate exactly ${newsCount} news items for this time period (use the Market Agent's world events as the primary source).
 
 Synthesize the Player Company Agent's SWOT with the Market Agent's independent market activity. Resolve KPIs, update narratives (player-only, weights must sum to 100), manage competitors, handle consequences, and write the player-facing narrative.`;
 

@@ -248,5 +248,5 @@ Whether the player advanced by a week, month, or quarter, KPI changes were rough
 | P2 | Competitors always active, always positive | Balance ||
 | P2 | Time advance doesn't scale KPI impact | Design | Fixed |
 | P3 | Contradictory actions not penalized | Design ||
-| P3 | Event count always 2 regardless of time | Design ||
+| P3 | Event count always 2 regardless of time | Design | Fixed |
 | P3 | Dampening ratios inconsistent | Balance | Fixed |

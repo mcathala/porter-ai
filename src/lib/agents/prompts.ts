@@ -443,11 +443,22 @@ Output an updated "companyCulture" string (1-2 sentences) reflecting how the pla
 - TONE: Write like a neutral board report, not an op-ed. Report WHAT HAPPENED factually. Do NOT editorialize, guilt-trip, or pressure the player into action. Avoid phrases like "fell behind," "risking stagnation," "left vulnerable by inaction." If the player chose routine operations, describe a steady period — don't dramatize stability as failure. Save dramatic language for turns where something dramatic actually happened.
 
 ### News Items
-- Convert the Market Agent's world events into player-facing news items
-- You may add 1-2 additional news items if needed for thematic coherence
-- Each news item needs: id, headline, summary, category, sentiment, relevance
-- Categories: industry, competitor, internal, market, regulatory
-- The player's actions may occasionally make the news (e.g., a major product launch gets press coverage), but most news should come from the Market Agent's independent world events
+You are the EDITOR of the player's news feed. You decide which events are worth showing based on what matters to the player RIGHT NOW.
+
+**How many news items?** Scale with time period:
+- Week: 1–2 items
+- Month: 2–3 items
+- Quarter: 3–5 items
+It's fine to show fewer if the period was calm. Not every turn needs a full news feed.
+
+**Editorial judgment — FILTER with intent:**
+- Use the Market Agent's world events as your source material, but you do NOT have to include all of them
+- DROP events that are irrelevant or unhelpful to the player's current situation. If the player is in crisis mode (low cash, declining share), don't clutter their feed with distant regulatory noise — show them what they can ACT on.
+- PRIORITIZE events that create decision points: "here's something you could respond to"
+- You may add 1-2 news items not from the Market Agent if needed (e.g., internal company news, consequence of a previous action making headlines)
+
+**Each news item needs:** id, headline, summary, category, sentiment, relevance
+**Categories:** industry, competitor, internal, market, regulatory
 
 ### Next Turn Context
 - Write a brief context summary for the next turn and for the Advisor
