@@ -234,19 +234,19 @@ Whether the player advanced by a week, month, or quarter, KPI changes were rough
 
 ## Summary of Priority Fixes
 
-| Priority | Issue | Type |
-|----------|-------|------|
-| P0 | Self-reference bug (player in competitor list) | Bug |
-| P0 | Market share sum > 100% | Bug |
-| P0 | Market share nearly impossible to gain | Balance |
-| P1 | Cash never positive (no revenue model) | Balance |
-| P1 | Sign flips too common | Balance |
-| P1 | Cash proposal scaling bug | Bug |
-| P1 | World events only regulatory/technology | Content |
-| P2 | Brand awareness only goes up | Balance |
-| P2 | Satisfaction downward bias | Balance |
-| P2 | Competitors always active, always positive | Balance |
-| P2 | Time advance doesn't scale KPI impact | Design |
-| P3 | Contradictory actions not penalized | Design |
-| P3 | Event count always 2 regardless of time | Design |
-| P3 | Dampening ratios inconsistent | Balance |
+| Priority | Issue | Type | Done |
+|----------|-------|------|------|
+| P0 | Self-reference bug (player in competitor list) | Bug | Fixed |
+| P0 | Market share sum > 100% | Bug | Fixed |
+| P0 | Market share nearly impossible to gain | Balance | Fixed |
+| P1 | Cash never positive (no revenue model) | Balance | Fixed |
+| P1 | Sign flips too common | Balance | Fixed |
+| P1 | Cash proposal scaling bug | Bug ||
+| P1 | World events only regulatory/technology | Content | Fixed |
+| P2 | Brand awareness only goes up | Balance | Fixed |
+| P2 | Satisfaction downward bias | Balance | Fixed |
+| P2 | Competitors always active, always positive | Balance ||
+| P2 | Time advance doesn't scale KPI impact | Design | Fixed |
+| P3 | Contradictory actions not penalized | Design ||
+| P3 | Event count always 2 regardless of time | Design ||
+| P3 | Dampening ratios inconsistent | Balance | Fixed |

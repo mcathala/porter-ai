@@ -293,33 +293,108 @@ ${getDifficultyModifier(difficulty)}
 You must synthesize the Player Company Agent's SWOT with the Market Agent's independent market activity:
 - **Player action impact**: Weigh strengths vs weaknesses, opportunities vs threats from the Player Company Agent
 - **Market reality**: Consider competitor moves and world events from the Market Agent — do any of them interact with the player's action? Maybe one competitor's independent move collides with the player's strategy. Maybe a world event amplifies or threatens it. Maybe none of them relate.
-- **KPI resolution**: Produce final KPI deltas (NET cash, market share, team morale, brand awareness) considering BOTH the action's merits AND the market context
-  - NET cash (current balance, revenues based on actions and market share, expenses)
-  - Brand awareness reflects how much customers know and like the player's products/services. It is influenced by marketing campaigns, product quality, PR events, word-of-mouth, and competitor actions. It has inertia similar to market share.
 - **Competitor share changes**: Should reflect BOTH the player's action impact AND the competitors' own independent moves from the Market Agent
 
-**CRITICALLY EVALUATE THE PLAYER COMPANY AGENT'S PROPOSED KPI IMPACTS.**
-The Player Company Agent proposes KPI changes, but YOU are the final arbiter. Ask yourself:
-- Are the proposed changes proportional to the time period? A week should produce tiny shifts. A quarter allows meaningful change.
-- Are the proposed changes proportional to the action's magnitude? Routine operations should not move KPIs significantly. A major product launch might.
-- Does the market context justify the proposed changes, or should they be dampened/amplified?
-- If the player submitted no specific actions (routine operations), the company is still running — existing revenue, existing customers, existing operations continue. KPIs should be STABLE, not declining, unless there's a specific reason (pending consequence, competitive pressure over a long period, etc.).
-Override or dampen the Player Company Agent's proposals when they don't match reality.
-
-Difficulty modulates realism:
-  - Easy = actions succeed easily, market is responsive, little regulation
-  - Standard = balanced outcomes, some market inertia, occasional regulation
-  - Hard = realistic friction, market has real inertia, active regulatory environment
+The Player Company Agent proposes KPI changes, but YOU are the final arbiter. Use the KPI-specific guidance below to calibrate the final values. The game must feel REWARDING — bold actions should produce visible results. Players should see their decisions matter.
 
 CRITICAL: Not every competitor move needs to relate to the player. Not every world event needs to affect the player. The market is bigger than one company.
 
-## MARKET SHARE INERTIA
-Market share has INERTIA. Customers do not switch brands because a competitor had good press or launched a product this month. In reality:
-- A single competitor campaign does NOT immediately steal the player's customers
-- Share only erodes from SUSTAINED competitive pressure over MULTIPLE turns, or from a direct, targeted attack on the player's core segment
-- A competitor launching a capsule collection is not the same as stealing your customers — it generates buzz for them, but your existing clients stay loyal in the short term
-- For routine operations: market share should be FLAT or show only micro-fluctuations (±0.05% for a month)
-- Only apply meaningful share loss when there is a clear, direct causal chain from a specific event to customer defection
+## KPI RESOLUTION GUIDE
+
+### TIME SCALING
+The time period fundamentally scales ALL KPI impacts:
+- **Week**: Minor shifts only. Multiply typical monthly impacts by ~0.25x.
+- **Month**: The baseline unit. Ranges below are calibrated for a month.
+- **Quarter**: Meaningful change. Multiply monthly impacts by ~2-3x. Compound effects accumulate.
+- **Year**: Transformative. Multiply monthly impacts by ~5-8x.
+
+### DIFFICULTY SCALING
+Difficulty modulates how responsive KPIs are to player actions:
+- **Easy**: Actions succeed readily. KPI swings are generous. Use the HIGH end of ranges below.
+- **Standard**: Balanced cause-and-effect. Use the MIDDLE of ranges.
+- **Hard**: Realistic friction. Use the LOW end of ranges. The market resists change.
+
+### MARKET SHARE
+Market share is the player's competitive position. It is ZERO-SUM: player + all competitors + rest of market MUST equal 100%. When the player gains, someone else loses, and vice versa.
+
+**Expected ranges PER MONTH:**
+- Routine operations (no specific actions): FLAT (±0.1%)
+- Moderate action (single product improvement, marketing push): ±0.5–1.5%
+- Bold action (major launch, aggressive pricing, acquisition): ±1–3%
+- Breakthrough moment (viral success, competitor collapse, market disruption): ±3–5%
+
+**What drives share UP**: Successful product launches, aggressive marketing, competitor failures, acquisition of competitor's customers, viral moments, price competitiveness in price-sensitive markets.
+**What drives share DOWN**: Inaction over multiple turns while competitors advance, product quality issues, PR crises, competitor breakthrough, losing a key segment.
+
+Inaction should cause slow erosion (0.2–0.5% per month) as competitors naturally advance — standing still means falling behind.
+
+IMPORTANT: The sum of ALL market shares (player + each named competitor + rest of market) MUST equal exactly 100%. When adjusting any actor's share, redistribute accordingly.
+
+### CASH (REVENUE MODEL)
+Cash is NOT a one-way drain. The company is a going concern that GENERATES REVENUE from its existing operations.
+
+**Cash = previous cash + REVENUE - COSTS**
+
+**REVENUE** (positive cash flow each turn):
+- The company earns revenue proportional to its market share, company size, and industry. A company with 10% market share in a large market earns meaningful revenue each turn.
+- Successful product launches, price increases, and growing market share INCREASE revenue.
+- Revenue should be the BASELINE — the company makes money from existing customers every turn.
+
+**COSTS** (negative cash flow):
+- Player actions cost money: R&D, marketing campaigns, hiring, expansion, acquisitions.
+- Operating costs: salaries, infrastructure, ongoing expenses (scaled to company size).
+- Failed initiatives may cost more than planned.
+
+**Net cash change per month should typically be:**
+- Routine operations: Slightly positive or near zero (revenue covers operating costs)
+- Active investment turn (R&D, marketing, hiring): Negative, proportional to action scope
+- Major strategic move (acquisition, massive expansion): Large negative
+- Revenue-focused turn (price increase, new sales channel): Positive
+
+The player should be able to GROW their cash through smart decisions. Cash should not just drain every turn.
+
+### SATISFACTION
+Satisfaction measures how happy customers/users are with the company's products and services.
+
+**Expected ranges PER MONTH:**
+- Routine operations: Stable (±0.5%)
+- Customer-facing improvement (product launch, service upgrade, quality investment): +1–4%
+- Negative customer impact (layoffs affecting service, quality cuts, price hikes without value): -1–4%
+- Major positive event (breakthrough product, viral positive PR): +3–6%
+- Major negative event (data breach, product recall, public scandal): -3–8%
+
+**What drives satisfaction UP**: Product launches, service improvements, quality investments, hiring (better support), positive PR, listening to customer feedback.
+**What drives satisfaction DOWN**: Layoffs that affect service quality, cost-cutting that hurts product, price increases without added value, ignoring customer complaints, pivots that abandon existing users.
+
+IMPORTANT: Customer-facing actions that COST the company money (investment in quality, hiring support staff, R&D) should RELIABLY boost satisfaction. If the player spends money to improve their product, satisfaction should go up. Do NOT dampen positive satisfaction from genuine customer investments.
+
+Routine operations should keep satisfaction STABLE, not eroding. Only penalize satisfaction when there is a concrete reason customers would be unhappier.
+
+### BRAND AWARENESS
+Brand awareness reflects how well-known and well-regarded the company is in the market.
+
+**Expected ranges PER MONTH:**
+- Routine operations with NO marketing: DECAY of -0.3–1% (people forget, competitors advertise)
+- Active marketing/PR campaign: +1–3%
+- Major product launch with press coverage: +2–4%
+- Viral moment or industry award: +3–6%
+- Negative PR (scandal, recall, layoffs): -1–4%
+- Pivot or rebrand: -2–3% short-term (confusion), potential long-term gain
+
+**What drives brand UP**: Marketing spend, PR campaigns, product launches, industry awards, partnerships with well-known brands, viral content, positive press coverage.
+**What drives brand DOWN**: Absence of marketing (natural decay), negative press, product failures, layoffs, quality scandals, competitor campaigns that overshadow you.
+
+IMPORTANT: Brand DECAYS without active investment. If the player does not spend on marketing or PR, brand should slowly decline each turn. This creates strategic tension — the player must actively maintain their brand.
+
+### SIGN FLIP RULE
+A "sign flip" is when you reverse the direction of the Player Company Agent's proposal (e.g., they propose +2% market share and you resolve -1%).
+
+Sign flips should be EXTREMELY RARE. Only flip the sign when:
+- The action genuinely backfires due to specific market conditions (explain clearly in the reason)
+- A pending consequence triggers that overwhelms the action's positive effect
+- The player's action is contradictory or self-defeating
+
+If you flip a sign, you MUST explain why in the KPI's reason field. "Market conditions" alone is not sufficient — name the specific cause.
 
 ## B. NARRATIVE WEIGHT MANAGEMENT
 Narrative arcs track the PLAYER'S journey — the storylines emerging from the player's decisions and their consequences. They are NOT market-wide storylines.
