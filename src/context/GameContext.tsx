@@ -209,6 +209,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
           restOfMarket: turn0Result.restOfMarket,
           lastTurnSummary: turn0Result.marketSummary,
           companyCulture: turn0Result.companyCulture,
+          estimatedMonthlyRevenue: turn0Result.estimatedMonthlyRevenue,
+          estimatedMonthlyCosts: turn0Result.estimatedMonthlyCosts,
         });
 
         // Persist turn 0 briefing data
@@ -287,6 +289,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
           },
           lastTurnSummary: result.nextTurnContext,
           companyCulture: result.companyCulture || prev.companyCulture,
+          estimatedMonthlyRevenue: result.estimatedMonthlyRevenue || prev.estimatedMonthlyRevenue,
+          estimatedMonthlyCosts: result.estimatedMonthlyCosts || prev.estimatedMonthlyCosts,
           // Update competitors from Gamemaster's resolved state
           competitors: result.updatedCompetitors,
           restOfMarket: result.updatedRestOfMarket,
@@ -525,6 +529,8 @@ function createInitialGameState(
     companyCulture: "", // Populated by server-side Turn 0
     competitors: [], // Populated by server-side Turn 0
     restOfMarket: DEFAULT_REST_OF_MARKET, // Populated by server-side Turn 0
+    estimatedMonthlyRevenue: 0, // Populated by server-side Turn 0
+    estimatedMonthlyCosts: 0,   // Populated by server-side Turn 0
     narrativeArcs: [], // Empty at Turn 0, created at Turn 1
     lastTurnSummary: undefined,
     pendingConsequences: [],

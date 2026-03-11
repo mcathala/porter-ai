@@ -10,6 +10,7 @@ import {
   Difficulty,
   TokenUsage,
   SIZE_EXPERIENCE_KPIS,
+  computeInitialFinancials,
 } from "../types/game";
 import {
   PlayerCompanyAgentOutput,
@@ -25,7 +26,6 @@ import {
   getMarketAgentPrompt,
   getGamemasterPrompt,
   getTurn0GamemasterPrompt,
-  getNewsCountForTimeAdvance,
 } from "./prompts";
 
 // =============================================================================
@@ -197,10 +197,12 @@ async function marketAgentNode(
   const { turnInput } = state;
   const { gameState, timeAdvance } = turnInput;
 
+  const playerName = gameState.playerCompany.name;
   const systemPrompt = getMarketAgentPrompt(
     gameState.difficulty,
     gameState.customMarket || gameState.market,
-    timeAdvance
+    timeAdvance,
+    playerName
   );
 
   const competitorStatus = gameState.competitors
@@ -212,7 +214,22 @@ async function marketAgentNode(
 
   const restOfMarketStatus = `- Rest of market: ${gameState.restOfMarket.marketShare}% share, fragmentation: ${gameState.restOfMarket.fragmentation}, dynamism: ${gameState.restOfMarket.dynamism}, latent pressure: ${gameState.restOfMarket.latentPressure}`;
 
+  // Randomized event count hint to break the LLM's tendency to always generate 2
+  const eventCountHints: Record<string, number[]> = {
+    week: [0, 0, 0, 1, 1],       // mostly 0, sometimes 1
+    month: [0, 1, 1, 1, 2],      // mostly 1, sometimes 0 or 2
+    quarter: [1, 1, 2, 2, 3],    // mostly 1-2, sometimes 3
+    year: [2, 2, 3, 3, 4],       // mostly 2-3, sometimes 4
+    event: [0, 1, 1, 1, 2],      // same as month
+  };
+  const hints = eventCountHints[timeAdvance] || eventCountHints.month;
+  const suggestedEventCount = hints[Math.floor(Math.random() * hints.length)];
+
   // NOTE: No player action, no player company name, no player KPIs
+  const lastTurnContext = gameState.lastTurnSummary
+    ? `\n## PREVIOUS TURN CONTEXT\n${gameState.lastTurnSummary}\n\nUse this to vary your world event categories — avoid repeating the same types of events as last turn.`
+    : "";
+
   const userPrompt = `
 ## MARKET STATE
 - Industry: ${gameState.customMarket || gameState.market}
@@ -224,8 +241,11 @@ ${competitorStatus || "No named competitors yet."}
 
 ## REST OF MARKET
 ${restOfMarketStatus}
+${lastTurnContext}
 
-Simulate what each competitor does this turn and what world events occur in this industry during this ${timeAdvance}. Remember: you have NO knowledge of what any specific player is doing. Only generate world events that would genuinely happen in this time window.`;
+Simulate what each competitor does this turn and what world events occur in this industry during this ${timeAdvance}. Remember: you have NO knowledge of what any specific player is doing. Only generate world events that would genuinely happen in this time window.
+
+**Event count this turn: generate exactly ${suggestedEventCount} world event${suggestedEventCount !== 1 ? "s" : ""}.**`;
 
   const messages = [
     { role: "system", content: systemPrompt },
@@ -235,6 +255,19 @@ Simulate what each competitor does this turn and what world events occur in this
   const start = performance.now();
   const { result: output, usage } = await safeInvoke(MarketAgentSchema, messages, 1, "MarketAgent");
   console.log(`[MarketAgent] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
+
+  // Safety net: strip any competitor move that references the player's own company
+  if (output && playerName) {
+    const playerNameLower = playerName.toLowerCase();
+    const before = output.competitorMoves.length;
+    output.competitorMoves = output.competitorMoves.filter(
+      (cm) => !cm.competitorName.toLowerCase().includes(playerNameLower)
+    );
+    if (output.competitorMoves.length < before) {
+      console.warn(`[MarketAgent] Filtered ${before - output.competitorMoves.length} self-referencing competitor move(s) for "${playerName}"`);
+    }
+  }
+
   return { marketOutput: output, tokenUsage: usage };
 }
 
@@ -247,8 +280,6 @@ async function gamemasterNode(
 ): Promise<Partial<typeof GraphState.State>> {
   const { turnInput, playerCompanyOutput, marketOutput } = state;
   const { gameState, timeAdvance } = turnInput;
-
-  const newsCount = getNewsCountForTimeAdvance(timeAdvance);
 
   const systemPrompt = getGamemasterPrompt(
     gameState.playerCompany,
@@ -274,6 +305,8 @@ ${turnInput.tasks.length > 0 ? turnInput.tasks.map((t, i) => `${i + 1}. ${t}`).j
 - Market Share: ${gameState.kpis.marketShare}%
 - Satisfaction: ${gameState.kpis.satisfaction}%
 - Brand Awareness: ${gameState.kpis.brandAwareness}%
+- Estimated Monthly Revenue: $${gameState.estimatedMonthlyRevenue.toLocaleString()}
+- Estimated Monthly Costs: $${gameState.estimatedMonthlyCosts.toLocaleString()}
 
 ### Player Company Agent Analysis (SWOT of player's action)
 ${JSON.stringify(playerCompanyOutput, null, 2)}
@@ -304,9 +337,6 @@ ${gameState.companyCulture}
 
 ### Time Advance
 ${timeAdvance}
-
-### News Items Count
-Generate exactly ${newsCount} news items for this time period (use the Market Agent's world events as the primary source).
 
 Synthesize the Player Company Agent's SWOT with the Market Agent's independent market activity. Resolve KPIs, update narratives (player-only, weights must sum to 100), manage competitors, handle consequences, and write the player-facing narrative.`;
 
@@ -340,6 +370,8 @@ Synthesize the Player Company Agent's SWOT with the Market Agent's independent m
       newsItems: [],
       nextTurnContext: "The game continues.",
       companyCulture: gameState.companyCulture,
+      estimatedMonthlyRevenue: gameState.estimatedMonthlyRevenue,
+      estimatedMonthlyCosts: gameState.estimatedMonthlyCosts,
     };
   }
 
@@ -386,6 +418,16 @@ Synthesize the Player Company Agent's SWOT with the Market Agent's independent m
     output.companyCulture = gameState.companyCulture;
   }
 
+  // Fallback: use current financial estimates if the LLM omitted them
+  if (!output.estimatedMonthlyRevenue) {
+    console.warn("[gamemasterNode] LLM omitted estimatedMonthlyRevenue, using current state");
+    output.estimatedMonthlyRevenue = gameState.estimatedMonthlyRevenue;
+  }
+  if (!output.estimatedMonthlyCosts) {
+    console.warn("[gamemasterNode] LLM omitted estimatedMonthlyCosts, using current state");
+    output.estimatedMonthlyCosts = gameState.estimatedMonthlyCosts;
+  }
+
   // Fallback: compute newDate if the LLM omitted it
   if (!output.newDate) {
     const base = new Date(gameState.currentDate);
@@ -394,6 +436,37 @@ Synthesize the Player Company Agent's SWOT with the Market Agent's independent m
     };
     base.setDate(base.getDate() + (advanceDays[timeAdvance] ?? 7));
     output.newDate = base.toISOString().split("T")[0];
+  }
+
+  // Filter player company from updatedCompetitors (GM sometimes includes it)
+  const playerNameLower = gameState.playerCompany.name.toLowerCase();
+  const competitorsBefore = output.updatedCompetitors.length;
+  output.updatedCompetitors = output.updatedCompetitors.filter(
+    (c) => !c.name.toLowerCase().includes(playerNameLower)
+  );
+  if (output.updatedCompetitors.length < competitorsBefore) {
+    console.warn(`[Gamemaster] Filtered ${competitorsBefore - output.updatedCompetitors.length} self-referencing competitor(s) for "${gameState.playerCompany.name}"`);
+  }
+
+  // Normalize market shares so they sum to exactly 100%
+  const playerShare = output.kpiDeltas.marketShare.value;
+  const competitorShares = output.updatedCompetitors.map((c) => c.marketShare);
+  const restShare = output.updatedRestOfMarket.marketShare;
+  const total = playerShare + competitorShares.reduce((a, b) => a + b, 0) + restShare;
+
+  if (Math.abs(total - 100) > 0.5) {
+    const ratio = 100 / total;
+    const previousShare = gameState.kpis.marketShare;
+    output.kpiDeltas.marketShare.value = +(playerShare * ratio).toFixed(1);
+    output.kpiDeltas.marketShare.change = +(output.kpiDeltas.marketShare.value - previousShare).toFixed(1);
+    output.kpiDeltas.marketShare.changePercent = previousShare > 0
+      ? +((output.kpiDeltas.marketShare.change / previousShare) * 100).toFixed(1)
+      : 0;
+    output.updatedCompetitors.forEach((c) => {
+      c.marketShare = +(c.marketShare * ratio).toFixed(1);
+    });
+    output.updatedRestOfMarket.marketShare = +(restShare * ratio).toFixed(1);
+    console.warn(`[Gamemaster] Market share normalized: ${total.toFixed(1)}% → 100% (ratio: ${ratio.toFixed(3)})`);
   }
 
   console.log(`[Gamemaster] Done in ${((performance.now() - start) / 1000).toFixed(1)}s`);
@@ -426,6 +499,8 @@ function assembleResultNode(
     newDate: gamemasterOutput.newDate,
     nextTurnContext: gamemasterOutput.nextTurnContext,
     companyCulture: gamemasterOutput.companyCulture,
+    estimatedMonthlyRevenue: gamemasterOutput.estimatedMonthlyRevenue,
+    estimatedMonthlyCosts: gamemasterOutput.estimatedMonthlyCosts,
     tokenUsage,
     llmInfo: {
       provider: process.env.LLM_PROVIDER?.toLowerCase() || "groq",
@@ -550,5 +625,18 @@ export async function executeInitialization(config: {
   console.log(`[Pipeline] Starting initialization...`);
   const { result, usage } = await safeInvoke(Turn0ResultSchema, messages, 2, "Initialization");
   console.log(`[Pipeline] Initialization completed in ${((performance.now() - start) / 1000).toFixed(1)}s (tokens: ${usage.totalTokens})`);
-  return { ...result, tokenUsage: usage };
+
+  // Compute initial financial estimates based on size + market share
+  const financials = computeInitialFinancials(
+    config.playerCompany.size,
+    config.playerCompany.experience,
+    startingKpis.marketShare
+  );
+
+  return {
+    ...result,
+    estimatedMonthlyRevenue: financials.estimatedMonthlyRevenue,
+    estimatedMonthlyCosts: financials.estimatedMonthlyCosts,
+    tokenUsage: usage,
+  };
 }

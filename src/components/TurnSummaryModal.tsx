@@ -433,6 +433,20 @@ export default function TurnSummaryModal({
                     </div>
                   </div>
 
+                  {/* Financial Estimates */}
+                  {(turnResult.estimatedMonthlyRevenue > 0 || turnResult.estimatedMonthlyCosts > 0) && (
+                    <div>
+                      <span className="text-cyan-500 font-semibold">Financial Estimates:</span>
+                      <div className="ml-4 mt-1 space-y-1">
+                        <div>Revenue: ${turnResult.estimatedMonthlyRevenue.toLocaleString()}/mo</div>
+                        <div>Costs: ${turnResult.estimatedMonthlyCosts.toLocaleString()}/mo</div>
+                        <div>Net: <span className={turnResult.estimatedMonthlyRevenue - turnResult.estimatedMonthlyCosts >= 0 ? "text-emerald-400" : "text-red-400"}>
+                          ${(turnResult.estimatedMonthlyRevenue - turnResult.estimatedMonthlyCosts).toLocaleString()}/mo
+                        </span></div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Updated Competitors */}
                   {turnResult.updatedCompetitors.length > 0 && (
                     <div>

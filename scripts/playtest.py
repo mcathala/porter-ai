@@ -132,7 +132,10 @@ def run_game(config, turns):
 
     print(f"\nCompetitors: {[(c['name'], c['archetype'], c['marketShare']) for c in init['competitors']]}")
     print(f"Rest of market: {init['restOfMarket']['marketShare']}% share")
+    est_rev = init.get("estimatedMonthlyRevenue", 0)
+    est_cost = init.get("estimatedMonthlyCosts", 0)
     print(f"Starting KPIs: Cash ${start_kpis['cash']:,} | Share {start_kpis['marketShare']}% | Sat {start_kpis['satisfaction']}% | Brand {start_kpis['brandAwareness']}%")
+    print(f"Financials: Revenue ${est_rev:,}/mo | Costs ${est_cost:,}/mo | Net ${est_rev - est_cost:+,}/mo")
     print()
 
     game_state = {
@@ -149,6 +152,8 @@ def run_game(config, turns):
         "currentDate": "2026-03-06",
         "kpis": dict(start_kpis),
         "companyCulture": init["companyCulture"],
+        "estimatedMonthlyRevenue": est_rev,
+        "estimatedMonthlyCosts": est_cost,
         "competitors": init["competitors"],
         "restOfMarket": init["restOfMarket"],
         "narrativeArcs": [],
@@ -200,6 +205,10 @@ def run_game(config, turns):
         print(f"    Market Share:    {kd['marketShare']['value']:>14.1f}%  ({kd['marketShare']['change']:+.1f}%)  {kd['marketShare']['reason'][:80]}")
         print(f"    Satisfaction:    {kd['satisfaction']['value']:>14.1f}%  ({kd['satisfaction']['change']:+.1f}%)  {kd['satisfaction']['reason'][:80]}")
         print(f"    Brand Awareness: {kd['brandAwareness']['value']:>14.1f}%  ({kd['brandAwareness']['change']:+.1f}%)  {kd['brandAwareness']['reason'][:80]}")
+
+        rev = result.get("estimatedMonthlyRevenue", 0)
+        cost = result.get("estimatedMonthlyCosts", 0)
+        print(f"    Revenue/mo:      ${rev:>14,}  Costs/mo: ${cost:,}  Net: ${rev - cost:+,}/mo")
 
         # ── SWOT highlights ──
         if pca:
@@ -257,6 +266,8 @@ def run_game(config, turns):
             "brandAwareness": kd["brandAwareness"]["value"],
         }
         game_state["companyCulture"] = result["companyCulture"]
+        game_state["estimatedMonthlyRevenue"] = result.get("estimatedMonthlyRevenue", game_state.get("estimatedMonthlyRevenue", 0))
+        game_state["estimatedMonthlyCosts"] = result.get("estimatedMonthlyCosts", game_state.get("estimatedMonthlyCosts", 0))
         game_state["competitors"] = result["updatedCompetitors"]
         game_state["restOfMarket"] = result["updatedRestOfMarket"]
         game_state["narrativeArcs"] = result.get("updatedNarratives", [])

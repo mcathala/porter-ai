@@ -49,6 +49,30 @@ export const SIZE_EXPERIENCE_KPIS: Record<CompanySize, Record<CompanyExperience,
   },
 };
 
+// Baseline monthly revenue per 1% of market share, by company size.
+// e.g. a medium company with 18% share → 18 * 200_000 = $3.6M/month revenue
+export const REVENUE_PER_SHARE_POINT: Record<CompanySize, number> = {
+  small: 30_000,     // small market: $30k per share point/month
+  medium: 200_000,   // medium market: $200k per share point/month
+  large: 1_000_000,  // large market: $1M per share point/month
+};
+
+// Operating cost as percentage of revenue (baseline — before player actions)
+export const OPERATING_COST_RATIO: Record<CompanyExperience, number> = {
+  new: 0.95,    // new companies barely break even
+  medium: 0.85, // established companies have 15% margin
+  old: 0.75,    // mature companies have 25% margin
+};
+
+export function computeInitialFinancials(size: CompanySize, experience: CompanyExperience, marketShare: number) {
+  const revenue = marketShare * REVENUE_PER_SHARE_POINT[size];
+  const costs = revenue * OPERATING_COST_RATIO[experience];
+  return {
+    estimatedMonthlyRevenue: Math.round(revenue),
+    estimatedMonthlyCosts: Math.round(costs),
+  };
+}
+
 // =============================================================================
 // COMPETITOR TYPES
 // =============================================================================
@@ -140,6 +164,10 @@ export interface GameState {
   // Narrative
   narrativeArcs: NarrativeArc[];
 
+  // Financial estimates (evolve each turn based on player actions)
+  estimatedMonthlyRevenue: number; // Baseline monthly revenue in dollars
+  estimatedMonthlyCosts: number;   // Baseline monthly operating costs in dollars
+
   // History (for now, just last turn)
   lastTurnSummary?: string;
 
@@ -196,6 +224,10 @@ export interface TurnResult {
   // Updated company culture description
   companyCulture: string;
 
+  // Updated financial estimates
+  estimatedMonthlyRevenue: number;
+  estimatedMonthlyCosts: number;
+
   // Token usage for this turn
   tokenUsage?: TokenUsage;
 
@@ -239,6 +271,8 @@ export interface Turn0Result {
   restOfMarket: RestOfMarket;
   marketSummary: string;
   companyCulture: string;
+  estimatedMonthlyRevenue: number;
+  estimatedMonthlyCosts: number;
   tokenUsage?: TokenUsage;
 }
 
@@ -272,6 +306,8 @@ export interface GamemasterOutput {
   newsItems: NewsItem[];
   nextTurnContext: string;
   companyCulture: string;
+  estimatedMonthlyRevenue: number;
+  estimatedMonthlyCosts: number;
 }
 
 // =============================================================================

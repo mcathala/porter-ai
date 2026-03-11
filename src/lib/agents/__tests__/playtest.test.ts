@@ -217,6 +217,8 @@ describe("Automated Playtest (3 turns)", () => {
       currentDate: "2025-01-01",
       kpis: startKpis,
       companyCulture: init.companyCulture,
+      estimatedMonthlyRevenue: init.estimatedMonthlyRevenue || 0,
+      estimatedMonthlyCosts: init.estimatedMonthlyCosts || 0,
       competitors: init.competitors,
       restOfMarket: init.restOfMarket,
       narrativeArcs: [],

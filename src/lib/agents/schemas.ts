@@ -106,7 +106,7 @@ export const PlayerCompanyAgentSchema = z.object({
     .array(z.string())
     .describe("External risks the action exposes us to — competitive response, regulatory, market timing, over-commitment"),
   proposedKPIImpacts: z.object({
-    cash: z.number().describe("Proposed change in cash (positive or negative dollar amount)"),
+    cash: z.number().describe("Proposed change in cash in FULL dollars (e.g. -4000000 not -4). Must match the scale of the company's current cash balance."),
     marketShare: z.number().describe("Proposed change in market share (positive or negative percentage points)"),
     satisfaction: z.number().describe("Proposed change in team morale (positive or negative percentage points)"),
     brandAwareness: z.number().describe("Proposed change in brand awareness (positive or negative percentage points)"),
@@ -126,8 +126,8 @@ export const WorldEventSchema = z.object({
   headline: z.string().describe("Short headline for the event"),
   description: z.string().describe("1-2 sentence description of the event and its market impact"),
   category: z
-    .enum(["industry", "regulatory", "macro", "technology", "labor"])
-    .catch("industry")
+    .enum(["consumer_trend", "macro", "technology", "supply_chain", "competitive", "talent", "regulatory"])
+    .catch("competitive")
     .describe("Category of the world event"),
   sentiment: z
     .enum(["positive", "negative", "neutral"])
@@ -199,6 +199,14 @@ export const GamemasterOutputSchema = z.object({
     .string()
     .default("")
     .describe("Updated 1-2 sentence company culture description reflecting cumulative player decisions"),
+  estimatedMonthlyRevenue: z
+    .number()
+    .default(0)
+    .describe("Updated estimated monthly revenue in full dollars. Should increase with market share gains, successful product launches, price increases. Decrease with market share loss, price cuts."),
+  estimatedMonthlyCosts: z
+    .number()
+    .default(0)
+    .describe("Updated estimated monthly operating costs in full dollars. Should increase with hiring, expansion, new infrastructure. Decrease with layoffs, cost-cutting."),
 });
 
 export type GamemasterOutput = z.infer<typeof GamemasterOutputSchema>;
@@ -219,6 +227,14 @@ export const Turn0ResultSchema = z.object({
   companyCulture: z
     .string()
     .describe("Initial 1-2 sentence company culture description derived from the player's mission and company characteristics"),
+  estimatedMonthlyRevenue: z
+    .number()
+    .default(0)
+    .describe("Estimated monthly revenue in full dollars, based on market share and company size"),
+  estimatedMonthlyCosts: z
+    .number()
+    .default(0)
+    .describe("Estimated monthly operating costs in full dollars"),
 });
 
 export type Turn0Result = z.infer<typeof Turn0ResultSchema>;

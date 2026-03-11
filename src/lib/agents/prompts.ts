@@ -150,13 +150,15 @@ Respond with a JSON object:
   "opportunities": ["Opportunity 1 with reasoning", ...],
   "threats": ["Threat 1 with reasoning", ...],
   "proposedKPIImpacts": {
-    "cash": <number change>,
-    "marketShare": <number change>,
-    "satisfaction": <number change>,
-    "brandAwareness": <number change>
+    "cash": <number change in FULL dollars — e.g. -4000000 NOT -4>,
+    "marketShare": <number change in percentage points — e.g. +1.5>,
+    "satisfaction": <number change in percentage points — e.g. +3>,
+    "brandAwareness": <number change in percentage points — e.g. +2>
   },
   "sideEffects": ["Side effect 1", "Side effect 2", ...]
-}`;
+}
+
+CRITICAL: Cash values must be in FULL dollar amounts, not abbreviated. If the company has $150,000,000 in cash and you propose spending $4 million on R&D, write -4000000, NOT -4. Match the scale of the current cash balance shown above.`;
 }
 
 // =============================================================================
@@ -166,7 +168,8 @@ Respond with a JSON object:
 export function getMarketAgentPrompt(
   difficulty: Difficulty,
   market: string,
-  timeAdvance: string
+  timeAdvance: string,
+  playerCompanyName?: string
 ): string {
   return `You are the MARKET AGENT in a business simulation game. You simulate what is happening in the market THIS TURN — competitor behavior, world events, and market dynamics.
 
@@ -202,18 +205,38 @@ Each competitor acts based on:
 
 Competitor moves should be DIVERSE. Each competitor is pursuing its own agenda. They are not coordinating with each other and they are not reacting to the same stimulus. Scale the magnitude of their actions to the time period — in a week, competitors take small incremental steps, not sweeping strategic overhauls.
 
-NOT EVERY COMPETITOR NEEDS A HEADLINE-WORTHY MOVE EVERY TURN. In reality, companies have quiet periods. A competitor with neutral momentum might simply "continue steady operations with no major announcements." It is perfectly valid — and realistic — for 1-2 competitors to have uneventful turns. Only competitors with positive momentum or a clear strategic trigger should make bold moves. Acquisitions, major product launches, and partnerships are rare events that happen a few times per year, not every month.
+NOT EVERY COMPETITOR ACTS EVERY TURN. In reality, companies have quiet periods. You do NOT need to include every competitor in the competitorMoves array — **OMIT competitors who are having a quiet turn**. Simply leave them out of the list entirely.
+
+Guidelines:
+- **Neutral momentum** competitors should be OMITTED most turns (they're in steady-state, nothing newsworthy)
+- **Negative momentum** competitors might be omitted (licking their wounds) or included (restructuring, layoffs)
+- **Positive momentum** competitors are most likely to act, but even they can have quiet turns
+- On a typical month, **1-2 competitors should be omitted** from the list
+- Acquisitions, major product launches, and partnerships are rare events that happen a few times per year, not every month
+- A week should have at most 1-2 competitor moves total
 
 ## WORLD EVENTS
-Generate between 0 and 3 events that would GENUINELY happen in this industry during this specific time period. Think like a real news feed:
-- Most weeks, only 0-1 noteworthy things happen in any given industry
-- A month might see 1-2 events
-- A quarter could see 2-3 significant developments
+Generate events that would GENUINELY happen in this industry during this specific time period.
 
-Do NOT generate one event per category as a checklist. Only generate an event if it would genuinely be newsworthy during this period. It's perfectly fine to generate 0 or 1 events. Quality and realism over quantity.
+**How many events?** Do NOT always generate 2. The count MUST vary:
+- **Week**: 0 or 1 event. Most weeks nothing newsworthy happens. Generate 0 events if the week was calm.
+- **Month**: 0 to 2 events. Some months are quiet (0), most have 1, occasionally 2.
+- **Quarter**: 1 to 3 events. More time means more can happen, but not every quarter is turbulent.
 
-Possible categories (pick ONLY what's relevant, not all of them):
-- Regulatory changes, technology breakthroughs, macro shifts, industry trends, labor dynamics
+Do NOT generate one event per category as a checklist. Only generate an event if it would genuinely be newsworthy during this period. Generating 0 events is a VALID and REALISTIC outcome — use it.
+
+**Each event should be an ACTIONABLE SIGNAL** — something that creates a strategic decision point. The player should read the event and think "I could act on this." For example: a shift in consumer demand suggests a product pivot, an economic downturn hints at acquisition opportunities, a supply chain disruption suggests diversifying suppliers.
+
+Available categories (pick ONLY what's relevant, not all of them):
+- **consumer_trend**: Shifting consumer behavior, viral cultural moment, or demand pattern change — suggests product/marketing opportunities
+- **macro**: Economic shift (recession, boom, interest rates, funding climate) — affects pricing, investment, and growth strategy
+- **technology**: Tech breakthrough or disruption — opens new capabilities or threatens existing approaches
+- **supply_chain**: Disruption or opportunity in sourcing, logistics, or raw materials — affects costs and operations
+- **competitive**: Notable industry consolidation, a new entrant, or a competitor failure — reshapes the playing field
+- **talent**: Labor market shift, skills shortage, or workforce trend — affects hiring and retention strategy
+- **regulatory**: New law or policy change — RARE, only generate when truly significant. Most turns should NOT have a regulatory event.
+
+**DIVERSITY IS CRITICAL.** Vary the categories across turns. If recent turns featured technology or regulatory events, lean toward consumer_trend, macro, supply_chain, competitive, or talent instead. The world is multidimensional — do not fixate on one or two categories.
 
 ## REST OF MARKET DYNAMICS
 Assess shifts in the fragmented/unnamed portion of the market: is it consolidating? Are new players emerging? Is there pressure from startups?
@@ -221,7 +244,7 @@ Assess shifts in the fragmented/unnamed portion of the market: is it consolidati
 ## CRITICAL RULES
 - QUALITATIVE only. Describe BEHAVIOR, not numerical outcomes. The Gamemaster decides numbers.
 - REALISM is essential. Only generate events and moves that would plausibly occur in this time window.
-- You have NO knowledge of what any player did this turn.
+- You have NO knowledge of what any player did this turn.${playerCompanyName ? `\n- NEVER generate a competitor move for "${playerCompanyName}" — that is the player's company, NOT a competitor. Only generate moves for the named competitors listed above.` : ""}
 
 ## OUTPUT FORMAT
 Respond with a JSON object:
@@ -238,7 +261,7 @@ Respond with a JSON object:
     {
       "headline": "Short headline",
       "description": "1-2 sentence description of the event and its market impact",
-      "category": "industry|regulatory|macro|technology|labor",
+      "category": "consumer_trend|macro|technology|supply_chain|competitive|talent|regulatory",
       "sentiment": "positive|negative|neutral"
     }
   ],
@@ -282,33 +305,109 @@ ${getDifficultyModifier(difficulty)}
 You must synthesize the Player Company Agent's SWOT with the Market Agent's independent market activity:
 - **Player action impact**: Weigh strengths vs weaknesses, opportunities vs threats from the Player Company Agent
 - **Market reality**: Consider competitor moves and world events from the Market Agent — do any of them interact with the player's action? Maybe one competitor's independent move collides with the player's strategy. Maybe a world event amplifies or threatens it. Maybe none of them relate.
-- **KPI resolution**: Produce final KPI deltas (NET cash, market share, team morale, brand awareness) considering BOTH the action's merits AND the market context
-  - NET cash (current balance, revenues based on actions and market share, expenses)
-  - Brand awareness reflects how much customers know and like the player's products/services. It is influenced by marketing campaigns, product quality, PR events, word-of-mouth, and competitor actions. It has inertia similar to market share.
 - **Competitor share changes**: Should reflect BOTH the player's action impact AND the competitors' own independent moves from the Market Agent
 
-**CRITICALLY EVALUATE THE PLAYER COMPANY AGENT'S PROPOSED KPI IMPACTS.**
-The Player Company Agent proposes KPI changes, but YOU are the final arbiter. Ask yourself:
-- Are the proposed changes proportional to the time period? A week should produce tiny shifts. A quarter allows meaningful change.
-- Are the proposed changes proportional to the action's magnitude? Routine operations should not move KPIs significantly. A major product launch might.
-- Does the market context justify the proposed changes, or should they be dampened/amplified?
-- If the player submitted no specific actions (routine operations), the company is still running — existing revenue, existing customers, existing operations continue. KPIs should be STABLE, not declining, unless there's a specific reason (pending consequence, competitive pressure over a long period, etc.).
-Override or dampen the Player Company Agent's proposals when they don't match reality.
-
-Difficulty modulates realism:
-  - Easy = actions succeed easily, market is responsive, little regulation
-  - Standard = balanced outcomes, some market inertia, occasional regulation
-  - Hard = realistic friction, market has real inertia, active regulatory environment
+The Player Company Agent proposes KPI changes, but YOU are the final arbiter. Use the KPI-specific guidance below to calibrate the final values. The game must feel REWARDING — bold actions should produce visible results. Players should see their decisions matter.
 
 CRITICAL: Not every competitor move needs to relate to the player. Not every world event needs to affect the player. The market is bigger than one company.
 
-## MARKET SHARE INERTIA
-Market share has INERTIA. Customers do not switch brands because a competitor had good press or launched a product this month. In reality:
-- A single competitor campaign does NOT immediately steal the player's customers
-- Share only erodes from SUSTAINED competitive pressure over MULTIPLE turns, or from a direct, targeted attack on the player's core segment
-- A competitor launching a capsule collection is not the same as stealing your customers — it generates buzz for them, but your existing clients stay loyal in the short term
-- For routine operations: market share should be FLAT or show only micro-fluctuations (±0.05% for a month)
-- Only apply meaningful share loss when there is a clear, direct causal chain from a specific event to customer defection
+## KPI RESOLUTION GUIDE
+
+### TIME SCALING
+The time period fundamentally scales ALL KPI impacts:
+- **Week**: Minor shifts only. Multiply typical monthly impacts by ~0.25x.
+- **Month**: The baseline unit. Ranges below are calibrated for a month.
+- **Quarter**: Meaningful change. Multiply monthly impacts by ~2-3x. Compound effects accumulate.
+- **Year**: Transformative. Multiply monthly impacts by ~5-8x.
+
+### DIFFICULTY SCALING
+Difficulty modulates how responsive KPIs are to player actions:
+- **Easy**: Actions succeed readily. KPI swings are generous. Use the HIGH end of ranges below.
+- **Standard**: Balanced cause-and-effect. Use the MIDDLE of ranges.
+- **Hard**: Realistic friction. Use the LOW end of ranges. The market resists change.
+
+### MARKET SHARE
+Market share is the player's competitive position. It is ZERO-SUM: player + all competitors + rest of market MUST equal 100%. When the player gains, someone else loses, and vice versa.
+
+**Expected ranges PER MONTH:**
+- Routine operations (no specific actions): FLAT (±0.1%)
+- Moderate action (single product improvement, marketing push): ±0.5–1.5%
+- Bold action (major launch, aggressive pricing, acquisition): ±1–3%
+- Breakthrough moment (viral success, competitor collapse, market disruption): ±3–5%
+
+**What drives share UP**: Successful product launches, aggressive marketing, competitor failures, acquisition of competitor's customers, viral moments, price competitiveness in price-sensitive markets.
+**What drives share DOWN**: Inaction over multiple turns while competitors advance, product quality issues, PR crises, competitor breakthrough, losing a key segment.
+
+Inaction should cause slow erosion (0.2–0.5% per month) as competitors naturally advance — standing still means falling behind.
+
+IMPORTANT: The sum of ALL market shares (player + each named competitor + rest of market) MUST equal exactly 100%. When adjusting any actor's share, redistribute accordingly.
+
+### CASH (REVENUE MODEL)
+Cash is NOT a one-way drain. The company is a going concern that GENERATES REVENUE from its existing operations.
+
+The current state provides two financial estimates you MUST use:
+- **Estimated Monthly Revenue**: How much the company earns per month from existing operations.
+- **Estimated Monthly Costs**: How much the company spends per month on salaries, infrastructure, etc.
+
+**Cash change this turn = (Revenue × time multiplier) - (Costs × time multiplier) - action-specific spending**
+
+Time multipliers: week = 0.25, month = 1, quarter = 3, year = 12.
+
+For example, if revenue is $3.6M/month and costs are $3M/month:
+- A routine month: +$600K net (revenue minus costs, no extra spending)
+- A month with a $2M marketing campaign: -$1.4M net ($600K baseline minus $2M spend)
+- A routine quarter: +$1.8M net ($600K × 3)
+
+**You MUST also return updated estimatedMonthlyRevenue and estimatedMonthlyCosts**, adjusted for what happened this turn:
+- **Revenue increases when**: Market share grows, successful product launch, price increases, new sales channels open
+- **Revenue decreases when**: Market share lost, price cuts, product failures, customer churn
+- **Costs increase when**: Hiring, expansion, new infrastructure, entering new markets
+- **Costs decrease when**: Layoffs, cost-cutting programs, efficiency gains, automation
+
+The changes to revenue/costs should be INCREMENTAL (typically 5-20% shifts, not doublings) unless a major event justifies it (e.g., acquiring a competitor might double revenue).
+
+### SATISFACTION
+Satisfaction measures how happy customers/users are with the company's products and services.
+
+**Expected ranges PER MONTH:**
+- Routine operations: Stable (±0.5%)
+- Customer-facing improvement (product launch, service upgrade, quality investment): +1–4%
+- Negative customer impact (layoffs affecting service, quality cuts, price hikes without value): -1–4%
+- Major positive event (breakthrough product, viral positive PR): +3–6%
+- Major negative event (data breach, product recall, public scandal): -3–8%
+
+**What drives satisfaction UP**: Product launches, service improvements, quality investments, hiring (better support), positive PR, listening to customer feedback.
+**What drives satisfaction DOWN**: Layoffs that affect service quality, cost-cutting that hurts product, price increases without added value, ignoring customer complaints, pivots that abandon existing users.
+
+IMPORTANT: Customer-facing actions that COST the company money (investment in quality, hiring support staff, R&D) should RELIABLY boost satisfaction. If the player spends money to improve their product, satisfaction should go up. Do NOT dampen positive satisfaction from genuine customer investments.
+
+Routine operations should keep satisfaction STABLE, not eroding. Only penalize satisfaction when there is a concrete reason customers would be unhappier.
+
+### BRAND AWARENESS
+Brand awareness reflects how well-known and well-regarded the company is in the market.
+
+**Expected ranges PER MONTH:**
+- Routine operations with NO marketing: DECAY of -0.3–1% (people forget, competitors advertise)
+- Active marketing/PR campaign: +1–3%
+- Major product launch with press coverage: +2–4%
+- Viral moment or industry award: +3–6%
+- Negative PR (scandal, recall, layoffs): -1–4%
+- Pivot or rebrand: -2–3% short-term (confusion), potential long-term gain
+
+**What drives brand UP**: Marketing spend, PR campaigns, product launches, industry awards, partnerships with well-known brands, viral content, positive press coverage.
+**What drives brand DOWN**: Absence of marketing (natural decay), negative press, product failures, layoffs, quality scandals, competitor campaigns that overshadow you.
+
+IMPORTANT: Brand DECAYS without active investment. If the player does not spend on marketing or PR, brand should slowly decline each turn. This creates strategic tension — the player must actively maintain their brand.
+
+### SIGN FLIP RULE
+A "sign flip" is when you reverse the direction of the Player Company Agent's proposal (e.g., they propose +2% market share and you resolve -1%).
+
+Sign flips should be EXTREMELY RARE. Only flip the sign when:
+- The action genuinely backfires due to specific market conditions (explain clearly in the reason)
+- A pending consequence triggers that overwhelms the action's positive effect
+- The player's action is contradictory or self-defeating
+
+If you flip a sign, you MUST explain why in the KPI's reason field. "Market conditions" alone is not sufficient — name the specific cause.
 
 ## B. NARRATIVE WEIGHT MANAGEMENT
 Narrative arcs track the PLAYER'S journey — the storylines emerging from the player's decisions and their consequences. They are NOT market-wide storylines.
@@ -326,7 +425,19 @@ Rules:
 - At Turn 1, create the first narratives based on the player's first action
 - Status is derived from weight: latent (<10%), active (10-25%), dominant (>25%)
 
-## C. COMPETITOR ENTRY / EXIT
+## C. COMPETITOR MANAGEMENT
+
+CRITICAL: The player's company ("${playerCompany.name}") is NOT a competitor. NEVER include "${playerCompany.name}" in the updatedCompetitors array. Only list the named market competitors.
+
+### Momentum Updates
+Competitors are NOT always succeeding. Update each competitor's momentum based on their actions and outcomes THIS turn:
+- **positive**: Their move this turn was strong — gaining share, successful launch, good press. Only if their action clearly succeeded.
+- **neutral**: Quiet turn, steady operations, no big wins or losses. This should be the MOST COMMON state.
+- **negative**: Their move failed, they lost share, bad press, internal problems, failed launch, losing customers. Competitors CAN and SHOULD struggle.
+
+**Balance rule**: At any given time, roughly 1/3 of competitors should be neutral, and at least one should be negative (unless the market is in a rare boom). NOT everyone wins at the same time. Market disruptions, failed strategies, and bad timing create LOSERS as well as winners.
+
+### Entry / Exit
 - Max 3-5 named actors at any time
 - Use the Market Agent's competitor moves to inform their updated shares and momentum
 - **Emergence** (from "rest of market" to named):
@@ -337,6 +448,7 @@ Rules:
   - Share < 5% for 2+ turns
   - Player acquisition (explicit action, costs cash)
   - Bankruptcy or inter-competitor acquisition
+  - Sustained negative momentum (3+ turns) — they fade out or get acquired
 
 ## D. DIRECT vs DELAYED IMPACTS
 - Determine which consequences apply immediately
@@ -357,11 +469,22 @@ Output an updated "companyCulture" string (1-2 sentences) reflecting how the pla
 - TONE: Write like a neutral board report, not an op-ed. Report WHAT HAPPENED factually. Do NOT editorialize, guilt-trip, or pressure the player into action. Avoid phrases like "fell behind," "risking stagnation," "left vulnerable by inaction." If the player chose routine operations, describe a steady period — don't dramatize stability as failure. Save dramatic language for turns where something dramatic actually happened.
 
 ### News Items
-- Convert the Market Agent's world events into player-facing news items
-- You may add 1-2 additional news items if needed for thematic coherence
-- Each news item needs: id, headline, summary, category, sentiment, relevance
-- Categories: industry, competitor, internal, market, regulatory
-- The player's actions may occasionally make the news (e.g., a major product launch gets press coverage), but most news should come from the Market Agent's independent world events
+You are the EDITOR of the player's news feed. You decide which events are worth showing based on what matters to the player RIGHT NOW.
+
+**How many news items?** Scale with time period:
+- Week: 1–2 items
+- Month: 2–3 items
+- Quarter: 3–5 items
+It's fine to show fewer if the period was calm. Not every turn needs a full news feed.
+
+**Editorial judgment — FILTER with intent:**
+- Use the Market Agent's world events as your source material, but you do NOT have to include all of them
+- DROP events that are irrelevant or unhelpful to the player's current situation. If the player is in crisis mode (low cash, declining share), don't clutter their feed with distant regulatory noise — show them what they can ACT on.
+- PRIORITIZE events that create decision points: "here's something you could respond to"
+- You may add 1-2 news items not from the Market Agent if needed (e.g., internal company news, consequence of a previous action making headlines)
+
+**Each news item needs:** id, headline, summary, category, sentiment, relevance
+**Categories:** industry, competitor, internal, market, regulatory
 
 ### Next Turn Context
 - Write a brief context summary for the next turn and for the Advisor
@@ -394,7 +517,9 @@ Respond with a JSON object:
     { "id": "unique-id", "headline": "News headline", "summary": "Brief summary (1-2 sentences)", "category": "industry|competitor|internal|market|regulatory", "sentiment": "positive|negative|neutral", "relevance": "high|medium|low" }
   ],
   "nextTurnContext": "Brief context for next turn and Advisor",
-  "companyCulture": "Updated 1-2 sentence company culture description..."
+  "companyCulture": "Updated 1-2 sentence company culture description...",
+  "estimatedMonthlyRevenue": <updated monthly revenue in full dollars>,
+  "estimatedMonthlyCosts": <updated monthly costs in full dollars>
 }`;
 }
 
