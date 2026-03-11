@@ -241,12 +241,12 @@ Whether the player advanced by a week, month, or quarter, KPI changes were rough
 | P0 | Market share nearly impossible to gain | Balance | Fixed |
 | P1 | Cash never positive (no revenue model) | Balance | Fixed |
 | P1 | Sign flips too common | Balance | Fixed |
-| P1 | Cash proposal scaling bug | Bug ||
+| P1 | Cash proposal scaling bug | Bug | Fixed |
 | P1 | World events only regulatory/technology | Content | Fixed |
 | P2 | Brand awareness only goes up | Balance | Fixed |
 | P2 | Satisfaction downward bias | Balance | Fixed |
 | P2 | Competitors always active, always positive | Balance | Fixed |
 | P2 | Time advance doesn't scale KPI impact | Design | Fixed |
-| P3 | Contradictory actions not penalized | Design ||
+| P3 | Contradictory actions not penalized | Design | Won't fix |
 | P3 | Event count always 2 regardless of time | Design | Fixed |
 | P3 | Dampening ratios inconsistent | Balance | Fixed |

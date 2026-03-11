@@ -150,13 +150,15 @@ Respond with a JSON object:
   "opportunities": ["Opportunity 1 with reasoning", ...],
   "threats": ["Threat 1 with reasoning", ...],
   "proposedKPIImpacts": {
-    "cash": <number change>,
-    "marketShare": <number change>,
-    "satisfaction": <number change>,
-    "brandAwareness": <number change>
+    "cash": <number change in FULL dollars — e.g. -4000000 NOT -4>,
+    "marketShare": <number change in percentage points — e.g. +1.5>,
+    "satisfaction": <number change in percentage points — e.g. +3>,
+    "brandAwareness": <number change in percentage points — e.g. +2>
   },
   "sideEffects": ["Side effect 1", "Side effect 2", ...]
-}`;
+}
+
+CRITICAL: Cash values must be in FULL dollar amounts, not abbreviated. If the company has $150,000,000 in cash and you propose spending $4 million on R&D, write -4000000, NOT -4. Match the scale of the current cash balance shown above.`;
 }
 
 // =============================================================================

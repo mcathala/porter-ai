@@ -106,7 +106,7 @@ export const PlayerCompanyAgentSchema = z.object({
     .array(z.string())
     .describe("External risks the action exposes us to — competitive response, regulatory, market timing, over-commitment"),
   proposedKPIImpacts: z.object({
-    cash: z.number().describe("Proposed change in cash (positive or negative dollar amount)"),
+    cash: z.number().describe("Proposed change in cash in FULL dollars (e.g. -4000000 not -4). Must match the scale of the company's current cash balance."),
     marketShare: z.number().describe("Proposed change in market share (positive or negative percentage points)"),
     satisfaction: z.number().describe("Proposed change in team morale (positive or negative percentage points)"),
     brandAwareness: z.number().describe("Proposed change in brand awareness (positive or negative percentage points)"),
