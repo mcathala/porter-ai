@@ -205,7 +205,15 @@ Each competitor acts based on:
 
 Competitor moves should be DIVERSE. Each competitor is pursuing its own agenda. They are not coordinating with each other and they are not reacting to the same stimulus. Scale the magnitude of their actions to the time period — in a week, competitors take small incremental steps, not sweeping strategic overhauls.
 
-NOT EVERY COMPETITOR NEEDS A HEADLINE-WORTHY MOVE EVERY TURN. In reality, companies have quiet periods. A competitor with neutral momentum might simply "continue steady operations with no major announcements." It is perfectly valid — and realistic — for 1-2 competitors to have uneventful turns. Only competitors with positive momentum or a clear strategic trigger should make bold moves. Acquisitions, major product launches, and partnerships are rare events that happen a few times per year, not every month.
+NOT EVERY COMPETITOR ACTS EVERY TURN. In reality, companies have quiet periods. You do NOT need to include every competitor in the competitorMoves array — **OMIT competitors who are having a quiet turn**. Simply leave them out of the list entirely.
+
+Guidelines:
+- **Neutral momentum** competitors should be OMITTED most turns (they're in steady-state, nothing newsworthy)
+- **Negative momentum** competitors might be omitted (licking their wounds) or included (restructuring, layoffs)
+- **Positive momentum** competitors are most likely to act, but even they can have quiet turns
+- On a typical month, **1-2 competitors should be omitted** from the list
+- Acquisitions, major product launches, and partnerships are rare events that happen a few times per year, not every month
+- A week should have at most 1-2 competitor moves total
 
 ## WORLD EVENTS
 Generate between 0 and 3 events that would GENUINELY happen in this industry during this specific time period. Think like a real news feed:

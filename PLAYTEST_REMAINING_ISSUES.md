@@ -159,4 +159,4 @@ At least 1 competitor should be omitted per turn to reflect realistic market pac
 | 2 | Cash never positive | P0 | Prompt (revenue anchoring) + code (revenue/cost model) | Fixed |
 | 3 | Player in competitor list (GM) | P1 | Prompt + code (filter) | |
 | 4 | Events always 2 | P2 | Prompt (variance language) | |
-| 5 | All competitors active | P2 | Prompt (allow omission) | |
+| 5 | All competitors active | P2 | Prompt (allow omission) | Fixed |
