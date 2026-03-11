@@ -335,25 +335,26 @@ IMPORTANT: The sum of ALL market shares (player + each named competitor + rest o
 ### CASH (REVENUE MODEL)
 Cash is NOT a one-way drain. The company is a going concern that GENERATES REVENUE from its existing operations.
 
-**Cash = previous cash + REVENUE - COSTS**
+The current state provides two financial estimates you MUST use:
+- **Estimated Monthly Revenue**: How much the company earns per month from existing operations.
+- **Estimated Monthly Costs**: How much the company spends per month on salaries, infrastructure, etc.
 
-**REVENUE** (positive cash flow each turn):
-- The company earns revenue proportional to its market share, company size, and industry. A company with 10% market share in a large market earns meaningful revenue each turn.
-- Successful product launches, price increases, and growing market share INCREASE revenue.
-- Revenue should be the BASELINE — the company makes money from existing customers every turn.
+**Cash change this turn = (Revenue × time multiplier) - (Costs × time multiplier) - action-specific spending**
 
-**COSTS** (negative cash flow):
-- Player actions cost money: R&D, marketing campaigns, hiring, expansion, acquisitions.
-- Operating costs: salaries, infrastructure, ongoing expenses (scaled to company size).
-- Failed initiatives may cost more than planned.
+Time multipliers: week = 0.25, month = 1, quarter = 3, year = 12.
 
-**Net cash change per month should typically be:**
-- Routine operations: Slightly positive or near zero (revenue covers operating costs)
-- Active investment turn (R&D, marketing, hiring): Negative, proportional to action scope
-- Major strategic move (acquisition, massive expansion): Large negative
-- Revenue-focused turn (price increase, new sales channel): Positive
+For example, if revenue is $3.6M/month and costs are $3M/month:
+- A routine month: +$600K net (revenue minus costs, no extra spending)
+- A month with a $2M marketing campaign: -$1.4M net ($600K baseline minus $2M spend)
+- A routine quarter: +$1.8M net ($600K × 3)
 
-The player should be able to GROW their cash through smart decisions. Cash should not just drain every turn.
+**You MUST also return updated estimatedMonthlyRevenue and estimatedMonthlyCosts**, adjusted for what happened this turn:
+- **Revenue increases when**: Market share grows, successful product launch, price increases, new sales channels open
+- **Revenue decreases when**: Market share lost, price cuts, product failures, customer churn
+- **Costs increase when**: Hiring, expansion, new infrastructure, entering new markets
+- **Costs decrease when**: Layoffs, cost-cutting programs, efficiency gains, automation
+
+The changes to revenue/costs should be INCREMENTAL (typically 5-20% shifts, not doublings) unless a major event justifies it (e.g., acquiring a competitor might double revenue).
 
 ### SATISFACTION
 Satisfaction measures how happy customers/users are with the company's products and services.
@@ -504,7 +505,9 @@ Respond with a JSON object:
     { "id": "unique-id", "headline": "News headline", "summary": "Brief summary (1-2 sentences)", "category": "industry|competitor|internal|market|regulatory", "sentiment": "positive|negative|neutral", "relevance": "high|medium|low" }
   ],
   "nextTurnContext": "Brief context for next turn and Advisor",
-  "companyCulture": "Updated 1-2 sentence company culture description..."
+  "companyCulture": "Updated 1-2 sentence company culture description...",
+  "estimatedMonthlyRevenue": <updated monthly revenue in full dollars>,
+  "estimatedMonthlyCosts": <updated monthly costs in full dollars>
 }`;
 }
 

@@ -10,6 +10,7 @@ import {
   Difficulty,
   TokenUsage,
   SIZE_EXPERIENCE_KPIS,
+  computeInitialFinancials,
 } from "../types/game";
 import {
   PlayerCompanyAgentOutput,
@@ -291,6 +292,8 @@ ${turnInput.tasks.length > 0 ? turnInput.tasks.map((t, i) => `${i + 1}. ${t}`).j
 - Market Share: ${gameState.kpis.marketShare}%
 - Satisfaction: ${gameState.kpis.satisfaction}%
 - Brand Awareness: ${gameState.kpis.brandAwareness}%
+- Estimated Monthly Revenue: $${gameState.estimatedMonthlyRevenue.toLocaleString()}
+- Estimated Monthly Costs: $${gameState.estimatedMonthlyCosts.toLocaleString()}
 
 ### Player Company Agent Analysis (SWOT of player's action)
 ${JSON.stringify(playerCompanyOutput, null, 2)}
@@ -354,6 +357,8 @@ Synthesize the Player Company Agent's SWOT with the Market Agent's independent m
       newsItems: [],
       nextTurnContext: "The game continues.",
       companyCulture: gameState.companyCulture,
+      estimatedMonthlyRevenue: gameState.estimatedMonthlyRevenue,
+      estimatedMonthlyCosts: gameState.estimatedMonthlyCosts,
     };
   }
 
@@ -398,6 +403,16 @@ Synthesize the Player Company Agent's SWOT with the Market Agent's independent m
   if (!output.companyCulture) {
     console.warn("[gamemasterNode] LLM omitted companyCulture, using current state");
     output.companyCulture = gameState.companyCulture;
+  }
+
+  // Fallback: use current financial estimates if the LLM omitted them
+  if (!output.estimatedMonthlyRevenue) {
+    console.warn("[gamemasterNode] LLM omitted estimatedMonthlyRevenue, using current state");
+    output.estimatedMonthlyRevenue = gameState.estimatedMonthlyRevenue;
+  }
+  if (!output.estimatedMonthlyCosts) {
+    console.warn("[gamemasterNode] LLM omitted estimatedMonthlyCosts, using current state");
+    output.estimatedMonthlyCosts = gameState.estimatedMonthlyCosts;
   }
 
   // Fallback: compute newDate if the LLM omitted it
@@ -461,6 +476,8 @@ function assembleResultNode(
     newDate: gamemasterOutput.newDate,
     nextTurnContext: gamemasterOutput.nextTurnContext,
     companyCulture: gamemasterOutput.companyCulture,
+    estimatedMonthlyRevenue: gamemasterOutput.estimatedMonthlyRevenue,
+    estimatedMonthlyCosts: gamemasterOutput.estimatedMonthlyCosts,
     tokenUsage,
     llmInfo: {
       provider: process.env.LLM_PROVIDER?.toLowerCase() || "groq",
@@ -585,5 +602,18 @@ export async function executeInitialization(config: {
   console.log(`[Pipeline] Starting initialization...`);
   const { result, usage } = await safeInvoke(Turn0ResultSchema, messages, 2, "Initialization");
   console.log(`[Pipeline] Initialization completed in ${((performance.now() - start) / 1000).toFixed(1)}s (tokens: ${usage.totalTokens})`);
-  return { ...result, tokenUsage: usage };
+
+  // Compute initial financial estimates based on size + market share
+  const financials = computeInitialFinancials(
+    config.playerCompany.size,
+    config.playerCompany.experience,
+    startingKpis.marketShare
+  );
+
+  return {
+    ...result,
+    estimatedMonthlyRevenue: financials.estimatedMonthlyRevenue,
+    estimatedMonthlyCosts: financials.estimatedMonthlyCosts,
+    tokenUsage: usage,
+  };
 }

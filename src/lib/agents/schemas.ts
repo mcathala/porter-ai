@@ -199,6 +199,14 @@ export const GamemasterOutputSchema = z.object({
     .string()
     .default("")
     .describe("Updated 1-2 sentence company culture description reflecting cumulative player decisions"),
+  estimatedMonthlyRevenue: z
+    .number()
+    .default(0)
+    .describe("Updated estimated monthly revenue in full dollars. Should increase with market share gains, successful product launches, price increases. Decrease with market share loss, price cuts."),
+  estimatedMonthlyCosts: z
+    .number()
+    .default(0)
+    .describe("Updated estimated monthly operating costs in full dollars. Should increase with hiring, expansion, new infrastructure. Decrease with layoffs, cost-cutting."),
 });
 
 export type GamemasterOutput = z.infer<typeof GamemasterOutputSchema>;
@@ -219,6 +227,14 @@ export const Turn0ResultSchema = z.object({
   companyCulture: z
     .string()
     .describe("Initial 1-2 sentence company culture description derived from the player's mission and company characteristics"),
+  estimatedMonthlyRevenue: z
+    .number()
+    .default(0)
+    .describe("Estimated monthly revenue in full dollars, based on market share and company size"),
+  estimatedMonthlyCosts: z
+    .number()
+    .default(0)
+    .describe("Estimated monthly operating costs in full dollars"),
 });
 
 export type Turn0Result = z.infer<typeof Turn0ResultSchema>;
