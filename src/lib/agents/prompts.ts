@@ -412,7 +412,17 @@ Rules:
 - At Turn 1, create the first narratives based on the player's first action
 - Status is derived from weight: latent (<10%), active (10-25%), dominant (>25%)
 
-## C. COMPETITOR ENTRY / EXIT
+## C. COMPETITOR MANAGEMENT
+
+### Momentum Updates
+Competitors are NOT always succeeding. Update each competitor's momentum based on their actions and outcomes THIS turn:
+- **positive**: Their move this turn was strong — gaining share, successful launch, good press. Only if their action clearly succeeded.
+- **neutral**: Quiet turn, steady operations, no big wins or losses. This should be the MOST COMMON state.
+- **negative**: Their move failed, they lost share, bad press, internal problems, failed launch, losing customers. Competitors CAN and SHOULD struggle.
+
+**Balance rule**: At any given time, roughly 1/3 of competitors should be neutral, and at least one should be negative (unless the market is in a rare boom). NOT everyone wins at the same time. Market disruptions, failed strategies, and bad timing create LOSERS as well as winners.
+
+### Entry / Exit
 - Max 3-5 named actors at any time
 - Use the Market Agent's competitor moves to inform their updated shares and momentum
 - **Emergence** (from "rest of market" to named):
@@ -423,6 +433,7 @@ Rules:
   - Share < 5% for 2+ turns
   - Player acquisition (explicit action, costs cash)
   - Bankruptcy or inter-competitor acquisition
+  - Sustained negative momentum (3+ turns) — they fade out or get acquired
 
 ## D. DIRECT vs DELAYED IMPACTS
 - Determine which consequences apply immediately

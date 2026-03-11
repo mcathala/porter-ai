@@ -245,7 +245,7 @@ Whether the player advanced by a week, month, or quarter, KPI changes were rough
 | P1 | World events only regulatory/technology | Content | Fixed |
 | P2 | Brand awareness only goes up | Balance | Fixed |
 | P2 | Satisfaction downward bias | Balance | Fixed |
-| P2 | Competitors always active, always positive | Balance ||
+| P2 | Competitors always active, always positive | Balance | Fixed |
 | P2 | Time advance doesn't scale KPI impact | Design | Fixed |
 | P3 | Contradictory actions not penalized | Design ||
 | P3 | Event count always 2 regardless of time | Design | Fixed |
