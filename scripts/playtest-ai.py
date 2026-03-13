@@ -220,69 +220,76 @@ def api_post(path, data):
 
 # ── Turn prompt builder ──
 
-def build_turn_prompt(game_state, turn_num, turn_history, last_result):
-    """Build the context the AI player sees before making a decision."""
+def build_turn_prompt(game_state, turn_num, turn_history, last_result, init_briefing):
+    """Build the context matching exactly what the human player sees in the UI."""
     parts = []
     kpis = game_state["kpis"]
-    rev = game_state.get("estimatedMonthlyRevenue", 0)
-    cost = game_state.get("estimatedMonthlyCosts", 0)
 
     parts.append(f"=== TURN {turn_num + 1} === Date: {game_state['currentDate']}")
 
-    # KPIs
+    # ── Current KPIs (always visible in KPIHeader) ──
     parts.append(f"\nYour KPIs:")
     parts.append(f"  Cash:             ${kpis['cash']:>14,.0f}")
     parts.append(f"  Market Share:     {kpis['marketShare']:>14.1f}%")
-    parts.append(f"  Satisfaction:     {kpis['satisfaction']:>14.1f}%")
+    parts.append(f"  Team Morale:      {kpis['satisfaction']:>14.1f}%")
     parts.append(f"  Brand Awareness:  {kpis['brandAwareness']:>14.1f}%")
-    parts.append(f"\n  Monthly Revenue:  ${rev:>14,}    Costs: ${cost:,}    Net: ${rev - cost:+,}/mo")
 
-    months_runway = kpis["cash"] / cost if cost > 0 else 999
-    if months_runway < 12:
-        parts.append(f"  ⚠ Cash runway: ~{months_runway:.0f} months at current burn rate")
+    # ── Initial briefing context (BriefingModal — always accessible) ──
+    if turn_num == 0:
+        if init_briefing.get("marketSummary"):
+            parts.append("\nMarket Intelligence Report:")
+            parts.append(f"  {init_briefing['marketSummary']}")
+        parts.append("\nCompetitive landscape:")
+        for c in init_briefing.get("competitors", []):
+            parts.append(f"  - {c['name']} ({c['archetype']}): {c['marketShare']}% share, {c['momentum']} momentum")
+        rom = init_briefing.get("restOfMarket", {})
+        if rom:
+            parts.append(f"  - Rest of market: {rom.get('marketShare', '?')}% ({rom.get('fragmentation', '?')} fragmentation, {rom.get('dynamism', '?')})")
 
-    # Competitors
-    parts.append(f"\nCompetitor landscape:")
-    for c in game_state["competitors"]:
-        parts.append(f"  - {c['name']} ({c['archetype']}): {c['marketShare']}% share, {c['momentum']} momentum")
-    rom = game_state["restOfMarket"]
-    parts.append(f"  - Rest of market: {rom['marketShare']}% ({rom.get('fragmentation', '?')} fragmentation, {rom.get('dynamism', '?')} dynamism)")
-
-    # What happened last turn
+    # ── Last turn report (TurnSummaryModal — what the player sees after each turn) ──
     if last_result:
-        parts.append(f"\nLast turn results:")
-        parts.append(f"  {game_state.get('lastTurnSummary', '')[:600]}")
+        kd = last_result["kpiDeltas"]
+        parts.append("\nLast turn report:")
 
-        ma = last_result.get("marketAgentOutput")
-        if ma:
-            if ma.get("worldEvents"):
-                parts.append(f"\n  Recent world events:")
-                for ev in ma["worldEvents"]:
-                    parts.append(f"    [{ev.get('category', '?'):>12}] [{ev['sentiment']:>8}] {ev['headline']}")
-            if ma.get("competitorMoves"):
-                parts.append(f"\n  Competitor moves last turn:")
-                for cm in ma["competitorMoves"]:
-                    parts.append(f"    - {cm['competitorName']}: {cm['action'][:150]}")
+        # KPI changes with reasons (the 4 cards in Michael's Report)
+        parts.append(f"  Cash:            ${kd['cash']['value']:>14,.0f}  ({kd['cash']['change']:+,.0f})")
+        parts.append(f"    → {kd['cash']['reason']}")
+        parts.append(f"  Market Share:    {kd['marketShare']['value']:>14.1f}%  ({kd['marketShare']['change']:+.1f}%)")
+        parts.append(f"    → {kd['marketShare']['reason']}")
+        parts.append(f"  Team Morale:     {kd['satisfaction']['value']:>14.1f}%  ({kd['satisfaction']['change']:+.1f}%)")
+        parts.append(f"    → {kd['satisfaction']['reason']}")
+        parts.append(f"  Brand Awareness: {kd['brandAwareness']['value']:>14.1f}%  ({kd['brandAwareness']['change']:+.1f}%)")
+        parts.append(f"    → {kd['brandAwareness']['reason']}")
 
-    # Narrative arcs
-    if game_state.get("narrativeArcs"):
-        parts.append(f"\nActive narrative arcs (storylines shaping your company):")
-        for arc in game_state["narrativeArcs"]:
-            parts.append(f"  - {arc['name']}: {arc['weight']}% weight ({arc['status']})")
+        # News items (News & Events section)
+        news_items = last_result.get("newsItems", [])
+        if news_items:
+            parts.append("\n  News & Events:")
+            for news in news_items:
+                sentiment = {"positive": "↑", "negative": "↓", "neutral": "→"}.get(news["sentiment"], "→")
+                parts.append(f"    [{news['category'].upper()}] {sentiment} {news['headline']}")
+                parts.append(f"      {news['summary']}")
 
-    # Pending consequences
-    if game_state.get("pendingConsequences"):
-        parts.append(f"\nPending consequences (from earlier decisions):")
-        for c in game_state["pendingConsequences"]:
-            parts.append(f"  - {c['description'][:150]}")
+        # Competitor moves (Competitor Activity section)
+        comp_moves = last_result.get("competitorMoves", [])
+        if comp_moves:
+            parts.append("\n  Competitor Activity:")
+            for cm in comp_moves:
+                parts.append(f"    {cm['competitorName']} ({cm['archetype']}):")
+                parts.append(f"      Action: {cm['action']}")
+                parts.append(f"      Impact: {cm['impact']}")
 
-    # Decision history
+        # Turn summary (shown in DashboardFeed card)
+        if last_result.get("turnSummary"):
+            parts.append(f"\n  Turn summary: {last_result['turnSummary']}")
+
+    # ── Decision history (player can click past turns in DashboardFeed) ──
     if turn_history:
         parts.append(f"\nYour decision history:")
-        for h in turn_history[-5:]:  # last 5 turns max
-            parts.append(f"  Turn {h['turn']}: [{h['timeAdvance']}] {h['tasks']}")
-            parts.append(f"    → Cash {h['cash_change']:+,.0f} | Share {h['share_change']:+.1f}% | Sat {h['sat_change']:+.1f}% | Brand {h['brand_change']:+.1f}%")
-            parts.append(f"    Reasoning: {h['reasoning'][:120]}")
+        for h in turn_history[-5:]:
+            tasks_str = ", ".join(h["tasks"]) if h["tasks"] else "[routine ops]"
+            parts.append(f"  Turn {h['turn']} ({h['timeAdvance']}): {tasks_str[:150]}")
+            parts.append(f"    → Cash {h['cash_change']:+,.0f} | Share {h['share_change']:+.1f}% | Morale {h['sat_change']:+.1f}% | Brand {h['brand_change']:+.1f}%")
 
     parts.append(f"\nWhat are your strategic decisions for this turn?")
     return "\n".join(parts)
@@ -343,6 +350,13 @@ def run_game(config, num_turns, env):
         "lastTurnSummary": "",
     }
 
+    # What the player sees at game start (BriefingModal)
+    init_briefing = {
+        "marketSummary": init.get("marketSummary", ""),
+        "competitors": init["competitors"],
+        "restOfMarket": init["restOfMarket"],
+    }
+
     system_prompt = AI_PLAYER_SYSTEM.format(
         name=config["name"],
         size=config["size"],
@@ -361,7 +375,7 @@ def run_game(config, num_turns, env):
 
     for i in range(num_turns):
         # ── AI decides ──
-        user_prompt = build_turn_prompt(game_state, i, turn_history, last_result)
+        user_prompt = build_turn_prompt(game_state, i, turn_history, last_result, init_briefing)
 
         print("=" * 70)
         print(f"TURN {i+1}: AI is thinking...")
