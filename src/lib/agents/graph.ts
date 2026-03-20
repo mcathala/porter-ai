@@ -150,7 +150,9 @@ async function playerCompanyAgentNode(
     gameState.difficulty,
     gameState.customMarket || gameState.market,
     gameState.companyCulture,
-    timeAdvance
+    timeAdvance,
+    gameState.companyProfile,
+    gameState.marketProfile
   );
 
   const userPrompt = `
@@ -203,7 +205,8 @@ async function marketAgentNode(
     gameState.difficulty,
     gameState.customMarket || gameState.market,
     timeAdvance,
-    playerName
+    playerName,
+    gameState.marketProfile
   );
 
   const competitorStatus = gameState.competitors
@@ -287,7 +290,9 @@ async function gamemasterNode(
     gameState.difficulty,
     timeAdvance,
     gameState.companyCulture,
-    turnInput.contactSummaries
+    turnInput.contactSummaries,
+    gameState.companyProfile,
+    gameState.marketProfile
   );
 
   const narrativeArcsStatus = gameState.narrativeArcs.length > 0
@@ -663,6 +668,8 @@ export async function executeInitialization(config: {
     estimatedMonthlyRevenue: financials.estimatedMonthlyRevenue,
     estimatedMonthlyCosts: financials.estimatedMonthlyCosts,
     contacts,
+    companyProfile: result.companyProfile,
+    marketProfile: result.marketProfile,
     tokenUsage: usage,
   };
 }

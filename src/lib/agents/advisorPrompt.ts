@@ -81,6 +81,13 @@ export function getAdvisorSystemPrompt(
 - Size: ${gameState.playerCompany.size}, Experience: ${gameState.playerCompany.experience}
 - Mission: ${gameState.playerCompany.mission}
 - Company Culture: ${gameState.companyCulture}
+${gameState.companyProfile ? `- What we sell: ${gameState.companyProfile.productDescription}
+- Founding story: ${gameState.companyProfile.foundingStory}` : ""}
+${gameState.marketProfile ? `
+**Market Context:**
+- How this market works: ${gameState.marketProfile.overview}
+- Market dynamics: ${gameState.marketProfile.dynamics}
+- Customer behavior: ${gameState.marketProfile.customerBehavior}` : ""}
 
 **Current Metrics (Turn ${gameState.turn}):**
 - Cash: $${gameState.kpis.cash.toLocaleString()}

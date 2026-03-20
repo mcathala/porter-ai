@@ -1,4 +1,4 @@
-import { CompetitorArchetype, Difficulty, PlayerCompany, SIZE_EXPERIENCE_KPIS } from "../types/game";
+import { CompanyProfile, CompetitorArchetype, Difficulty, MarketProfile, PlayerCompany, SIZE_EXPERIENCE_KPIS } from "../types/game";
 
 // =============================================================================
 // COMPETITOR ARCHETYPE DESCRIPTIONS
@@ -85,7 +85,9 @@ export function getPlayerCompanyAgentPrompt(
   difficulty: Difficulty,
   market: string,
   companyCulture: string,
-  timeAdvance: string
+  timeAdvance: string,
+  companyProfile?: CompanyProfile,
+  marketProfile?: MarketProfile
 ): string {
   return `You are the PLAYER COMPANY AGENT in a business simulation game. You perform a full SWOT analysis of the player's situation this turn — evaluating it from both internal (company) and external (market positioning) perspectives.
 
@@ -106,6 +108,15 @@ This is BUSINESS AS USUAL — the company is a going concern. Routine operations
 - **Size**: ${playerCompany.size}
 - **Experience**: ${playerCompany.experience}
 - **Market**: ${market}
+${companyProfile ? `
+## COMPANY PROFILE
+**What we sell:** ${companyProfile.productDescription}
+**Founding story:** ${companyProfile.foundingStory}` : ""}
+${marketProfile ? `
+## MARKET CONTEXT
+**How this market works:** ${marketProfile.overview}
+**Market dynamics:** ${marketProfile.dynamics}
+**Customer behavior:** ${marketProfile.customerBehavior}` : ""}
 
 ## COMPANY CULTURE
 ${companyCulture}
@@ -169,7 +180,8 @@ export function getMarketAgentPrompt(
   difficulty: Difficulty,
   market: string,
   timeAdvance: string,
-  playerCompanyName?: string
+  playerCompanyName?: string,
+  marketProfile?: MarketProfile
 ): string {
   return `You are the MARKET AGENT in a business simulation game. You simulate what is happening in the market THIS TURN — competitor behavior, world events, and market dynamics.
 
@@ -181,6 +193,10 @@ The entire market ecosystem — competitors, industry trends, regulation, macro 
 
 ## MARKET CONTEXT
 - **Industry**: ${market}
+${marketProfile ? `
+**How this market works:** ${marketProfile.overview}
+**Market dynamics:** ${marketProfile.dynamics}
+**Customer behavior:** ${marketProfile.customerBehavior}` : ""}
 
 ${getDifficultyModifier(difficulty)}
 
@@ -278,7 +294,9 @@ export function getGamemasterPrompt(
   difficulty: Difficulty,
   timeAdvance: string,
   companyCulture: string,
-  contactContext?: { contactId: string; name: string; position: string; summary: string }[]
+  contactContext?: { contactId: string; name: string; position: string; summary: string }[],
+  companyProfile?: CompanyProfile,
+  marketProfile?: MarketProfile
 ): string {
   return `You are the GAMEMASTER — the SOURCE OF TRUTH in a business simulation game. You synthesize two independent analyses, resolve the turn's outcomes, and steer the game's narrative direction.
 
@@ -295,6 +313,15 @@ Your job is to SYNTHESIZE these — determine where the player's action and inde
 - **Size**: ${playerCompany.size}
 - **Experience**: ${playerCompany.experience}
 - **Company Culture**: ${companyCulture}
+${companyProfile ? `
+## COMPANY PROFILE
+**What we sell:** ${companyProfile.productDescription}
+**Founding story:** ${companyProfile.foundingStory}` : ""}
+${marketProfile ? `
+## MARKET CONTEXT
+**How this market works:** ${marketProfile.overview}
+**Market dynamics:** ${marketProfile.dynamics}
+**Customer behavior:** ${marketProfile.customerBehavior}` : ""}
 
 ${getDifficultyModifier(difficulty)}
 
@@ -607,6 +634,8 @@ ${getDifficultyModifier(difficulty)}
 1. Generate 3-4 named competitors and a "rest of market" aggregate that create an interesting competitive landscape for this player.
 2. Generate an initial "companyCulture" description (1-2 sentences) that captures the company's identity based on its mission, size, and experience. This will evolve each turn based on player decisions.
 3. Generate the player's initial stakeholder contacts based on company experience level.
+4. Generate a "companyProfile" with a specific product/service description and a founding story — these will be injected into every agent prompt as persistent grounding context.
+5. Generate a "marketProfile" describing how this market operates, its key dynamics, and how customers behave — this will ground all market agent outputs in the reality of this specific industry.
 
 ## COMPETITOR ARCHETYPES
 Choose from these 4 behavioral archetypes:
@@ -650,6 +679,15 @@ Respond with a JSON object:
   "companyCulture": "1-2 sentence initial company culture description...",
   "contacts": [
     { "id": "contact-cfo", "name": "...", "position": "CFO", "personality": "...", "introMessage": "..." }
-  ]
+  ],
+  "companyProfile": {
+    "productDescription": "Specific description of what the company sells and how it delivers value (2-3 sentences)",
+    "foundingStory": "Founding context and key milestones — how the company got to where it is today (2-3 sentences)"
+  },
+  "marketProfile": {
+    "overview": "How this market operates: B2B vs B2C, typical deal sizes, buyer journey, procurement dynamics (2-3 sentences)",
+    "dynamics": "Pricing norms, switching costs, distribution channels, seasonality patterns specific to this industry (2-3 sentences)",
+    "customerBehavior": "How customers buy, what drives their decisions, loyalty and churn patterns (2-3 sentences)"
+  }
 }`;
 }
