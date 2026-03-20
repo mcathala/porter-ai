@@ -277,7 +277,8 @@ export function getGamemasterPrompt(
   playerCompany: PlayerCompany,
   difficulty: Difficulty,
   timeAdvance: string,
-  companyCulture: string
+  companyCulture: string,
+  contactContext?: { contactId: string; name: string; position: string; summary: string }[]
 ): string {
   return `You are the GAMEMASTER — the SOURCE OF TRUTH in a business simulation game. You synthesize two independent analyses, resolve the turn's outcomes, and steer the game's narrative direction.
 
@@ -300,6 +301,12 @@ ${getDifficultyModifier(difficulty)}
 ## TIME ADVANCE
 - **Period**: ${timeAdvance}
 - Date should advance by: ${getTimeAdvanceDays(timeAdvance)}
+
+## ACTIVE CONTACTS (for section E — inbound messages)
+${contactContext && contactContext.length > 0
+  ? contactContext.map(c => `- ${c.contactId} | ${c.name} (${c.position})${c.summary ? ` — Recent exchange: "${c.summary}"` : ""}`).join("\n")
+  : "No contacts established yet."
+}
 
 ## A. SYNTHESIS & KPI RESOLUTION
 You must synthesize the Player Company Agent's SWOT with the Market Agent's independent market activity:
@@ -455,7 +462,48 @@ Competitors are NOT always succeeding. Update each competitor's momentum based o
 - Create delayed consequences with cause and expected effect
 - Trigger previously pending consequences when contextually appropriate (no deterministic timer — YOU decide each turn)
 
-## E. COMPANY CULTURE EVOLUTION
+## E. CONTACT INBOUND MESSAGES
+You are the router between turn events and the player's contacts. For each contact, ask yourself two questions:
+1. Did the player's actions or this turn's events **touch this contact's domain**?
+2. Does it leave something **unresolved that requires the CEO's input** — a risk to address, a decision to make, an opportunity to act on, or a concern the CEO might have missed?
+
+Only generate a message if BOTH are true. If the action went smoothly and there is nothing for the CEO to decide in that domain → silence.
+
+### Domain mapping
+- **CFO**: Cash decisions, funding, burn rate, acquisition pricing, major spend, financial risk
+- **CTO**: R&D investments, tech debt, product architecture, technical partnerships, technology world events
+- **HR Director**: Hiring, layoffs, satisfaction drop, culture issues, retention risk
+- **Head of Sales**: Pricing changes, market share moves, new markets, channel conflicts, competitive threats to pipeline
+- **Investor Lead**: Strategic pivots, major spending decisions, market share loss, funding discussions
+- **Legal Counsel**: Regulatory events, acquisitions, new partnerships, compliance or IP risk
+
+### What a good message looks like
+- 1-2 sentences, conversational, in character, forward-looking
+- Implies "I need your input" or "you should decide this before we proceed"
+- References something SPECIFIC to the player's action or a market event — not generic advice
+- Good: *"The acquisition target has two open lawsuits — want me to dig deeper before we commit?"*
+- Good: *"Our top sales rep is fielding offers. If we want to keep her, I need to move fast — do you want me to put together a retention package?"*
+- Bad: *"We spent $45k on due diligence, leaving cash at $4.97M"* — this is a KPI report, not a decision
+- Bad: *"Market share went up 2% this turn"* — the player can see this in the dashboard
+- Bad: *"Great work on the product launch!"* — no decision required, no reason to message
+
+### Hard rules
+- NEVER repeat KPI numbers the player can already see (cash balance, market share %, satisfaction %)
+- NEVER generate a message just to confirm something went as planned
+- NEVER generate a message if there is nothing for the CEO to act on or decide
+- Generate 0-2 messages total. If no contact has a genuine domain-specific, forward-looking reason to reach out → return []
+
+### New transient contacts — two cases
+
+**MANDATORY — player-initiated outreach:**
+If the player's action explicitly involves contacting, calling, meeting, or reaching out to an external party (supplier, investor, journalist, partner, acquirer, regulator, etc.) who is NOT already an inner circle contact → you MUST generate a transient contact for that person responding to the outreach. Set isPlayerInitiated to true. This is not optional.
+
+**ORGANIC — world-event-driven:**
+If a world event this turn creates a natural opportunity for an external actor to reach out (e.g. supply chain event → supplier offers a deal; press moment → journalist requests a comment) → you may introduce 1 transient contact. Aim for at most 1 every 2-3 turns. Set isPlayerInitiated to false.
+
+For all transient contacts: set expiresAfterTurn to current turn + 3. The intro message should be in-character and forward-looking — what do they want from the CEO?
+
+## F. COMPANY CULTURE EVOLUTION
 Output an updated "companyCulture" string (1-2 sentences) reflecting how the player's cumulative actions shape company identity. Evolve incrementally each turn.
 
 ## F. PLAYER-FACING NARRATIVE
@@ -519,7 +567,13 @@ Respond with a JSON object:
   "nextTurnContext": "Brief context for next turn and Advisor",
   "companyCulture": "Updated 1-2 sentence company culture description...",
   "estimatedMonthlyRevenue": <updated monthly revenue in full dollars>,
-  "estimatedMonthlyCosts": <updated monthly costs in full dollars>
+  "estimatedMonthlyCosts": <updated monthly costs in full dollars>,
+  "inboundContactMessages": [
+    { "contactId": "contact-cfo", "message": "Short in-character message (1-2 sentences)" }
+  ],
+  "newTransientContacts": [
+    { "id": "transient-...", "name": "...", "position": "...", "company": "...", "personality": "...", "introMessage": "...", "expiresAfterTurn": <turn + 3> }
+  ]
 }`;
 }
 
@@ -552,6 +606,7 @@ ${getDifficultyModifier(difficulty)}
 ## YOUR TASK
 1. Generate 3-4 named competitors and a "rest of market" aggregate that create an interesting competitive landscape for this player.
 2. Generate an initial "companyCulture" description (1-2 sentences) that captures the company's identity based on its mission, size, and experience. This will evolve each turn based on player decisions.
+3. Generate the player's initial stakeholder contacts based on company experience level.
 
 ## COMPETITOR ARCHETYPES
 Choose from these 4 behavioral archetypes:
@@ -570,6 +625,18 @@ Choose from these 4 behavioral archetypes:
 - All competitors start with "neutral" momentum
 - Write a brief market summary (2-3 paragraphs) introducing the competitive landscape
 
+## CONTACT GENERATION RULES
+Generate inner circle contacts based on company experience:
+- "new": 2 contacts (e.g. CTO + early investor or CFO)
+- "medium": 4 contacts (CFO, CTO + 2 others like Head of Sales, Investor Lead)
+- "old": 5 contacts (CFO, CTO, HR Director, Head of Sales, Investor Lead)
+
+For each contact:
+- Give a realistic full name (industry-appropriate)
+- One-sentence personality (e.g. "Methodical and data-driven, gets cold when ignored")
+- A brief intro message they'd send to the new CEO (1-2 sentences, conversational, in character)
+- ID format: "contact-[role-slug]" e.g. "contact-cfo", "contact-cto"
+
 ## OUTPUT FORMAT
 Respond with a JSON object:
 {
@@ -580,6 +647,9 @@ Respond with a JSON object:
     "marketShare": <residual>, "fragmentation": "high|medium|consolidated", "dynamism": "active|stable|stagnant", "latentPressure": "low|moderate|high"
   },
   "marketSummary": "2-3 paragraph market introduction...",
-  "companyCulture": "1-2 sentence initial company culture description..."
+  "companyCulture": "1-2 sentence initial company culture description...",
+  "contacts": [
+    { "id": "contact-cfo", "name": "...", "position": "CFO", "personality": "...", "introMessage": "..." }
+  ]
 }`;
 }

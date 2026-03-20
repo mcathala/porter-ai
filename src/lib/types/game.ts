@@ -129,6 +129,33 @@ export interface PendingConsequence {
 }
 
 // =============================================================================
+// CONTACT / STAKEHOLDER TYPES
+// =============================================================================
+
+export type ContactRelationshipStatus = "engaged" | "neutral" | "frustrated" | "gone";
+export type ContactType = "inner_circle" | "transient";
+
+export interface ContactMessage {
+  id: string;
+  role: "contact" | "player";
+  content: string;
+  turnNumber: number;
+}
+
+export interface Contact {
+  id: string;
+  name: string;
+  position: string;       // e.g. "CFO", "CTO", "Head of Sales"
+  company?: string;       // For transient contacts (external company)
+  personality: string;    // One sentence: "Blunt and data-driven, speaks in numbers"
+  relationshipStatus: ContactRelationshipStatus;
+  type: ContactType;
+  conversationHistory: ContactMessage[];
+  expiresAfterTurn?: number; // Transient contacts expire after this turn
+  unreadCount: number;
+}
+
+// =============================================================================
 // TOKEN USAGE TRACKING
 // =============================================================================
 
@@ -188,6 +215,9 @@ export interface TurnInput {
 
   // How far to advance
   timeAdvance: TimeAdvance;
+
+  // Summaries of recent contact conversations (for Gamemaster context)
+  contactSummaries?: { contactId: string; name: string; position: string; summary: string }[];
 }
 
 export interface TurnResult {
@@ -227,6 +257,21 @@ export interface TurnResult {
   // Updated financial estimates
   estimatedMonthlyRevenue: number;
   estimatedMonthlyCosts: number;
+
+  // Contact inbound messages generated this turn
+  inboundContactMessages: { contactId: string; message: string }[];
+
+  // New transient contacts introduced this turn
+  newTransientContacts: {
+    id: string;
+    name: string;
+    position: string;
+    company?: string;
+    personality: string;
+    introMessage: string;
+    expiresAfterTurn: number;
+    isPlayerInitiated: boolean;
+  }[];
 
   // Token usage for this turn
   tokenUsage?: TokenUsage;
@@ -273,6 +318,7 @@ export interface Turn0Result {
   companyCulture: string;
   estimatedMonthlyRevenue: number;
   estimatedMonthlyCosts: number;
+  contacts: Contact[];
   tokenUsage?: TokenUsage;
 }
 
@@ -308,6 +354,17 @@ export interface GamemasterOutput {
   companyCulture: string;
   estimatedMonthlyRevenue: number;
   estimatedMonthlyCosts: number;
+  inboundContactMessages: { contactId: string; message: string }[];
+  newTransientContacts: {
+    id: string;
+    name: string;
+    position: string;
+    company?: string;
+    personality: string;
+    introMessage: string;
+    expiresAfterTurn: number;
+    isPlayerInitiated: boolean;
+  }[];
 }
 
 // =============================================================================
