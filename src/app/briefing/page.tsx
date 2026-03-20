@@ -41,7 +41,8 @@ export default function BriefingPage() {
     kpis,
     competitors,
     restOfMarket,
-    lastTurnSummary,
+    companyProfile,
+    marketProfile,
   } = gameState;
 
   const sizeLabel = playerCompany.size.charAt(0).toUpperCase() + playerCompany.size.slice(1);
@@ -94,6 +95,18 @@ export default function BriefingPage() {
             <p className="text-[#c0d0e0] text-lg leading-relaxed italic border-l-2 border-primary/40 pl-4">
               &ldquo;{playerCompany.mission}&rdquo;
             </p>
+            {companyProfile && (
+              <div className="flex flex-col gap-3 mt-2">
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">What we do</p>
+                  <p className="text-[#c0d0e0] text-base leading-relaxed">{companyProfile.productDescription}</p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Our story</p>
+                  <p className="text-[#c0d0e0] text-base leading-relaxed">{companyProfile.foundingStory}</p>
+                </div>
+              </div>
+            )}
           </section>
           </FadeIn>
 
@@ -159,19 +172,28 @@ export default function BriefingPage() {
           </section>
           </FadeIn>
 
-          {/* Market Summary */}
-          {lastTurnSummary && (
+          {/* Market Profile */}
+          {marketProfile && (
             <FadeIn delay={0.3}>
             <GradientDivider />
             <section>
               <h2 className="text-xl font-bold font-heading tracking-[-0.02em] mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">newspaper</span>
-                Market Intelligence Report
+                <span className="material-symbols-outlined text-primary">storefront</span>
+                How this market works
               </h2>
-              <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-6">
-                <p className="text-[#c0d0e0] text-base leading-relaxed whitespace-pre-line">
-                  {lastTurnSummary}
-                </p>
+              <div className="flex flex-col gap-4">
+                <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-2">
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Market structure</p>
+                  <p className="text-[#c0d0e0] text-base leading-relaxed">{marketProfile.overview}</p>
+                </div>
+                <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-2">
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Dynamics</p>
+                  <p className="text-[#c0d0e0] text-base leading-relaxed">{marketProfile.dynamics}</p>
+                </div>
+                <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-2">
+                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Customer behavior</p>
+                  <p className="text-[#c0d0e0] text-base leading-relaxed">{marketProfile.customerBehavior}</p>
+                </div>
               </div>
             </section>
             </FadeIn>

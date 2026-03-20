@@ -225,6 +225,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
           companyCulture: turn0Result.companyCulture,
           estimatedMonthlyRevenue: turn0Result.estimatedMonthlyRevenue,
           estimatedMonthlyCosts: turn0Result.estimatedMonthlyCosts,
+          companyProfile: turn0Result.companyProfile,
+          marketProfile: turn0Result.marketProfile,
         });
 
         // Persist turn 0 briefing data

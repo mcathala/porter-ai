@@ -89,6 +89,34 @@ export const PendingConsequenceSchema = z.object({
 });
 
 // =============================================================================
+// COMPANY & MARKET PROFILE SCHEMAS (generated at Turn 0, persisted in GameState)
+// =============================================================================
+
+export const CompanyProfileSchema = z.object({
+  productDescription: z
+    .string()
+    .describe("What the company actually sells and how it delivers value — specific products/services, delivery model, key differentiators"),
+  foundingStory: z
+    .string()
+    .describe("Founding context and key milestones — origin, how it got here, any pivots or defining moments"),
+});
+
+export const MarketProfileSchema = z.object({
+  overview: z
+    .string()
+    .describe("How the market operates: B2B vs B2C, typical deal sizes, buyer journey, procurement process, key actors"),
+  dynamics: z
+    .string()
+    .describe("Market-specific patterns: pricing norms, switching costs, distribution channels, seasonality, regulatory cadence"),
+  customerBehavior: z
+    .string()
+    .describe("How customers buy and retain: decision drivers, loyalty patterns, churn triggers, contract lengths"),
+});
+
+export type CompanyProfile = z.infer<typeof CompanyProfileSchema>;
+export type MarketProfile = z.infer<typeof MarketProfileSchema>;
+
+// =============================================================================
 // PLAYER COMPANY AGENT SCHEMA
 // =============================================================================
 
@@ -267,6 +295,10 @@ export const Turn0ResultSchema = z.object({
     .array(Turn0ContactSchema)
     .default([])
     .describe("Initial stakeholder contacts for the player"),
+  companyProfile: CompanyProfileSchema
+    .describe("Rich company profile: what they sell and their founding story — used as persistent grounding context for all agents"),
+  marketProfile: MarketProfileSchema
+    .describe("Rich market profile: how the market operates, its dynamics, and customer behavior — used as persistent grounding context for all agents"),
 });
 
 export type Turn0Result = z.infer<typeof Turn0ResultSchema>;

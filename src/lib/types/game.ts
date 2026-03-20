@@ -30,6 +30,17 @@ export interface PlayerCompany {
   experience: CompanyExperience;
 }
 
+export interface CompanyProfile {
+  productDescription: string; // What the company actually sells and how it delivers value
+  foundingStory: string;      // Founding context and key milestones
+}
+
+export interface MarketProfile {
+  overview: string;         // How the market operates (B2B/B2C, buyer journey, procurement, deal sizes)
+  dynamics: string;         // Pricing norms, switching costs, distribution channels, seasonality
+  customerBehavior: string; // How customers buy, what drives decisions, retention patterns
+}
+
 // Size x Experience → Starting KPIs matrix
 export const SIZE_EXPERIENCE_KPIS: Record<CompanySize, Record<CompanyExperience, KPIs>> = {
   small: {
@@ -181,6 +192,10 @@ export interface GameState {
   currentDate: string; // ISO date string
   kpis: KPIs;
 
+  // Rich company and market profiles generated at Turn 0 (used as grounding context for all agents)
+  companyProfile?: CompanyProfile;
+  marketProfile?: MarketProfile;
+
   // Evolving company culture description (invisible to player)
   companyCulture: string;
 
@@ -319,6 +334,8 @@ export interface Turn0Result {
   estimatedMonthlyRevenue: number;
   estimatedMonthlyCosts: number;
   contacts: Contact[];
+  companyProfile: CompanyProfile;
+  marketProfile: MarketProfile;
   tokenUsage?: TokenUsage;
 }
 
