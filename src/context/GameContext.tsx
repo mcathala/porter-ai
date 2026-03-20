@@ -19,6 +19,8 @@ import {
   Difficulty,
   Market,
   TokenUsage,
+  Contact,
+  ContactMessage,
   SIZE_EXPERIENCE_KPIS,
   RestOfMarket,
 } from "@/lib/types/game";
@@ -91,6 +93,13 @@ interface GameContextType {
   sendAdvisorMessage: (content: string) => Promise<void>;
   clearAdvisorHistory: () => void;
 
+  // Contacts (Stakeholders)
+  contacts: Contact[];
+  activeContactId: string | null;
+  setActiveContactId: (id: string | null) => void;
+  sendContactMessage: (contactId: string, message: string) => Promise<void>;
+  markContactRead: (contactId: string) => void;
+
   // Token usage tracking
   totalTokenUsage: TokenUsage;
 }
@@ -143,6 +152,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [advisorMessages, setAdvisorMessages] = useState<AdvisorMessage[]>([]);
   const [isAdvisorOpen, setIsAdvisorOpen] = useState(false);
   const [isAdvisorTyping, setIsAdvisorTyping] = useState(false);
+
+  // Contacts (Stakeholders) state
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [activeContactId, setActiveContactId] = useState<string | null>(null);
+  const [lastTransientContactTurn, setLastTransientContactTurn] = useState<number>(-3);
 
   // Add an action to the current turn
   const addAction = useCallback((action: string) => {
@@ -224,6 +238,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
         const initUsage = turn0Result.tokenUsage || { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
         setTotalTokenUsage(initUsage);
 
+        // Store initial contacts
+        setContacts(turn0Result.contacts || []);
+        setActiveContactId(null);
+        setLastTransientContactTurn(-3);
+
         setActions([]);
         setCurrentTurnResult(null);
         setShowTurnSummary(false);
@@ -246,10 +265,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setIsProcessingTurn(true);
 
       try {
+        // Build contact summaries from contacts with recent exchanges
+        const contactSummaries = contacts
+          .filter((c) => c.conversationHistory.length > 0)
+          .map((c) => {
+            const recent = c.conversationHistory.slice(-2);
+            const summary = recent.map((m) => `${m.role === "player" ? "CEO" : c.name}: ${m.content}`).join(" → ");
+            return { contactId: c.id, name: c.name, position: c.position, summary };
+          });
+
         const turnInput: TurnInput = {
           tasks: actions,
           gameState,
           timeAdvance,
+          contactSummaries: contactSummaries.length > 0 ? contactSummaries : undefined,
         };
 
         const response = await fetch("/api/turn", {
@@ -310,6 +339,73 @@ export function GameProvider({ children }: { children: ReactNode }) {
           addTokenUsage(result.tokenUsage);
         }
 
+        // Process contact updates from this turn
+        const nextTurn = gameState.turn + 1;
+        setContacts((prev) => {
+          let updated = [...prev];
+
+          // Add inbound messages from contacts
+          for (const inbound of result.inboundContactMessages || []) {
+            updated = updated.map((c) => {
+              if (c.id !== inbound.contactId) return c;
+              const newMsg: ContactMessage = {
+                id: `${c.id}-t${nextTurn}-${Date.now()}`,
+                role: "contact",
+                content: inbound.message,
+                turnNumber: nextTurn,
+              };
+              return {
+                ...c,
+                conversationHistory: [...c.conversationHistory, newMsg],
+                unreadCount: c.unreadCount + 1,
+              };
+            });
+          }
+
+          // Add new transient contacts
+          // Player-initiated contacts always go through; organic ones throttled to 1 every 2 turns
+          const newTransients = result.newTransientContacts || [];
+          const playerInitiated = newTransients.filter((t) => t.isPlayerInitiated);
+          const organic = newTransients.filter((t) => !t.isPlayerInitiated);
+
+          const toAdd = [
+            ...playerInitiated,
+            ...(nextTurn - lastTransientContactTurn >= 2 ? organic.slice(0, 1) : []),
+          ];
+
+          for (const raw of toAdd) {
+            const already = updated.find((c) => c.id === raw.id);
+            if (!already) {
+              const newContact: Contact = {
+                id: raw.id,
+                name: raw.name,
+                position: raw.position,
+                company: raw.company,
+                personality: raw.personality,
+                relationshipStatus: "neutral",
+                type: "transient",
+                expiresAfterTurn: raw.expiresAfterTurn,
+                conversationHistory: raw.introMessage
+                  ? [{ id: `${raw.id}-intro`, role: "contact", content: raw.introMessage, turnNumber: nextTurn }]
+                  : [],
+                unreadCount: raw.introMessage ? 1 : 0,
+              };
+              updated = [...updated, newContact];
+              if (!raw.isPlayerInitiated) setLastTransientContactTurn(nextTurn);
+            }
+          }
+
+          // Expire transient contacts that have passed their turn
+          updated = updated.map((c) => {
+            if (c.type === "transient" && c.expiresAfterTurn && nextTurn > c.expiresAfterTurn) {
+              return { ...c, relationshipStatus: "gone" as const };
+            }
+            return c;
+          });
+
+          return updated;
+        });
+
         // Show turn summary (save actions before clearing)
         setCurrentTurnActions([...actions]);
         setCurrentTurnResult(result);
@@ -324,7 +420,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         setIsProcessingTurn(false);
       }
     },
-    [actions, gameState]
+    [actions, gameState, contacts, lastTransientContactTurn]
   );
 
   // Close turn summary modal
@@ -344,6 +440,129 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const clearAdvisorHistory = useCallback(() => {
     setAdvisorMessages([]);
   }, []);
+
+  // Mark a contact's messages as read
+  const markContactRead = useCallback((contactId: string) => {
+    setContacts((prev) =>
+      prev.map((c) => (c.id === contactId ? { ...c, unreadCount: 0 } : c))
+    );
+  }, []);
+
+  // Send a message to a contact and stream their reply
+  const sendContactMessage = useCallback(
+    async (contactId: string, message: string) => {
+      const contact = contacts.find((c) => c.id === contactId);
+      if (!contact) return;
+
+      // Add player message to history
+      const playerMsg: ContactMessage = {
+        id: `player-${Date.now()}`,
+        role: "player",
+        content: message,
+        turnNumber: gameState.turn,
+      };
+      setContacts((prev) =>
+        prev.map((c) =>
+          c.id === contactId
+            ? { ...c, conversationHistory: [...c.conversationHistory, playerMsg] }
+            : c
+        )
+      );
+
+      // Build conversation history for API (role mapping: contact→assistant, player→user)
+      const apiHistory = contact.conversationHistory.slice(-10).map((m) => ({
+        role: (m.role === "player" ? "user" : "assistant") as "user" | "assistant",
+        content: m.content,
+      }));
+
+      try {
+        const response = await fetch("/api/stakeholder/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contact,
+            message,
+            gameState,
+            conversationHistory: apiHistory,
+          }),
+        });
+
+        if (!response.ok) throw new Error("Failed to reach stakeholder");
+
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+        if (!reader) throw new Error("No response body");
+
+        // Placeholder contact reply message
+        const replyId = `contact-${Date.now()}`;
+        const replyMsg: ContactMessage = {
+          id: replyId,
+          role: "contact",
+          content: "",
+          turnNumber: gameState.turn,
+        };
+        setContacts((prev) =>
+          prev.map((c) =>
+            c.id === contactId
+              ? { ...c, conversationHistory: [...c.conversationHistory, replyMsg] }
+              : c
+          )
+        );
+
+        // Stream contact response
+        let done = false;
+        let fullContent = "";
+        while (!done) {
+          const { value, done: readerDone } = await reader.read();
+          done = readerDone;
+          if (value) {
+            const chunk = decoder.decode(value, { stream: true });
+            fullContent += chunk;
+            setContacts((prev) =>
+              prev.map((c) =>
+                c.id === contactId
+                  ? {
+                      ...c,
+                      conversationHistory: c.conversationHistory.map((m) =>
+                        m.id === replyId ? { ...m, content: m.content + chunk } : m
+                      ),
+                    }
+                  : c
+              )
+            );
+          }
+        }
+
+        // Strip token usage delimiter from displayed content
+        const tokenDelimiter = "\n__TOKEN_USAGE__:";
+        const delimiterIndex = fullContent.lastIndexOf(tokenDelimiter);
+        if (delimiterIndex !== -1) {
+          const usageJson = fullContent.slice(delimiterIndex + tokenDelimiter.length);
+          try {
+            const usage = JSON.parse(usageJson);
+            addTokenUsage(usage);
+          } catch { /* ignore */ }
+
+          const cleanContent = fullContent.slice(0, delimiterIndex);
+          setContacts((prev) =>
+            prev.map((c) =>
+              c.id === contactId
+                ? {
+                    ...c,
+                    conversationHistory: c.conversationHistory.map((m) =>
+                      m.id === replyId ? { ...m, content: cleanContent } : m
+                    ),
+                  }
+                : c
+            )
+          );
+        }
+      } catch (error) {
+        console.error("Contact chat error:", error);
+      }
+    },
+    [contacts, gameState, addTokenUsage]
+  );
 
   const sendAdvisorMessage = useCallback(
     async (content: string) => {
@@ -479,6 +698,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
         closeAdvisor,
         sendAdvisorMessage,
         clearAdvisorHistory,
+        // Contacts
+        contacts,
+        activeContactId,
+        setActiveContactId,
+        sendContactMessage,
+        markContactRead,
         // Token usage
         totalTokenUsage,
       }}

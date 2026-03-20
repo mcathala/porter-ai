@@ -207,6 +207,26 @@ export const GamemasterOutputSchema = z.object({
     .number()
     .default(0)
     .describe("Updated estimated monthly operating costs in full dollars. Should increase with hiring, expansion, new infrastructure. Decrease with layoffs, cost-cutting."),
+  inboundContactMessages: z
+    .array(z.object({
+      contactId: z.string().describe("ID of the contact sending the message"),
+      message: z.string().describe("Short message from the contact (1-2 sentences max)"),
+    }))
+    .default([])
+    .describe("0-2 proactive messages from existing contacts reacting to this turn. Only generate if the contact has a genuine reason to reach out."),
+  newTransientContacts: z
+    .array(z.object({
+      id: z.string().describe("Unique ID like 'transient-supplier-1'"),
+      name: z.string().describe("Full name of the transient contact"),
+      position: z.string().describe("Their role or title"),
+      company: z.string().optional().describe("Their company if external"),
+      personality: z.string().describe("One sentence personality description"),
+      introMessage: z.string().describe("Their opening message to the CEO — 1-2 sentences"),
+      expiresAfterTurn: z.number().describe("Turn number after which this contact disappears if ignored"),
+      isPlayerInitiated: z.boolean().default(false).describe("Set true if the player's action explicitly involved contacting this person (e.g. 'contact the supplier'). Player-initiated contacts are mandatory — always generate them."),
+    }))
+    .default([])
+    .describe("New transient contacts appearing this turn. MANDATORY when the player's action explicitly contacted an external party. Otherwise optional, aim for 1 every 2-3 turns max."),
 });
 
 export type GamemasterOutput = z.infer<typeof GamemasterOutputSchema>;
@@ -214,6 +234,14 @@ export type GamemasterOutput = z.infer<typeof GamemasterOutputSchema>;
 // =============================================================================
 // TURN 0 INITIALIZATION SCHEMA
 // =============================================================================
+
+export const Turn0ContactSchema = z.object({
+  id: z.string().describe("Unique ID like 'contact-cfo' or 'contact-cto'"),
+  name: z.string().describe("Full name of the contact (first + last)"),
+  position: z.string().describe("Role title e.g. 'CFO', 'CTO', 'Head of Sales', 'Investor Lead'"),
+  personality: z.string().describe("One sentence personality description e.g. 'Methodical and data-driven, gets cold when ignored'"),
+  introMessage: z.string().describe("Their first message to the CEO — 1-2 sentences, conversational, in character"),
+});
 
 export const Turn0ResultSchema = z.object({
   competitors: z
@@ -235,6 +263,10 @@ export const Turn0ResultSchema = z.object({
     .number()
     .default(0)
     .describe("Estimated monthly operating costs in full dollars"),
+  contacts: z
+    .array(Turn0ContactSchema)
+    .default([])
+    .describe("Initial stakeholder contacts for the player"),
 });
 
 export type Turn0Result = z.infer<typeof Turn0ResultSchema>;

@@ -9,6 +9,7 @@ import {
   PlayerCompany,
   Difficulty,
   TokenUsage,
+  Contact,
   SIZE_EXPERIENCE_KPIS,
   computeInitialFinancials,
 } from "../types/game";
@@ -285,7 +286,8 @@ async function gamemasterNode(
     gameState.playerCompany,
     gameState.difficulty,
     timeAdvance,
-    gameState.companyCulture
+    gameState.companyCulture,
+    turnInput.contactSummaries
   );
 
   const narrativeArcsStatus = gameState.narrativeArcs.length > 0
@@ -372,6 +374,8 @@ Synthesize the Player Company Agent's SWOT with the Market Agent's independent m
       companyCulture: gameState.companyCulture,
       estimatedMonthlyRevenue: gameState.estimatedMonthlyRevenue,
       estimatedMonthlyCosts: gameState.estimatedMonthlyCosts,
+      inboundContactMessages: [],
+      newTransientContacts: [],
     };
   }
 
@@ -501,6 +505,8 @@ function assembleResultNode(
     companyCulture: gamemasterOutput.companyCulture,
     estimatedMonthlyRevenue: gamemasterOutput.estimatedMonthlyRevenue,
     estimatedMonthlyCosts: gamemasterOutput.estimatedMonthlyCosts,
+    inboundContactMessages: gamemasterOutput.inboundContactMessages || [],
+    newTransientContacts: gamemasterOutput.newTransientContacts || [],
     tokenUsage,
     llmInfo: {
       provider: process.env.LLM_PROVIDER?.toLowerCase() || "groq",
@@ -633,10 +639,30 @@ export async function executeInitialization(config: {
     startingKpis.marketShare
   );
 
+  // Transform raw LLM contacts into full Contact objects with conversation history seeded
+  const contacts: Contact[] = (result.contacts || []).map((raw) => ({
+    id: raw.id,
+    name: raw.name,
+    position: raw.position,
+    personality: raw.personality,
+    relationshipStatus: "engaged" as const,
+    type: "inner_circle" as const,
+    conversationHistory: raw.introMessage
+      ? [{
+          id: `${raw.id}-intro`,
+          role: "contact" as const,
+          content: raw.introMessage,
+          turnNumber: 0,
+        }]
+      : [],
+    unreadCount: raw.introMessage ? 1 : 0,
+  }));
+
   return {
     ...result,
     estimatedMonthlyRevenue: financials.estimatedMonthlyRevenue,
     estimatedMonthlyCosts: financials.estimatedMonthlyCosts,
+    contacts,
     tokenUsage: usage,
   };
 }
