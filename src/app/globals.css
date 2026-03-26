@@ -232,10 +232,50 @@
   animation: grid-fade 8s ease-in-out infinite;
 }
 
+/* === GLASS INPUT === */
+.glass-input {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-input:focus {
+  border-color: rgba(19, 127, 236, 0.4);
+  box-shadow: 0 0 0 3px rgba(19, 127, 236, 0.08);
+  outline: none;
+}
+
+/* === GLASS MODAL === */
+.glass-modal {
+  background: rgba(10, 15, 20, 0.85);
+  backdrop-filter: blur(40px) saturate(1.2);
+  -webkit-backdrop-filter: blur(40px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 32px 100px -16px rgba(0, 0, 0, 0.6);
+}
+
+/* === GLASS PANEL === */
+.glass-panel {
+  background: rgba(10, 15, 20, 0.8);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* === CURSOR NONE (applied by GlobalEffects) === */
+.cursor-none, .cursor-none * {
+  cursor: none !important;
+}
+
 /* === SELECTION & SCROLLBAR === */
 input[type="radio"]:checked+div {
-  border-color: var(--color-primary);
-  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-color: rgba(19, 127, 236, 0.4);
+  background-color: rgba(19, 127, 236, 0.06);
+  box-shadow: 0 0 20px rgba(19, 127, 236, 0.08);
 }
 
 input[type="radio"]:checked+div .check-icon {

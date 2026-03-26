@@ -57,14 +57,14 @@ export default function AdvisorPanel() {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#111a22]/80 backdrop-blur-sm z-40"
+        className="fixed inset-0 bg-[#0a0f14]/80 backdrop-blur-sm z-40"
         onClick={closeAdvisor}
       />
 
       {/* Panel */}
-      <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#141f2b] border-l border-[#233648]/60 z-50 flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
+      <div className="fixed right-0 top-0 bottom-0 w-full max-w-md glass-panel border-l border-white/[0.05] z-50 flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#233648]/60 bg-[#111a22]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] bg-white/[0.02]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-lg">
               M
@@ -77,7 +77,7 @@ export default function AdvisorPanel() {
           <div className="flex items-center gap-2">
             <button
               onClick={clearAdvisorHistory}
-              className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+              className="p-2 text-gray-400 hover:text-white hover:bg-white/[0.04] rounded-xl transition-colors"
               title="Clear conversation"
             >
               <span className="material-symbols-outlined text-[20px]">
@@ -86,7 +86,7 @@ export default function AdvisorPanel() {
             </button>
             <button
               onClick={closeAdvisor}
-              className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+              className="p-2 text-gray-400 hover:text-white hover:bg-white/[0.04] rounded-xl transition-colors"
             >
               <span className="material-symbols-outlined text-[20px]">
                 close
@@ -137,7 +137,7 @@ export default function AdvisorPanel() {
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
                 M
               </div>
-              <div className="bg-[#111a22]/80 border border-[#233648]/40 rounded-2xl rounded-tl-sm px-4 py-3 text-gray-400">
+              <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl rounded-tl-sm px-4 py-3 text-gray-400">
                 <div className="flex gap-1">
                   <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                   <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -153,7 +153,7 @@ export default function AdvisorPanel() {
         {/* Input */}
         <form
           onSubmit={handleSubmit}
-          className="p-4 border-t border-[#233648]/60 bg-[#111a22]"
+          className="p-4 border-t border-white/[0.06] bg-white/[0.02]"
         >
           <div className="flex items-center gap-2">
             <input
@@ -164,7 +164,7 @@ export default function AdvisorPanel() {
               onKeyDown={handleKeyDown}
               placeholder="Ask Michael for advice..."
               disabled={isAdvisorTyping}
-              className="flex-1 bg-[#141f2b]/60 border border-[#233648]/60 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 disabled:opacity-50 transition-colors"
+              className="flex-1 glass-input rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 disabled:opacity-50 transition-colors"
             />
             <button
               type="submit"
@@ -201,7 +201,7 @@ function MessageBubble({
         className={`max-w-[85%] rounded-2xl px-4 py-3 ${
           isUser
             ? "bg-primary text-white rounded-tr-sm shadow-lg shadow-primary/20"
-            : "bg-[#111a22]/80 border border-[#233648]/40 text-gray-200 rounded-tl-sm"
+            : "bg-white/[0.03] border border-white/[0.06] text-gray-200 rounded-tl-sm"
         }`}
       >
         {isUser ? (
@@ -238,7 +238,7 @@ function MessageBubble({
                   <h3 className="text-sm font-bold font-heading text-white mt-2 mb-1">{children}</h3>
                 ),
                 code: ({ children }) => (
-                  <code className="bg-[#233648] px-1.5 py-0.5 rounded text-emerald-400 text-xs">
+                  <code className="bg-white/[0.06] px-1.5 py-0.5 rounded text-emerald-400 text-xs">
                     {children}
                   </code>
                 ),
@@ -268,7 +268,7 @@ function SuggestedQuestion({
   return (
     <button
       onClick={() => onClick(text)}
-      className="w-full text-left px-4 py-3 bg-[#141f2b]/60 hover:bg-[#1f2d3b] border border-[#233648]/60 hover:border-emerald-500/40 rounded-xl text-sm text-gray-300 hover:text-white transition-all"
+      className="w-full text-left px-4 py-3 bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.06] hover:border-emerald-500/40 rounded-xl text-sm text-gray-300 hover:text-white transition-all"
     >
       {text}
     </button>

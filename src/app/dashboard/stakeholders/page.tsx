@@ -57,8 +57,8 @@ function ContactRow({
       disabled={isGone}
       className={`w-full flex items-center gap-3 px-3 py-2.5 transition-all text-left rounded-lg ${
         isActive
-          ? "bg-[#1f3040] border-l-2 border-l-[#137fec]"
-          : "hover:bg-[#1a2836] border-l-2 border-l-transparent"
+          ? "bg-primary/[0.08] border-l-2 border-l-primary"
+          : "hover:bg-white/[0.03] border-l-2 border-l-transparent"
       } ${isGone ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
     >
       {/* Avatar */}
@@ -71,7 +71,7 @@ function ContactRow({
         </div>
         {/* Status dot */}
         <span
-          className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-[#111a22]"
+          className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-[#0a0f14]"
           style={{ backgroundColor: status.dot }}
         />
       </div>
@@ -153,7 +153,7 @@ export default function StakeholdersPage() {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="text-center space-y-3">
-          <div className="p-4 rounded-2xl bg-[#1a2836] border border-[#2a3f54] inline-flex">
+          <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] inline-flex">
             <span className="material-symbols-outlined text-[#92adc9] text-4xl">group</span>
           </div>
           <p className="text-[#92adc9] text-sm">No contacts yet — start a game to meet your team.</p>
@@ -166,9 +166,9 @@ export default function StakeholdersPage() {
     <div className="flex h-full w-full overflow-hidden">
       {/* Contact List */}
       <aside
-        className={`${showChat ? "hidden md:flex" : "flex"} w-full md:w-72 flex-col border-r border-[#233648] bg-[#111a22] shrink-0`}
+        className={`${showChat ? "hidden md:flex" : "flex"} w-full md:w-72 flex-col glass-nav border-r border-white/[0.05] shrink-0`}
       >
-        <div className="px-4 py-4 border-b border-[#233648]">
+        <div className="px-4 py-4 border-b border-white/[0.05]">
           <h2 className="text-white font-bold font-heading text-base">Contacts</h2>
         </div>
 
@@ -214,7 +214,7 @@ export default function StakeholdersPage() {
       </aside>
 
       {/* Chat Panel */}
-      <section className={`${showChat ? "flex" : "hidden md:flex"} flex-col flex-1 min-h-0 bg-[#101922]`}>
+      <section className={`${showChat ? "flex" : "hidden md:flex"} flex-col flex-1 min-h-0`}>
         {!activeContact ? (
           <div className="flex flex-1 items-center justify-center">
             <div className="text-center space-y-2">
@@ -225,10 +225,10 @@ export default function StakeholdersPage() {
         ) : (
           <>
             {/* Header */}
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-[#233648] bg-[#111a22] shrink-0">
+            <div className="flex items-center gap-3 px-4 py-3 glass-nav border-b border-white/[0.05] shrink-0">
               <button
                 onClick={() => setShowChat(false)}
-                className="flex md:hidden items-center justify-center p-1.5 rounded-lg text-[#92adc9] hover:text-white hover:bg-[#233648] transition-colors"
+                className="flex md:hidden items-center justify-center p-1.5 rounded-lg text-[#92adc9] hover:text-white hover:bg-white/[0.04] transition-colors"
               >
                 <span className="material-symbols-outlined text-[20px]">arrow_back</span>
               </button>
@@ -311,8 +311,8 @@ export default function StakeholdersPage() {
                           <div
                             className={`px-3 py-2 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                               isPlayer
-                                ? "rounded-tr-sm bg-[#137fec]/15 border border-[#137fec]/30 text-white"
-                                : "rounded-tl-sm bg-[#1a2836] border border-[#2a3f54] text-[#c0d0e0]"
+                                ? "rounded-tr-sm bg-primary/[0.1] border border-primary/[0.2] text-white"
+                                : "rounded-tl-sm bg-white/[0.03] border border-white/[0.06] text-[#c0d0e0]"
                             }`}
                           >
                             {msg.content || (
@@ -333,7 +333,7 @@ export default function StakeholdersPage() {
             </div>
 
             {/* Input */}
-            <div className="shrink-0 px-4 py-3 border-t border-[#233648] bg-[#111a22]">
+            <div className="shrink-0 px-4 py-3 glass-nav border-t border-white/[0.05]">
               {activeContact.relationshipStatus === "gone" ? (
                 <p className="text-center text-[#92adc9] text-sm py-1">
                   This contact is no longer available.
@@ -347,7 +347,7 @@ export default function StakeholdersPage() {
                     placeholder={`Reply to ${activeContact.name.split(" ")[0]}…`}
                     rows={1}
                     disabled={isSending}
-                    className="flex-1 px-3 py-2.5 bg-[#1a2836] border border-[#233648] rounded-xl text-sm text-white placeholder-[#92adc9] resize-none focus:outline-none focus:border-[#137fec]/50 transition-colors disabled:opacity-50"
+                    className="flex-1 px-3 py-2.5 glass-input rounded-xl text-sm text-white placeholder-[#92adc9] resize-none focus:outline-none focus:border-[#137fec]/50 transition-colors disabled:opacity-50"
                     style={{ maxHeight: 120 }}
                     onInput={(e) => {
                       const t = e.target as HTMLTextAreaElement;

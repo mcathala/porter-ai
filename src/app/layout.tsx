@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { GameProvider } from "@/context/GameContext";
+import GlobalEffects from "@/components/GlobalEffects";
 
 const inter = Inter({
   variable: "--font-display",
@@ -36,6 +37,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} antialiased font-display bg-[#0a0f14] text-white min-h-screen flex flex-col overflow-x-hidden`}>
         <GameProvider>
+          <GlobalEffects />
           {children}
         </GameProvider>
       </body>

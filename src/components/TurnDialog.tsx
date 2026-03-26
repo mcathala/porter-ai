@@ -33,14 +33,14 @@ export default function TurnDialog({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111a22]/80 backdrop-blur-sm transition-all duration-300">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0f14]/80 backdrop-blur-sm transition-all duration-300">
             <div
                 className="fixed inset-0 z-0 cursor-default"
                 onClick={onClose}
                 aria-hidden="true"
             />
-            <div className="bg-[#141f2b] w-full max-w-4xl rounded-2xl shadow-2xl border border-[#233648]/60 overflow-hidden flex flex-col max-h-[90vh] relative z-10 animate-in zoom-in-95 duration-200 text-white">
-                <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#233648]/60 flex items-center justify-between bg-[#141f2b] sticky top-0 z-10">
+            <div className="glass-modal w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] relative z-10 animate-in zoom-in-95 duration-200 text-white">
+                <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-white/[0.06] flex items-center justify-between bg-white/[0.02] sticky top-0 z-10">
                     <div>
                         <h2 className="text-lg sm:text-xl font-bold font-heading text-white flex items-center gap-2">
                             <span className="material-symbols-outlined text-primary text-[24px]">
@@ -60,12 +60,12 @@ export default function TurnDialog({
                     </button>
                 </div>
 
-                <div className="p-4 sm:p-8 overflow-y-auto bg-[#111a22]/50">
+                <div className="p-4 sm:p-8 overflow-y-auto bg-white/[0.01]">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {/* Recommended Option - Emerald */}
                         <div
                             onClick={() => setSelectedOption("event")}
-                            className={`col-span-1 md:col-span-2 lg:col-span-3 bg-[#1a2632]/60 p-5 rounded-xl border-2 cursor-pointer transition-all shadow-sm hover:shadow-md group relative overflow-hidden ${selectedOption === "event"
+                            className={`col-span-1 md:col-span-2 lg:col-span-3 bg-white/[0.02] p-5 rounded-xl border-2 cursor-pointer transition-all shadow-sm hover:shadow-md group relative overflow-hidden ${selectedOption === "event"
                                     ? "border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-900/10"
                                     : "border-emerald-500/40 hover:border-emerald-500"
                                 }`}
@@ -122,9 +122,9 @@ export default function TurnDialog({
                         {/* Skip 1 Week - Blue */}
                         <div
                             onClick={() => setSelectedOption("week")}
-                            className={`bg-[#1a2632]/60 p-5 rounded-xl border-2 cursor-pointer transition-all shadow-sm hover:shadow-md group relative ${selectedOption === "week"
+                            className={`bg-white/[0.02] p-5 rounded-xl border-2 cursor-pointer transition-all shadow-sm hover:shadow-md group relative ${selectedOption === "week"
                                     ? "border-blue-500 ring-2 ring-blue-500/20 bg-blue-900/10"
-                                    : "border-[#233648]/60 hover:border-blue-500/50"
+                                    : "border-white/[0.06] hover:border-blue-500/50"
                                 }`}
                         >
                             {selectedOption === "week" && (
@@ -159,7 +159,7 @@ export default function TurnDialog({
                             <div
                                 className={`mt-4 pt-3 border-t flex justify-between items-center ${selectedOption === "week"
                                         ? "border-blue-800/30"
-                                        : "border-[#233648]/60"
+                                        : "border-white/[0.06]"
                                     }`}
                             >
                                 <span className="text-[10px] uppercase font-bold text-gray-500">
@@ -177,9 +177,9 @@ export default function TurnDialog({
                         {/* Skip 1 Month - Indigo */}
                         <div
                             onClick={() => setSelectedOption("month")}
-                            className={`bg-[#1a2632]/60 p-5 rounded-xl border-2 cursor-pointer transition-all shadow-sm hover:shadow-md group relative ${selectedOption === "month"
+                            className={`bg-white/[0.02] p-5 rounded-xl border-2 cursor-pointer transition-all shadow-sm hover:shadow-md group relative ${selectedOption === "month"
                                     ? "border-indigo-500 ring-2 ring-indigo-500/20 bg-indigo-900/10"
-                                    : "border-[#233648]/60 hover:border-indigo-500/50"
+                                    : "border-white/[0.06] hover:border-indigo-500/50"
                                 }`}
                         >
                             {selectedOption === "month" && (
@@ -216,7 +216,7 @@ export default function TurnDialog({
                             <div
                                 className={`mt-4 pt-3 border-t flex justify-between items-center ${selectedOption === "month"
                                         ? "border-indigo-800/30"
-                                        : "border-[#233648]/60"
+                                        : "border-white/[0.06]"
                                     }`}
                             >
                                 <span className="text-[10px] uppercase font-bold text-gray-500">
@@ -225,8 +225,8 @@ export default function TurnDialog({
                                 <div className="flex gap-0.5">
                                     <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
                                     <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
-                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
-                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-white/[0.08]"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-white/[0.08]"></div>
                                 </div>
                             </div>
                         </div>
@@ -234,9 +234,9 @@ export default function TurnDialog({
                         {/* Skip 1 Quarter - Purple */}
                         <div
                             onClick={() => setSelectedOption("quarter")}
-                            className={`bg-[#1a2632]/60 p-5 rounded-xl border-2 cursor-pointer transition-all shadow-sm hover:shadow-md group relative ${selectedOption === "quarter"
+                            className={`bg-white/[0.02] p-5 rounded-xl border-2 cursor-pointer transition-all shadow-sm hover:shadow-md group relative ${selectedOption === "quarter"
                                     ? "border-purple-500 ring-2 ring-purple-500/20 bg-purple-900/10"
-                                    : "border-[#233648]/60 hover:border-purple-500/50"
+                                    : "border-white/[0.06] hover:border-purple-500/50"
                                 }`}
                         >
                             {selectedOption === "quarter" && (
@@ -273,7 +273,7 @@ export default function TurnDialog({
                             <div
                                 className={`mt-4 pt-3 border-t flex justify-between items-center ${selectedOption === "quarter"
                                         ? "border-purple-800/30"
-                                        : "border-[#233648]/60"
+                                        : "border-white/[0.06]"
                                     }`}
                             >
                                 <span className="text-[10px] uppercase font-bold text-gray-500">
@@ -281,9 +281,9 @@ export default function TurnDialog({
                                 </span>
                                 <div className="flex gap-0.5">
                                     <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
-                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
-                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
-                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-white/[0.08]"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-white/[0.08]"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-white/[0.08]"></div>
                                 </div>
                             </div>
                         </div>
@@ -291,9 +291,9 @@ export default function TurnDialog({
                         {/* Skip 1 Year - Amber/Orange (Warning) */}
                         <div
                             onClick={() => setSelectedOption("year")}
-                            className={`col-span-1 md:col-span-2 lg:col-span-3 bg-[#1a2632]/60 p-4 rounded-xl border-2 cursor-pointer transition-all shadow-sm hover:shadow-md group flex items-center justify-between gap-4 relative ${selectedOption === "year"
+                            className={`col-span-1 md:col-span-2 lg:col-span-3 bg-white/[0.02] p-4 rounded-xl border-2 cursor-pointer transition-all shadow-sm hover:shadow-md group flex items-center justify-between gap-4 relative ${selectedOption === "year"
                                     ? "border-amber-500 ring-2 ring-amber-500/20 bg-amber-900/10"
-                                    : "border-[#233648]/60 hover:border-amber-500/50"
+                                    : "border-white/[0.06] hover:border-amber-500/50"
                                 }`}
                         >
                             {selectedOption === "year" && (
@@ -338,10 +338,10 @@ export default function TurnDialog({
                     </div>
                 </div>
 
-                <div className="px-4 sm:px-8 py-4 sm:py-5 border-t border-[#233648]/60 bg-[#141f2b] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+                <div className="px-4 sm:px-8 py-4 sm:py-5 border-t border-white/[0.05] bg-white/[0.02] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
                     <div className="flex items-center gap-2">
                         <input
-                            className="rounded border-slate-600 bg-[#111a22] text-primary focus:ring-primary/50"
+                            className="rounded border-white/[0.1] bg-white/[0.03] text-primary focus:ring-primary/50"
                             id="dontShow"
                             type="checkbox"
                             checked={rememberChoice}
@@ -355,7 +355,7 @@ export default function TurnDialog({
                         <button
                             onClick={onClose}
                             disabled={isSimulating}
-                            className="px-4 sm:px-5 py-2.5 rounded-xl text-slate-300 font-medium hover:bg-[#1a2632]/60 transition-colors disabled:opacity-50 cursor-pointer flex-1 sm:flex-none"
+                            className="px-4 sm:px-5 py-2.5 rounded-xl text-slate-300 font-medium hover:bg-white/[0.04] transition-colors disabled:opacity-50 cursor-pointer flex-1 sm:flex-none"
                         >
                             Cancel
                         </button>
@@ -363,8 +363,8 @@ export default function TurnDialog({
                             onClick={handleProceed}
                             disabled={!selectedOption || isSimulating}
                             className={`px-4 sm:px-5 py-2.5 rounded-xl text-white font-medium font-heading shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer flex-1 sm:flex-none ${selectedOption && !isSimulating
-                                    ? "bg-primary shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
-                                    : "bg-slate-700 cursor-not-allowed shadow-none"
+                                    ? "bg-primary shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] btn-glow"
+                                    : "bg-white/[0.08] cursor-not-allowed shadow-none"
                                 }`}
                         >
                             {isSimulating ? (

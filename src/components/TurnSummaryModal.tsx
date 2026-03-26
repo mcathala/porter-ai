@@ -81,15 +81,15 @@ export default function TurnSummaryModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111a22]/90 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0f14]/90 backdrop-blur-sm">
       <div
         className="fixed inset-0 z-0 cursor-default"
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="bg-[#1a2632] w-full max-w-4xl rounded-2xl shadow-2xl border border-[#233648] overflow-hidden flex flex-col max-h-[90vh] relative z-10 animate-in zoom-in-95 duration-200 text-white">
+      <div className="glass-modal w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] relative z-10 animate-in zoom-in-95 duration-200 text-white">
         {/* Header */}
-        <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#233648] bg-gradient-to-r from-[#1a2632] to-[#1f3044]">
+        <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-white/[0.06] bg-white/[0.03]">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl sm:text-2xl font-bold font-heading text-white">
@@ -120,7 +120,7 @@ export default function TurnSummaryModal({
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Cash */}
-              <div className="bg-[#111a22] rounded-2xl p-5 border border-[#233648]/60">
+              <div className="bg-white/[0.02] rounded-2xl p-5 border border-white/[0.06]">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400 text-sm">Cash Balance</span>
                   <div
@@ -141,7 +141,7 @@ export default function TurnSummaryModal({
               </div>
 
               {/* Market Share */}
-              <div className="bg-[#111a22] rounded-2xl p-5 border border-[#233648]/60">
+              <div className="bg-white/[0.02] rounded-2xl p-5 border border-white/[0.06]">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400 text-sm">Market Share</span>
                   <div
@@ -162,7 +162,7 @@ export default function TurnSummaryModal({
               </div>
 
               {/* Satisfaction */}
-              <div className="bg-[#111a22] rounded-2xl p-5 border border-[#233648]/60">
+              <div className="bg-white/[0.02] rounded-2xl p-5 border border-white/[0.06]">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400 text-sm">Team Morale</span>
                   <div
@@ -183,7 +183,7 @@ export default function TurnSummaryModal({
               </div>
 
               {/* Brand Awareness */}
-              <div className="bg-[#111a22] rounded-2xl p-5 border border-[#233648]/60">
+              <div className="bg-white/[0.02] rounded-2xl p-5 border border-white/[0.06]">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-gray-400 text-sm">Brand Awareness</span>
                   <div
@@ -218,7 +218,7 @@ export default function TurnSummaryModal({
                 {turnResult.newsItems.map((news, index) => (
                   <div
                     key={news.id || index}
-                    className="bg-[#111a22] rounded-2xl p-4 border border-[#233648]/60"
+                    className="bg-white/[0.02] rounded-2xl p-4 border border-white/[0.06]"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
@@ -261,7 +261,7 @@ export default function TurnSummaryModal({
                 {turnResult.competitorMoves.map((move, index) => (
                   <div
                     key={index}
-                    className="bg-[#111a22] rounded-2xl p-4 border border-[#233648]/60 flex items-start gap-4"
+                    className="bg-white/[0.02] rounded-2xl p-4 border border-white/[0.06] flex items-start gap-4"
                   >
                     <div className="p-2 rounded-lg bg-orange-500/10 text-orange-400">
                       <span className="material-symbols-outlined">
@@ -273,7 +273,7 @@ export default function TurnSummaryModal({
                         <span className="font-bold text-white">
                           {move.competitorName}
                         </span>
-                        <span className="text-xs text-gray-500 bg-[#233648] px-2 py-0.5 rounded">
+                        <span className="text-xs text-gray-500 bg-white/[0.06] px-2 py-0.5 rounded">
                           {move.archetype}
                         </span>
                       </div>
@@ -290,7 +290,7 @@ export default function TurnSummaryModal({
 
           {/* Dev Panel — hidden, toggled with Cmd+D */}
           {showDevPanel && (
-            <div className="border border-dashed border-gray-600 rounded-xl p-4 sm:p-6 space-y-6 bg-[#0d1419]">
+            <div className="border border-dashed border-white/[0.06] rounded-xl p-4 sm:p-6 space-y-6 bg-[#0a0f14]/60">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-gray-500 text-xs uppercase tracking-wider">
                   <span className="material-symbols-outlined text-[16px]">
@@ -484,7 +484,7 @@ export default function TurnSummaryModal({
                               {arc.status}
                             </span>
                             <span className="text-gray-400">{arc.name}</span>
-                            <div className="flex-1 bg-[#233648] rounded-full h-1.5">
+                            <div className="flex-1 bg-white/[0.06] rounded-full h-1.5">
                               <div
                                 className={`h-1.5 rounded-full ${
                                   arc.status === "dominant"
@@ -552,10 +552,10 @@ export default function TurnSummaryModal({
         </div>
 
         {/* Footer */}
-        <div className="px-4 sm:px-8 py-4 sm:py-5 border-t border-[#233648] bg-[#1a2632] flex justify-end">
+        <div className="px-4 sm:px-8 py-4 sm:py-5 border-t border-white/[0.05] bg-white/[0.02] flex justify-end">
           <button
             onClick={onClose}
-            className="px-8 py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2"
+            className="px-8 py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 btn-glow"
           >
             <span className="material-symbols-outlined text-[20px]">
               arrow_forward
