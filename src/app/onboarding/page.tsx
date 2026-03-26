@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import FadeIn from "@/components/FadeIn";
+import { FadeUp, MagneticButton, StaggerText } from "@/components/animations";
+import { motion } from "framer-motion";
 import PorterLogo from "@/components/PorterLogo";
 
 export default function OnboardingPage() {
@@ -15,22 +16,19 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col bg-[#101922] overflow-x-hidden text-white">
+    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden text-white">
       <div className="flex h-full grow flex-col">
         {/* Top Navigation */}
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#233648] px-4 sm:px-10 py-3 bg-[#111a22]">
-          <div className="flex items-center gap-4 text-white">
-            <div className="size-8 flex items-center justify-center rounded-xl bg-primary text-white">
-              <PorterLogo size={20} variant="white" />
-            </div>
-            <h2 className="text-white text-lg font-bold font-heading leading-tight tracking-[-0.02em]">
-              PorterAi
-            </h2>
-          </div>
+        <header className="flex items-center justify-between whitespace-nowrap border-b border-white/[0.04] px-4 sm:px-10 py-3">
+          <Link href="/" className="flex items-center gap-2 text-white/40 hover:text-white/60 transition-colors">
+            <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+            <span className="text-[13px] font-medium">porter.ai</span>
+          </Link>
+          <span className="text-white/20 text-[12px] font-medium">New game</span>
         </header>
 
         <main className="flex flex-1 justify-center py-8 px-6 sm:px-10">
-          <FadeIn className="flex flex-col w-full max-w-[960px]">
+          <FadeUp className="flex flex-col w-full max-w-[960px]">
             {/* Progress Bar Section */}
             <div className="flex flex-col gap-3 mb-8">
               <div className="flex justify-between items-center">
@@ -41,18 +39,15 @@ export default function OnboardingPage() {
                   Configuration
                 </p>
               </div>
-              <div className="rounded-full bg-[#324d67] h-2 overflow-hidden">
-                <div
-                  className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
-                  style={{ width: "0%" }}
-                ></div>
+              <div className="rounded-full bg-white/[0.06] h-2 overflow-hidden">
+                <motion.div className="h-full rounded-full bg-primary" initial={{ width: "0%" }} animate={{ width: "0%" }} transition={{ duration: 0.8, ease: "easeOut" }} />
               </div>
             </div>
 
             {/* Page Heading */}
             <div className="flex flex-col gap-2 mb-8">
               <h1 className="text-white text-4xl font-bold font-heading leading-tight tracking-[-0.02em]">
-                Select Your Challenge Level
+                <StaggerText text="Select Your Challenge Level" />
               </h1>
               <p className="text-[#92adc9] text-lg font-normal">
                 How do you want to play?
@@ -71,7 +66,8 @@ export default function OnboardingPage() {
                   checked={selected === "easy"}
                   onChange={() => setSelected("easy")}
                 />
-                <div className="h-full flex flex-col gap-4 p-6 rounded-2xl border border-[#233648]/60 bg-[#141f2b]/60 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 shadow-sm">
+                <div className="h-full flex flex-col gap-4 p-6 rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-xl peer-checked:border-primary/40 peer-checked:shadow-[0_0_20px_rgba(19,127,236,0.08)] hover:border-white/[0.12] transition-all duration-200 shadow-sm hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:scale-[1.01] relative">
+                  <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
                   <div className="flex justify-between items-start">
                     <div className="p-3 rounded-lg bg-indigo-500/20 text-indigo-400">
                       <span className="material-symbols-outlined text-3xl">
@@ -92,7 +88,7 @@ export default function OnboardingPage() {
                       Sandbox mode. Actions tend to succeed, the market responds easily, and regulation is minimal.
                     </p>
                   </div>
-                  <div className="mt-auto pt-4 border-t border-[#2a3b4d]">
+                  <div className="mt-auto pt-4 border-t border-white/[0.06]">
                     <span className="inline-flex items-center text-xs font-semibold text-green-400 bg-green-500/10 px-2 py-1 rounded">
                       Sandbox
                     </span>
@@ -110,7 +106,8 @@ export default function OnboardingPage() {
                   checked={selected === "standard"}
                   onChange={() => setSelected("standard")}
                 />
-                <div className="h-full flex flex-col gap-4 p-6 rounded-2xl border border-[#233648]/60 bg-[#141f2b]/60 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 shadow-sm">
+                <div className="h-full flex flex-col gap-4 p-6 rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-xl peer-checked:border-primary/40 peer-checked:shadow-[0_0_20px_rgba(19,127,236,0.08)] hover:border-white/[0.12] transition-all duration-200 shadow-sm hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:scale-[1.01] relative">
+                  <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
                   <div className="flex justify-between items-start">
                     <div className="p-3 rounded-lg bg-primary/20 text-primary">
                       <span className="material-symbols-outlined text-3xl">
@@ -131,7 +128,7 @@ export default function OnboardingPage() {
                       Balanced experience. Actions sometimes have unexpected outcomes, with moderate market inertia and occasional regulation.
                     </p>
                   </div>
-                  <div className="mt-auto pt-4 border-t border-[#2a3b4d]">
+                  <div className="mt-auto pt-4 border-t border-white/[0.06]">
                     <span className="inline-flex items-center text-xs font-semibold text-primary bg-blue-500/10 px-2 py-1 rounded">
                       Balanced
                     </span>
@@ -149,7 +146,8 @@ export default function OnboardingPage() {
                   checked={selected === "hard"}
                   onChange={() => setSelected("hard")}
                 />
-                <div className="h-full flex flex-col gap-4 p-6 rounded-2xl border border-[#233648]/60 bg-[#141f2b]/60 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:border-primary/50 transition-all duration-200 shadow-sm">
+                <div className="h-full flex flex-col gap-4 p-6 rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-xl peer-checked:border-primary/40 peer-checked:shadow-[0_0_20px_rgba(19,127,236,0.08)] hover:border-white/[0.12] transition-all duration-200 shadow-sm hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:scale-[1.01] relative">
+                  <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
                   <div className="flex justify-between items-start">
                     <div className="p-3 rounded-lg bg-orange-500/20 text-orange-400">
                       <span className="material-symbols-outlined text-3xl">
@@ -170,7 +168,7 @@ export default function OnboardingPage() {
                       Realistic simulation. Plans rarely go as expected, the market resists change, and regulation actively shapes your strategy.
                     </p>
                   </div>
-                  <div className="mt-auto pt-4 border-t border-[#2a3b4d]">
+                  <div className="mt-auto pt-4 border-t border-white/[0.06]">
                     <span className="inline-flex items-center text-xs font-semibold text-orange-400 bg-orange-500/10 px-2 py-1 rounded">
                       Realistic
                     </span>
@@ -181,17 +179,16 @@ export default function OnboardingPage() {
 
             {/* Footer Navigation */}
             <div className="flex items-center justify-between">
-              <Link href="/" className="flex items-center justify-center h-12 px-6 rounded-lg text-[#92adc9] font-bold text-base hover:bg-[#1f2937] transition-colors">
+              <Link href="/" className="flex items-center justify-center h-12 px-6 rounded-lg text-[#92adc9] font-bold text-base hover:bg-white/[0.04] transition-colors border border-white/[0.06] hover:border-white/[0.12]">
                 Back
               </Link>
-              <button
-                onClick={handleContinue}
-                className="flex items-center justify-center h-12 px-8 rounded-xl bg-primary text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all"
-              >
-                Continue
-              </button>
+              <MagneticButton href={`/market?difficulty=${selected}`}>
+                <div className="btn-glow flex items-center justify-center h-12 px-8 rounded-xl bg-primary text-white font-bold text-base shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  Continue
+                </div>
+              </MagneticButton>
             </div>
-          </FadeIn>
+          </FadeUp>
         </main>
       </div>
     </div>

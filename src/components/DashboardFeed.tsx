@@ -5,6 +5,7 @@ import { useGame, TurnHistoryEntry } from "@/context/GameContext";
 import { NewsItem, CompetitorMove } from "@/lib/types/game";
 import TurnSummaryModal from "./TurnSummaryModal";
 import PorterLogo from "./PorterLogo";
+import { FadeUp } from "@/components/animations";
 
 export default function DashboardFeed() {
   const { turnHistory, gameState } = useGame();
@@ -14,10 +15,10 @@ export default function DashboardFeed() {
   if (turnHistory.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-primary mb-6">
+        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/[0.08] border border-primary/[0.15] text-primary mb-6">
           <PorterLogo size={36} variant="blue" />
         </div>
-        <h3 className="text-xl font-bold font-heading text-white mb-2">
+        <h3 className="text-xl font-bold font-heading tracking-[-0.02em] text-white mb-2">
           Welcome, CEO
         </h3>
         <p className="text-gray-400 max-w-md mb-6">
@@ -42,12 +43,14 @@ export default function DashboardFeed() {
       </div>
 
       {/* Feed Items */}
-      {turnHistory.map((entry) => (
-        <TurnHistoryCard key={entry.turn} entry={entry} onClick={() => setSelectedEntry(entry)} />
+      {turnHistory.map((entry, index) => (
+        <FadeUp key={entry.turn} delay={index * 0.08}>
+          <TurnHistoryCard entry={entry} onClick={() => setSelectedEntry(entry)} />
+        </FadeUp>
       ))}
 
       {/* Timeline line */}
-      <div className="absolute left-[calc(50%-384px-17px)] top-0 bottom-0 w-px bg-[#233648] -z-10 hidden xl:block" />
+      <div className="absolute left-[calc(50%-384px-17px)] top-0 bottom-0 w-px bg-white/[0.06] -z-10 hidden xl:block" />
 
       {/* History Turn Recap Modal */}
       <TurnSummaryModal
@@ -74,8 +77,9 @@ function TurnHistoryCard({ entry, onClick }: { entry: TurnHistoryEntry; onClick:
   return (
     <div className="space-y-4">
       {/* Turn Summary Card */}
-      <div onClick={onClick} className="group relative flex gap-4 rounded-2xl bg-[#1a2836] p-5 transition-all hover:bg-[#1f3040] border border-[#2a3f54] hover:border-[#3a5570] cursor-pointer">
-        <div className="absolute -left-[33px] top-6 flex h-8 w-8 items-center justify-center rounded-full bg-[#233648] ring-4 ring-[#101922] text-gray-400 text-xs font-bold">
+      <div onClick={onClick} className="group relative flex gap-4 rounded-2xl bg-white/[0.03] p-5 transition-all hover:bg-white/[0.04] border border-white/[0.06] hover:border-white/[0.08] cursor-pointer hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:scale-[1.003]">
+        <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+        <div className="absolute -left-[33px] top-6 flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.06] ring-4 ring-[#0a0f14] text-gray-400 text-xs font-bold">
           {turn}
         </div>
         <div
@@ -132,7 +136,7 @@ function TurnHistoryCard({ entry, onClick }: { entry: TurnHistoryEntry; onClick:
 
           {/* Player Actions */}
           {playerActions.length > 0 && (
-            <div className="mt-2 pt-2 border-t border-[#233648]">
+            <div className="mt-2 pt-2 border-t border-white/[0.06]">
               <span className="text-xs text-gray-500 uppercase tracking-wider">
                 Your Actions:
               </span>
@@ -230,7 +234,7 @@ function NewsCard({ news }: { news: NewsItem }) {
 
   return (
     <div
-      className={`bg-[#111a22] rounded-lg p-3 border-l-2 ${sentimentStyles[news.sentiment]}`}
+      className={`bg-white/[0.02] rounded-lg p-3 border-l-2 ${sentimentStyles[news.sentiment]}`}
     >
       <div className="flex items-start gap-2">
         <span className="material-symbols-outlined text-gray-500 text-lg">
@@ -247,7 +251,7 @@ function NewsCard({ news }: { news: NewsItem }) {
 
 function CompetitorCard({ move }: { move: CompetitorMove }) {
   return (
-    <div className="bg-[#111a22] rounded-lg p-3 border-l-2 border-l-orange-500">
+    <div className="bg-white/[0.02] rounded-lg p-3 border-l-2 border-l-orange-500">
       <div className="flex items-start gap-2">
         <span className="material-symbols-outlined text-orange-500 text-lg">
           groups

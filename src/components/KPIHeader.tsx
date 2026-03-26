@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGame } from "@/context/GameContext";
 import BriefingModal from "./BriefingModal";
 
@@ -29,146 +30,116 @@ export default function KPIHeader() {
   };
 
   const formatCurrency = (value: number): string => {
-    if (value >= 1000000000) {
-      return `$${(value / 1000000000).toFixed(2)}B`;
-    } else if (value >= 1000000) {
-      return `$${(value / 1000000).toFixed(2)}M`;
-    } else if (value >= 1000) {
-      return `$${(value / 1000).toFixed(0)}k`;
-    }
+    if (value >= 1000000000) return `$${(value / 1000000000).toFixed(2)}B`;
+    if (value >= 1000000) return `$${(value / 1000000).toFixed(2)}M`;
+    if (value >= 1000) return `$${(value / 1000).toFixed(0)}k`;
     return `$${value.toFixed(0)}`;
   };
 
+  const metrics = [
+    { label: "Cash", value: formatCurrency(kpis.cash), icon: "payments" },
+    { label: "Share", value: `${kpis.marketShare.toFixed(1)}%`, icon: "pie_chart" },
+    { label: "Morale", value: `${kpis.satisfaction.toFixed(0)}%`, icon: "mood" },
+    { label: "Brand", value: `${kpis.brandAwareness.toFixed(0)}%`, icon: "campaign" },
+  ];
+
   return (
     <>
-    <header className="shrink-0 border-b border-[#233648] bg-[#111a22] px-3 sm:px-6 py-2 sm:py-3">
-      <div className="flex items-center justify-between gap-2">
-        {/* KPI Cards - scrollable on mobile */}
-        <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar min-w-0">
-          {/* Cash Balance */}
-          <div className="flex items-center gap-2 sm:gap-3 rounded-xl bg-[#1a2836] px-2.5 sm:px-4 py-1.5 sm:py-2 border border-[#2a3f54] shrink-0">
-            <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
-              payments
-            </span>
-            <div className="flex flex-col">
-              <span className="text-[10px] sm:text-xs font-medium text-gray-400 hidden sm:block">
-                Cash
-              </span>
-              <span className="text-sm sm:text-base font-bold font-heading text-white whitespace-nowrap">
-                {formatCurrency(kpis.cash)}
-              </span>
-            </div>
-          </div>
-
-          {/* Market Share */}
-          <div className="flex items-center gap-2 sm:gap-3 rounded-xl bg-[#1a2836] px-2.5 sm:px-4 py-1.5 sm:py-2 border border-[#2a3f54] shrink-0">
-            <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
-              pie_chart
-            </span>
-            <div className="flex flex-col">
-              <span className="text-[10px] sm:text-xs font-medium text-gray-400 hidden sm:block">
-                Share
-              </span>
-              <span className="text-sm sm:text-base font-bold font-heading text-white whitespace-nowrap">
-                {kpis.marketShare.toFixed(1)}%
-              </span>
-            </div>
-          </div>
-
-          {/* Customer Satisfaction */}
-          <div className="flex items-center gap-2 sm:gap-3 rounded-xl bg-[#1a2836] px-2.5 sm:px-4 py-1.5 sm:py-2 border border-[#2a3f54] shrink-0">
-            <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
-              sentiment_satisfied
-            </span>
-            <div className="flex flex-col">
-              <span className="text-[10px] sm:text-xs font-medium text-gray-400 hidden sm:block">
-                Team Morale
-              </span>
-              <span className="text-sm sm:text-base font-bold font-heading text-white whitespace-nowrap">
-                {kpis.satisfaction.toFixed(0)}%
-              </span>
-            </div>
-          </div>
-
-          {/* Brand Awareness */}
-          <div className="flex items-center gap-2 sm:gap-3 rounded-xl bg-[#1a2836] px-2.5 sm:px-4 py-1.5 sm:py-2 border border-[#2a3f54] shrink-0">
-            <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
-              campaign
-            </span>
-            <div className="flex flex-col">
-              <span className="text-[10px] sm:text-xs font-medium text-gray-400 hidden sm:block">
-                Brand Awareness
-              </span>
-              <span className="text-sm sm:text-base font-bold font-heading text-white whitespace-nowrap">
-                {kpis.brandAwareness.toFixed(0)}%
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Turn Counter - always visible, company name hidden on mobile */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <button
-            onClick={() => setShowBriefing(true)}
-            className="hidden sm:flex items-center gap-2 bg-[#141f2b]/60 px-4 py-2 rounded-xl border border-[#233648]/60 hover:border-primary/50 hover:bg-[#1f2f3f] transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-primary text-lg">
-              business
-            </span>
-            <span className="text-sm font-bold font-heading text-white">{gameState.playerCompany.name}</span>
-          </button>
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-[#141f2b]/60 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-[#233648]/60">
-            <span className="material-symbols-outlined text-primary text-base sm:text-lg">
-              schedule
-            </span>
-            <span className="font-mono text-base sm:text-lg font-bold font-heading text-white">{turn}</span>
-          </div>
-          {totalTokenUsage.totalTokens > 0 && (
-            <div className="relative" ref={tokenRef}>
-              <button
-                onClick={() => setShowTokenDetails((v) => !v)}
-                className="hidden sm:flex items-center gap-2 bg-[#141f2b]/60 px-3 py-1.5 sm:py-2 rounded-xl border border-[#233648]/60 hover:border-primary/50 hover:bg-[#1f2f3f] transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-gray-500 text-base sm:text-lg">
-                  token
+      <header className="shrink-0 border-b border-white/[0.06] px-4 sm:px-6 py-2.5 sm:py-3">
+        <div className="flex items-center justify-between gap-4">
+          {/* Left — KPIs */}
+          <div className="flex items-center gap-3 sm:gap-5 overflow-x-auto no-scrollbar min-w-0">
+            {metrics.map((m) => (
+              <div key={m.label} className="flex items-center gap-2 shrink-0">
+                <span className="material-symbols-outlined text-white/30 text-base hidden sm:inline">
+                  {m.icon}
                 </span>
-                <span className="text-xs font-mono text-gray-400">
-                  {formatTokenCount(totalTokenUsage.totalTokens)}
-                </span>
-              </button>
-              {showTokenDetails && (
-                <div className="absolute right-0 top-full mt-2 z-50 bg-[#141f2b]/60 backdrop-blur-md border border-[#233648]/60 rounded-xl shadow-xl p-3 min-w-[180px]">
-                  <div className="text-xs font-medium text-gray-400 mb-2">Token Usage</div>
-                  <div className="flex flex-col gap-1.5">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500">Input</span>
-                      <span className="text-xs font-mono text-gray-300">{totalTokenUsage.inputTokens.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500">Output</span>
-                      <span className="text-xs font-mono text-gray-300">{totalTokenUsage.outputTokens.toLocaleString()}</span>
-                    </div>
-                    <div className="border-t border-[#233648] my-0.5" />
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-400 font-medium">Total</span>
-                      <span className="text-xs font-mono text-white font-medium">{totalTokenUsage.totalTokens.toLocaleString()}</span>
-                    </div>
-                  </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-white/50 text-xs font-medium">
+                    {m.label}
+                  </span>
+                  <span className="text-white text-sm font-bold font-heading tabular-nums">
+                    {m.value}
+                  </span>
                 </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </header>
+              </div>
+            ))}
+          </div>
 
-    {initialBriefing && (
-      <BriefingModal
-        isOpen={showBriefing}
-        onClose={() => setShowBriefing(false)}
-        briefing={initialBriefing}
-      />
-    )}
+          {/* Right — context */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Company name */}
+            <button
+              onClick={() => setShowBriefing(true)}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-white/[0.04] transition-all text-white/60 hover:text-white"
+            >
+              <span className="material-symbols-outlined text-base text-primary/60">
+                business
+              </span>
+              <span className="text-xs font-medium">{gameState.playerCompany.name}</span>
+            </button>
+
+            {/* Date/Turn */}
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 text-white/50">
+              <span className="material-symbols-outlined text-base">schedule</span>
+              <span className="text-xs font-medium tabular-nums">
+                {gameState.currentDate || `Turn ${turn}`}
+              </span>
+            </div>
+
+            {/* Token usage */}
+            {totalTokenUsage.totalTokens > 0 && (
+              <div className="relative" ref={tokenRef}>
+                <button
+                  onClick={() => setShowTokenDetails((v) => !v)}
+                  className="hidden sm:flex items-center gap-1 px-2 py-1.5 rounded-lg hover:bg-white/[0.04] transition-all text-white/30 hover:text-white/60"
+                >
+                  <span className="material-symbols-outlined text-sm">token</span>
+                  <span className="text-[11px] font-mono">
+                    {formatTokenCount(totalTokenUsage.totalTokens)}
+                  </span>
+                </button>
+                <AnimatePresence>
+                  {showTokenDetails && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-full mt-2 z-50 bg-[#0a0f14]/95 backdrop-blur-2xl border border-white/[0.06] rounded-xl shadow-xl p-3 min-w-[180px]"
+                    >
+                      <div className="text-[11px] font-medium text-white/40 mb-2">Token Usage</div>
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[11px] text-white/30">Input</span>
+                          <span className="text-[11px] font-mono text-white/60">{totalTokenUsage.inputTokens.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[11px] text-white/30">Output</span>
+                          <span className="text-[11px] font-mono text-white/60">{totalTokenUsage.outputTokens.toLocaleString()}</span>
+                        </div>
+                        <div className="border-t border-white/[0.06] my-0.5" />
+                        <div className="flex justify-between items-center">
+                          <span className="text-[11px] text-white/40 font-medium">Total</span>
+                          <span className="text-[11px] font-mono text-white font-medium">{totalTokenUsage.totalTokens.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {initialBriefing && (
+        <BriefingModal
+          isOpen={showBriefing}
+          onClose={() => setShowBriefing(false)}
+          briefing={initialBriefing}
+        />
+      )}
     </>
   );
 }

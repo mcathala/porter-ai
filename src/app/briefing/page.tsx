@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useGame } from "@/context/GameContext";
 import FadeIn from "@/components/FadeIn";
+import { FadeUp, MagneticButton, AnimatedCounter } from "@/components/animations";
+import { motion } from "framer-motion";
 import GradientDivider from "@/components/GradientDivider";
 import PorterLogo from "@/components/PorterLogo";
 
@@ -60,18 +62,14 @@ export default function BriefingPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col bg-[#101922] text-white overflow-x-hidden">
+    <div className="relative flex min-h-screen w-full flex-col text-white overflow-x-hidden">
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-[#233648] px-4 sm:px-10 py-3 bg-[#111a22]">
-        <div className="flex items-center gap-4">
-          <div className="size-8 flex items-center justify-center rounded-xl bg-primary text-white">
-            <PorterLogo size={20} variant="white" />
-          </div>
-          <h2 className="text-white text-lg font-bold font-heading leading-tight tracking-[-0.02em]">
-            PorterAi
-          </h2>
+      <header className="flex items-center justify-between border-b border-white/[0.04] px-4 sm:px-10 py-3">
+        <div className="flex items-center gap-2 text-white/40">
+          <span className="material-symbols-outlined text-[18px]">description</span>
+          <span className="text-[13px] font-medium">Mission Briefing</span>
         </div>
-        <span className="text-[#92adc9] text-sm font-medium">Mission Briefing</span>
+        <span className="text-white/20 text-[12px] font-medium">porter.ai</span>
       </header>
 
       <main className="flex flex-1 justify-center py-10 px-6 sm:px-10">
@@ -114,14 +112,14 @@ export default function BriefingPage() {
           <FadeIn delay={0.1}>
           <GradientDivider />
           <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex items-center gap-4 rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5">
+            <div className="flex items-center gap-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 backdrop-blur-sm p-5">
               <span className="material-symbols-outlined text-primary text-3xl">domain</span>
               <div>
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Industry</p>
                 <p className="text-lg font-bold text-white">{marketLabel}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5">
+            <div className="flex items-center gap-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 backdrop-blur-sm p-5">
               <span className="material-symbols-outlined text-primary text-3xl">speed</span>
               <div>
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Difficulty</p>
@@ -140,28 +138,28 @@ export default function BriefingPage() {
               Starting Position
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-1">
+              <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 backdrop-blur-sm p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-emerald-400 text-lg">payments</span>
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Cash Balance</p>
                 </div>
                 <p className="text-2xl font-bold font-heading text-white mt-1">{formatCurrency(kpis.cash)}</p>
               </div>
-              <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-1">
+              <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 backdrop-blur-sm p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-blue-400 text-lg">pie_chart</span>
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Market Share</p>
                 </div>
                 <p className="text-2xl font-bold font-heading text-white mt-1">{kpis.marketShare.toFixed(1)}%</p>
               </div>
-              <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-1">
+              <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 backdrop-blur-sm p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-amber-400 text-lg">sentiment_satisfied</span>
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Team Morale</p>
                 </div>
                 <p className="text-2xl font-bold font-heading text-white mt-1">{kpis.satisfaction.toFixed(0)}%</p>
               </div>
-              <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-1">
+              <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 backdrop-blur-sm p-5 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-purple-400 text-lg">campaign</span>
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Brand Awareness</p>
@@ -182,15 +180,15 @@ export default function BriefingPage() {
                 How this market works
               </h2>
               <div className="flex flex-col gap-4">
-                <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-2">
+                <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 backdrop-blur-sm p-5 flex flex-col gap-2">
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Market structure</p>
                   <p className="text-[#c0d0e0] text-base leading-relaxed">{marketProfile.overview}</p>
                 </div>
-                <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-2">
+                <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 backdrop-blur-sm p-5 flex flex-col gap-2">
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Dynamics</p>
                   <p className="text-[#c0d0e0] text-base leading-relaxed">{marketProfile.dynamics}</p>
                 </div>
-                <div className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-2">
+                <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 backdrop-blur-sm p-5 flex flex-col gap-2">
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Customer behavior</p>
                   <p className="text-[#c0d0e0] text-base leading-relaxed">{marketProfile.customerBehavior}</p>
                 </div>
@@ -214,11 +212,11 @@ export default function BriefingPage() {
                   return (
                     <div
                       key={i}
-                      className="rounded-2xl bg-[#141f2b]/60 border border-[#233648]/60 p-5 flex flex-col gap-3"
+                      className="rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 backdrop-blur-sm p-5 flex flex-col gap-3"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-lg bg-[#233648]">
+                          <div className="p-2 rounded-lg bg-white/[0.06]">
                             <span className="material-symbols-outlined text-[#92adc9] text-xl">
                               {COMPETITOR_ARCHETYPE_ICONS[c.archetype] || "business"}
                             </span>
@@ -233,7 +231,7 @@ export default function BriefingPage() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2 mt-auto">
-                        <div className="flex-1 h-1.5 rounded-full bg-[#233648] overflow-hidden">
+                        <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
                           <div
                             className="h-full rounded-full bg-primary/70"
                             style={{ width: `${Math.min(c.marketShare, 100)}%` }}
@@ -250,7 +248,7 @@ export default function BriefingPage() {
 
               {/* Rest of Market */}
               {restOfMarket.marketShare > 0 && (
-                <div className="mt-4 rounded-xl bg-[#161f2a] border border-[#1e2d3d] p-4 flex items-center justify-between">
+                <div className="mt-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 p-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="material-symbols-outlined text-gray-500 text-lg">more_horiz</span>
                     <div>
@@ -271,13 +269,15 @@ export default function BriefingPage() {
 
           {/* CTA */}
           <section className="flex flex-col items-center gap-4 pt-4 pb-8">
-            <button
-              onClick={() => router.push("/dashboard")}
-              className="flex items-center justify-center gap-2 h-14 px-10 rounded-xl bg-primary text-white font-bold text-lg shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-xl">play_arrow</span>
-              Begin Simulation
-            </button>
+            <MagneticButton>
+              <button
+                onClick={() => router.push("/dashboard")}
+                className="btn-glow flex items-center justify-center gap-2 h-14 px-10 rounded-xl bg-primary text-white font-bold text-lg shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-xl">play_arrow</span>
+                Begin Simulation
+              </button>
+            </MagneticButton>
             <p className="text-[#6b8399] text-sm">
               Your first move awaits. Good luck, CEO.
             </p>

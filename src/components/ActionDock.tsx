@@ -69,8 +69,8 @@ export default function ActionDock() {
     <>
       {/* Processing Overlay */}
       {isProcessingTurn && (
-        <div className="absolute inset-0 bottom-0 z-[100] bg-[#111a22]/80 backdrop-blur-sm transition-all duration-300 flex flex-col items-center justify-center pointer-events-none pb-[120px]">
-          <div className="flex flex-col items-center gap-4 bg-[#1a2632]/80 p-8 rounded-3xl border border-[#233648] shadow-2xl animate-in zoom-in-95 duration-300">
+        <div className="absolute inset-0 bottom-0 z-[100] bg-[#0a0f14]/80 backdrop-blur-sm transition-all duration-300 flex flex-col items-center justify-center pointer-events-none pb-[120px]">
+          <div className="flex flex-col items-center gap-4 bg-white/[0.03] p-8 rounded-3xl border border-white/[0.06] backdrop-blur-2xl shadow-2xl animate-in zoom-in-95 duration-300">
             <span className="material-symbols-outlined text-primary text-[48px] animate-spin">
               autorenew
             </span>
@@ -88,7 +88,7 @@ export default function ActionDock() {
         disabled={isProcessingTurn}
         className={`fixed bottom-[180px] md:bottom-[140px] right-4 sm:right-8 z-30 group flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full shadow-xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${isAdvisorOpen
           ? "bg-emerald-600 shadow-emerald-500/50"
-          : "bg-[#1f2d3b] border border-[#30475e] hover:border-emerald-500 shadow-black/40"
+          : "bg-white/[0.04] border border-white/[0.06] backdrop-blur-xl hover:border-emerald-500 shadow-black/40 hover:shadow-[0_8px_24px_rgba(16,185,129,0.15)]"
           }`}
       >
         <span className={`material-symbols-outlined text-[28px] sm:text-[32px] ${isAdvisorOpen ? "text-white" : "text-emerald-500 group-hover:text-emerald-400"
@@ -99,12 +99,12 @@ export default function ActionDock() {
         {!isAdvisorOpen && (
           <span className="absolute -top-1 -right-1 flex h-3 w-3 sm:h-4 sm:w-4">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 sm:h-4 sm:w-4 bg-emerald-500 border border-[#111a22]"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 sm:h-4 sm:w-4 bg-emerald-500 border border-[#0a0f14]"></span>
           </span>
         )}
       </button>
 
-      <div className="relative shrink-0 z-20 bg-[#111a22] border-t border-[#233648] p-3 sm:p-6 pb-4 sm:pb-10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+      <div className="relative shrink-0 z-20 glass-nav border-t border-white/[0.05] p-3 sm:p-6 pb-4 sm:pb-10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
         <div className="mx-auto max-w-6xl flex flex-row items-center justify-between gap-3 sm:gap-4">
 
           {/* Left Side: Take Action & Queue Status */}
@@ -112,7 +112,7 @@ export default function ActionDock() {
             <button
               onClick={() => setIsDialogOpen(true)}
               disabled={isProcessingTurn}
-              className="group flex items-center gap-2 sm:gap-3 px-4 sm:px-8 py-2.5 sm:py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-lg shadow-blue-600/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-none justify-center"
+              className="group flex items-center gap-2 sm:gap-3 px-4 sm:px-8 py-2.5 sm:py-4 btn-glow bg-primary hover:bg-primary/90 text-white rounded-xl shadow-[0_8px_32px_rgba(19,127,236,0.25)] hover:shadow-[0_12px_40px_rgba(19,127,236,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-none justify-center"
             >
               <span className="material-symbols-outlined text-[20px] sm:text-[24px] text-blue-200 group-hover:text-white transition-colors">
                 add_circle
@@ -121,7 +121,7 @@ export default function ActionDock() {
             </button>
 
             {actions.length > 0 && (
-              <div className="text-xs sm:text-sm font-medium font-heading text-gray-400 flex items-center gap-2 bg-[#141f2b]/60 px-3 sm:px-4 py-2 rounded-xl border border-[#233648]/60 shrink-0 hidden sm:flex">
+              <div className="text-xs sm:text-sm font-medium font-heading text-gray-400 flex items-center gap-2 bg-white/[0.03] px-3 sm:px-4 py-2 rounded-xl border border-white/[0.06] shrink-0 hidden sm:flex">
                 <span className="material-symbols-outlined text-[16px] text-blue-400">
                   checklist
                 </span>
@@ -150,7 +150,7 @@ export default function ActionDock() {
             <button
               onClick={() => setIsTurnDialogOpen(true)}
               disabled={isProcessingTurn}
-              className="group relative flex items-center gap-2 sm:gap-3 px-4 sm:px-8 py-2.5 sm:py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full sm:w-auto justify-center"
+              className="group relative flex items-center gap-2 sm:gap-3 px-4 sm:px-8 py-2.5 sm:py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-[0_8px_32px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full sm:w-auto justify-center"
             >
               <span className="font-bold font-heading text-sm sm:text-lg tracking-wide">
                 {isProcessingTurn ? "Simulating..." : "Next Turn"}
@@ -180,7 +180,7 @@ export default function ActionDock() {
 
         {/* Global Command Center Hint - hidden on mobile */}
         <div className="absolute bottom-2 left-0 right-0 hidden sm:flex justify-center pointer-events-none">
-          <span className="text-[10px] text-gray-500/70 uppercase tracking-[0.2em] font-medium">
+          <span className="text-[11px] text-gray-500/70 uppercase tracking-[0.2em] font-medium">
             Press Enter to Open Command Center
           </span>
         </div>

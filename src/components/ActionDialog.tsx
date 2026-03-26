@@ -56,14 +56,14 @@ export default function ActionDialog({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] bg-[#111a22]/80 backdrop-blur-sm transition-all duration-300">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] bg-[#0a0f14]/80 backdrop-blur-sm transition-all duration-300">
             <div
                 className="fixed inset-0 z-0 cursor-default"
                 onClick={onClose}
                 aria-hidden="true"
             />
             <div className="w-full max-w-2xl mx-4 transform transition-all relative z-10 flex flex-col gap-4">
-                <div className="relative overflow-hidden rounded-2xl bg-[#141f2b] shadow-2xl ring-1 ring-white/10">
+                <div className="relative overflow-hidden rounded-2xl glass-modal ring-1 ring-white/[0.06]">
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20 opacity-50 pointer-events-none" />
 
                     <div className="relative flex items-center gap-4 px-6 py-6">
@@ -86,9 +86,9 @@ export default function ActionDialog({
                         </button>
                     </div>
 
-                    <div className="h-px w-full bg-[#233648]/60" />
+                    <div className="h-px w-full bg-white/[0.06]" />
 
-                    <div className="bg-[#111a22]/50 px-6 py-4">
+                    <div className="bg-white/[0.01] px-6 py-4">
                         <div className="mb-3 flex items-center justify-between">
                             <span className="text-xs font-semibold font-heading uppercase tracking-wider text-gray-400">
                                 Suggested Actions
@@ -99,7 +99,7 @@ export default function ActionDialog({
                                 <button
                                     key={action.id}
                                     onClick={() => handleAddAction(action.text)}
-                                    className="flex items-center gap-2 rounded-full border border-[#233648]/60 bg-[#141f2b]/60 px-4 py-2 text-sm font-medium text-slate-300 hover:border-primary hover:text-white transition-all shadow-sm cursor-pointer"
+                                    className="flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.03] px-4 py-2 text-sm font-medium text-slate-300 hover:border-primary hover:text-white transition-all shadow-sm cursor-pointer"
                                 >
                                     <span className="material-symbols-outlined text-[18px]">
                                         {action.icon}
@@ -110,16 +110,16 @@ export default function ActionDialog({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between px-4 py-2 bg-[#0d141b] border-t border-[#233648]/60 text-[10px] text-gray-500">
+                    <div className="flex items-center justify-between px-4 py-2 bg-[#0a0f14]/60 border-t border-white/[0.04] text-[10px] text-gray-500">
                         <div className="flex gap-4">
                             <span className="flex items-center gap-1">
-                                <kbd className="font-sans px-1.5 py-0.5 rounded bg-[#141f2b]/60 border border-[#233648]/60">
+                                <kbd className="font-sans px-1.5 py-0.5 rounded bg-white/[0.03] border border-white/[0.06]">
                                     ↵
                                 </kbd>{" "}
                                 to select
                             </span>
                             <span className="flex items-center gap-1">
-                                <kbd className="font-sans px-1.5 py-0.5 rounded bg-[#141f2b]/60 border border-[#233648]/60">
+                                <kbd className="font-sans px-1.5 py-0.5 rounded bg-white/[0.03] border border-white/[0.06]">
                                     esc
                                 </kbd>{" "}
                                 to close
@@ -127,7 +127,7 @@ export default function ActionDialog({
                         </div>
                         <button
                             onClick={onNextTurn}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#141f2b]/60 border border-[#233648]/60 hover:border-white/20 text-gray-400 hover:text-white text-xs font-medium font-heading transition-all cursor-pointer"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-white/20 text-gray-400 hover:text-white text-xs font-medium font-heading transition-all cursor-pointer"
                         >
                             <span className="material-symbols-outlined text-[14px]">timelapse</span>
                             Next Turn
@@ -145,7 +145,7 @@ export default function ActionDialog({
                             {takenActions.map((action) => (
                                 <div
                                     key={action.id}
-                                    className="group bg-[#141f2b]/60 backdrop-blur-sm rounded-2xl p-4 border border-[#233648]/60 shadow-lg flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-300 hover:border-primary/30 transition-all"
+                                    className="group bg-white/[0.02] backdrop-blur-sm rounded-2xl p-4 border border-white/[0.06] shadow-lg flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-300 hover:border-primary/30 transition-all"
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className="size-8 rounded-full bg-green-500/10 flex items-center justify-center text-green-500">
@@ -166,7 +166,7 @@ export default function ActionDialog({
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <span className="text-[10px] font-bold bg-[#111a22] text-gray-500 px-2 py-1 rounded">
+                                        <span className="text-[10px] font-bold bg-white/[0.04] text-gray-500 px-2 py-1 rounded">
                                             PROCESSING
                                         </span>
                                         <button
