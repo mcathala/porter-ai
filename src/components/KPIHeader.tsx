@@ -37,10 +37,10 @@ export default function KPIHeader() {
   };
 
   const metrics = [
-    { label: "Cash", value: formatCurrency(kpis.cash), icon: "payments" },
-    { label: "Share", value: `${kpis.marketShare.toFixed(1)}%`, icon: "pie_chart" },
-    { label: "Morale", value: `${kpis.satisfaction.toFixed(0)}%`, icon: "mood" },
-    { label: "Brand", value: `${kpis.brandAwareness.toFixed(0)}%`, icon: "campaign" },
+    { label: "Cash Balance", value: formatCurrency(kpis.cash) },
+    { label: "Market Share", value: `${kpis.marketShare.toFixed(1)}%` },
+    { label: "Team Morale", value: `${kpis.satisfaction.toFixed(0)}%` },
+    { label: "Brand Awareness", value: `${kpis.brandAwareness.toFixed(0)}%` },
   ];
 
   return (
@@ -51,9 +51,6 @@ export default function KPIHeader() {
           <div className="flex items-center gap-3 sm:gap-5 overflow-x-auto no-scrollbar min-w-0">
             {metrics.map((m) => (
               <div key={m.label} className="flex items-center gap-2 shrink-0">
-                <span className="material-symbols-outlined text-white/30 text-base hidden sm:inline">
-                  {m.icon}
-                </span>
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-white/50 text-xs font-medium">
                     {m.label}
