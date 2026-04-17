@@ -177,7 +177,7 @@ export default function BriefingPage() {
             <section>
               <h2 className="text-xl font-bold font-heading tracking-[-0.02em] mb-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">storefront</span>
-                How this market works
+                Business Landscape
               </h2>
               <div className="flex flex-col gap-4">
                 <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-white/[0.1] transition-all duration-300 backdrop-blur-sm p-5 flex flex-col gap-2">
