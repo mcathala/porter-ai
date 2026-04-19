@@ -7,6 +7,7 @@ import { FadeUp, MagneticButton, AnimatedCounter } from "@/components/animations
 import { motion } from "framer-motion";
 import GradientDivider from "@/components/GradientDivider";
 import PorterLogo from "@/components/PorterLogo";
+import { formatCurrency } from "@/lib/utils/formatters";
 
 const MARKET_LABELS: Record<string, string> = {
   custom: "Custom Market",
@@ -53,13 +54,6 @@ export default function BriefingPage() {
     market === "custom" && customMarket
       ? customMarket
       : MARKET_LABELS[market] || market;
-
-  const formatCurrency = (value: number): string => {
-    if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(2)}B`;
-    if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
-    if (value >= 1_000) return `$${(value / 1_000).toFixed(0)}k`;
-    return `$${value.toFixed(0)}`;
-  };
 
   return (
     <div className="relative flex min-h-screen w-full flex-col text-white overflow-x-hidden">

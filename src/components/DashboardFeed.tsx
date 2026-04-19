@@ -7,6 +7,12 @@ import TurnSummaryModal from "./TurnSummaryModal";
 import PorterLogo from "./PorterLogo";
 import { FadeUp } from "@/components/animations";
 
+const KPI_BADGE_VARIANTS = {
+  positive: "bg-emerald-500/10 text-emerald-400",
+  negative: "bg-red-500/10 text-red-400",
+  neutral: "bg-gray-500/10 text-gray-400",
+} as const;
+
 export default function DashboardFeed() {
   const { turnHistory, gameState } = useGame();
   const [selectedEntry, setSelectedEntry] = useState<TurnHistoryEntry | null>(null);
@@ -187,6 +193,7 @@ function KPIBadge({
 }) {
   const isPositive = change > 0;
   const isNegative = change < 0;
+  const variant = isPositive ? "positive" : isNegative ? "negative" : "neutral";
 
   const formatValue = () => {
     const prefix = isPositive ? "+" : "";
@@ -203,13 +210,7 @@ function KPIBadge({
 
   return (
     <div
-      className={`text-xs px-2 py-1 rounded flex items-center gap-1 ${
-        isPositive
-          ? "bg-emerald-500/10 text-emerald-400"
-          : isNegative
-            ? "bg-red-500/10 text-red-400"
-            : "bg-gray-500/10 text-gray-400"
-      }`}
+      className={`text-xs px-2 py-1 rounded flex items-center gap-1 ${KPI_BADGE_VARIANTS[variant]}`}
     >
       <span>{label}:</span>
       <span className="font-bold">{formatValue()}</span>
