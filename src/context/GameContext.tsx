@@ -24,6 +24,7 @@ import {
   SIZE_EXPERIENCE_KPIS,
   RestOfMarket,
 } from "@/lib/types/game";
+import { logger } from "@/lib/utils/logger";
 
 // Store turn history for the feed
 export interface TurnHistoryEntry {
@@ -252,7 +253,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         setAdvisorMessages([]);
         setIsAdvisorOpen(false);
       } catch (error) {
-        console.error("Game initialization error:", error);
+        logger.error("Game initialization error:", error);
         throw error;
       } finally {
         setIsInitializing(false);
@@ -416,13 +417,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
         // Clear actions for next turn
         setActions([]);
       } catch (error) {
-        console.error("Error processing turn:", error);
+        logger.error("Error processing turn:", error);
         throw error;
       } finally {
         setIsProcessingTurn(false);
       }
     },
-    [actions, gameState, contacts, lastTransientContactTurn]
+    [actions, gameState, contacts, lastTransientContactTurn, addTokenUsage]
   );
 
   // Close turn summary modal
@@ -560,7 +561,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           );
         }
       } catch (error) {
-        console.error("Contact chat error:", error);
+        logger.error("Contact chat error:", error);
       }
     },
     [contacts, gameState, addTokenUsage]
@@ -657,7 +658,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           );
         }
       } catch (error) {
-        console.error("Advisor error:", error);
+        logger.error("Advisor error:", error);
         setIsAdvisorTyping(false);
 
         // Add error message
@@ -671,7 +672,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         setAdvisorMessages((prev) => [...prev, errorMessage]);
       }
     },
-    [gameState, turnHistory, actions, advisorMessages]
+    [gameState, turnHistory, actions, advisorMessages, addTokenUsage]
   );
 
   return (

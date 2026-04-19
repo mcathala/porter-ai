@@ -7,6 +7,7 @@ import TurnSummaryModal from "./TurnSummaryModal";
 import AdvisorPanel from "./AdvisorPanel";
 import { useGame } from "@/context/GameContext";
 import { TimeAdvance } from "@/lib/types/game";
+import { logger } from "@/lib/utils/logger";
 
 interface Action {
   id: string;
@@ -61,7 +62,7 @@ export default function ActionDock() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to process turn";
       setError(errorMessage);
-      console.error("Turn processing error:", err);
+      logger.error("Turn processing error:", err);
     }
   };
 

@@ -13,6 +13,7 @@ import {
   Market,
   Difficulty,
 } from "@/lib/types/game";
+import { logger } from "@/lib/utils/logger";
 
 // Yolo presets — randomize all fields from these
 const YOLO_PRESETS: { name: string; mission: string; size: CompanySize; experience: CompanyExperience; market: Market; customMarket: string }[] = [
@@ -141,7 +142,7 @@ function CompanySetupContent() {
       await initializeGame(difficulty, market, custom, selectedSize, selectedExperience, name, mission);
       router.push("/briefing");
     } catch (error) {
-      console.error("Failed to initialize game:", error);
+      logger.error("Failed to initialize game:", error);
     }
   };
 

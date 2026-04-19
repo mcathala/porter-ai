@@ -1,6 +1,7 @@
 "use client";
 
 import { useGame, InitialBriefing } from "@/context/GameContext";
+import { formatCurrency } from "@/lib/utils/formatters";
 
 const MARKET_LABELS: Record<string, string> = {
   fashion: "Fashion Industry",
@@ -45,13 +46,6 @@ export default function BriefingModal({ isOpen, onClose, briefing }: BriefingMod
     market === "custom" && customMarket
       ? customMarket
       : MARKET_LABELS[market] || market;
-
-  const formatCurrency = (value: number): string => {
-    if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(2)}B`;
-    if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
-    if (value >= 1_000) return `$${(value / 1_000).toFixed(0)}k`;
-    return `$${value.toFixed(0)}`;
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0f14]/90 backdrop-blur-sm">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TurnResult, CompetitorArchetype } from "@/lib/types/game";
+import { formatCurrency } from "@/lib/utils/formatters";
 
 interface TurnSummaryModalProps {
   isOpen: boolean;
@@ -37,15 +38,6 @@ export default function TurnSummaryModal({
   }, [isOpen]);
 
   if (!isOpen || !turnResult) return null;
-
-  const formatCurrency = (value: number): string => {
-    if (Math.abs(value) >= 1000000) {
-      return `$${(value / 1000000).toFixed(2)}M`;
-    } else if (Math.abs(value) >= 1000) {
-      return `$${(value / 1000).toFixed(0)}k`;
-    }
-    return `$${value.toFixed(0)}`;
-  };
 
   const formatChange = (change: number, isPercent: boolean = false): string => {
     const prefix = change >= 0 ? "+" : "";

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGame } from "@/context/GameContext";
+import { formatCurrency } from "@/lib/utils/formatters";
 import BriefingModal from "./BriefingModal";
 
 export default function KPIHeader() {
@@ -27,13 +28,6 @@ export default function KPIHeader() {
     if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
     if (count >= 1000) return `${(count / 1000).toFixed(1)}k`;
     return count.toString();
-  };
-
-  const formatCurrency = (value: number): string => {
-    if (value >= 1000000000) return `$${(value / 1000000000).toFixed(2)}B`;
-    if (value >= 1000000) return `$${(value / 1000000).toFixed(2)}M`;
-    if (value >= 1000) return `$${(value / 1000).toFixed(0)}k`;
-    return `$${value.toFixed(0)}`;
   };
 
   const metrics = [
