@@ -184,7 +184,7 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1, delay: 1.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.9, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <TiltCard
               className="relative z-10 w-full max-w-[1400px] rounded-2xl border border-white/[0.08] bg-[#0c1218]/80 backdrop-blur-2xl overflow-visible shadow-[0_32px_100px_-16px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.03)_inset]"
@@ -219,7 +219,7 @@ export default function LandingPage() {
                       className="group rounded-xl bg-white/[0.02] border border-white/[0.05] p-4 hover:bg-white/[0.04] hover:border-white/[0.08] transition-all duration-300"
                       initial={{ opacity: 0, y: 16, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{ delay: 1.8 + i * 0.12, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      transition={{ delay: 1.0 + i * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <p className="text-[#5a7a94] text-[11px] font-medium uppercase tracking-wider">{kpi.label}</p>
@@ -299,7 +299,7 @@ export default function LandingPage() {
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 2.2 }}
+                  transition={{ delay: 1.4 }}
                 >
                   <span className="material-symbols-outlined text-primary/40 text-lg">terminal</span>
                   <TypingText text="Lower prices by 15% and launch a loyalty program..." className="text-[#5a7a94] text-sm" />
