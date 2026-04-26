@@ -96,7 +96,7 @@ export default function LandingPage() {
             href="/onboarding"
             className="inline-flex items-center h-9 px-5 rounded-lg bg-white/[0.05] border border-white/[0.08] text-white text-sm font-medium hover:bg-white/[0.08] transition-all duration-300"
           >
-            Start Playing
+            Start a Run
           </Link>
         </nav>
       </header>
@@ -130,8 +130,8 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            Type your next move. Watch AI rivals react.
-            Every turn writes a new chapter of your startup journey.
+            Type your next move. Every turn writes a new chapter
+            of your startup story.
           </motion.p>
 
           <motion.div
@@ -142,19 +142,11 @@ export default function LandingPage() {
           >
             <MagneticButton href="/onboarding">
               <div className="btn-glow group inline-flex items-center justify-center h-13 px-9 rounded-xl bg-primary text-white font-semibold text-base shadow-[0_8px_32px_rgba(19,127,236,0.3)] hover:shadow-[0_12px_40px_rgba(19,127,236,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 gap-2">
-                Start a Company
+                Start a Run
                 <span className="material-symbols-outlined text-lg transition-transform duration-300 group-hover:translate-x-1">
                   arrow_forward
                 </span>
               </div>
-            </MagneticButton>
-            <MagneticButton>
-              <button className="inline-flex items-center justify-center h-13 px-7 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[#92abbe] font-medium text-base hover:bg-white/[0.06] hover:text-white transition-all duration-300 gap-2">
-                <span className="material-symbols-outlined text-lg">
-                  play_circle
-                </span>
-                Watch Demo
-              </button>
             </MagneticButton>
           </motion.div>
         </div>
@@ -355,10 +347,10 @@ export default function LandingPage() {
         <div className="max-w-2xl mx-auto">
           <FadeUp>
             <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] mb-4 text-center">
-              Stakeholders Enter the Story
+              The World Pushes Back
             </h2>
             <p className="text-[#8aabc5] text-lg sm:text-xl text-center mb-16 max-w-xl mx-auto">
-              You&apos;re not playing alone. The world pushes back.
+              Stakeholders enter the story. You&apos;re not playing alone.
             </p>
           </FadeUp>
 
