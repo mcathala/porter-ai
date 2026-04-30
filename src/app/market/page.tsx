@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useGame } from "@/context/GameContext";
-import { FadeUp, MagneticButton, StaggerText } from "@/components/animations";
+import { MagneticButton } from "@/components/animations";
 import { motion } from "framer-motion";
 import PorterLogo from "@/components/PorterLogo";
 import {
@@ -170,7 +170,7 @@ function CompanySetupContent() {
         </header>
 
         <main className="flex flex-1 justify-center py-8 px-6 sm:px-10">
-          <FadeUp className="flex flex-col w-full max-w-[960px]">
+          <div className="flex flex-col w-full max-w-[960px]">
             {/* Progress Bar */}
             <div className="flex flex-col gap-3 mb-8">
               <div className="flex justify-between items-center">
@@ -186,7 +186,7 @@ function CompanySetupContent() {
             <div className="flex flex-col gap-2 mb-4">
               <div className="flex items-center justify-between">
                 <h1 className="text-white text-4xl font-bold font-heading leading-tight tracking-[-0.02em]">
-                  <StaggerText text="Set Up Your Company" />
+                  Set Up Your Company
                 </h1>
                 <button
                   onClick={handleYolo}
@@ -303,7 +303,7 @@ function CompanySetupContent() {
                 </button>
               </MagneticButton>
             </div>
-          </FadeUp>
+          </div>
         </main>
       </div>
     </div>
