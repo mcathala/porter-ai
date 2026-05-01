@@ -178,7 +178,7 @@ function CompanySetupContent() {
                 <p className="text-[#92adc9] text-sm">Company Setup</p>
               </div>
               <div className="rounded-full bg-white/[0.06] h-2 overflow-hidden">
-                <motion.div className="h-full rounded-full bg-primary" initial={{ width: "0%" }} animate={{ width: "50%" }} transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }} />
+                <motion.div className="h-full rounded-full bg-primary" initial={{ width: "50%" }} animate={{ width: isInitializing ? "100%" : "50%" }} transition={{ duration: 0.8, ease: "easeOut" }} />
               </div>
             </div>
 
