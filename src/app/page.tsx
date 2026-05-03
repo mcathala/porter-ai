@@ -148,14 +148,6 @@ export default function LandingPage() {
                 </span>
               </div>
             </MagneticButton>
-            <MagneticButton>
-              <button className="inline-flex items-center justify-center h-13 px-7 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[#92abbe] font-medium text-base hover:bg-white/[0.06] hover:text-white transition-all duration-300 gap-2">
-                <span className="material-symbols-outlined text-lg">
-                  play_circle
-                </span>
-                Watch Demo
-              </button>
-            </MagneticButton>
           </motion.div>
         </div>
 
