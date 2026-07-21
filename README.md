@@ -34,9 +34,19 @@ npm run typecheck  # Type-check with tsc
 npm run test       # Run tests with Vitest
 ```
 
+### Playtesting
+
+With the dev server running, two Python scripts can play full games against the API for diagnostics (KPI tracking, dampening analysis, market share validation):
+
+```bash
+python3 scripts/playtest.py     # Scripted playthrough (see --preset, --difficulty, --market)
+python3 scripts/playtest-ai.py  # Adaptive AI player that decides its own moves each turn
+```
+
 ## Project Structure
 
 ```
+scripts/              # Automated playtest scripts (Python)
 src/
 ├── app/              # Next.js pages & API routes
 │   ├── api/          # Backend endpoints (initialize, turn, advisor, stakeholder)
