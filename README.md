@@ -5,7 +5,7 @@ AI-powered business simulation game where player decisions generate dynamic, nar
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router) + React 19 + TypeScript 5
-- **AI/LLM:** LangChain + LangGraph (Groq, Ollama, OpenAI providers)
+- **AI/LLM:** LangChain + LangGraph (Groq or Ollama providers)
 - **Styling:** Tailwind CSS 4
 - **Validation:** Zod
 - **Testing:** Vitest
@@ -25,6 +25,17 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to play.
+
+### Environment Variables
+
+| Variable | Description |
+| --- | --- |
+| `LLM_PROVIDER` | `groq` (default) or `ollama` |
+| `GROQ_API_KEY` | Groq API key — get one at [console.groq.com](https://console.groq.com/) |
+| `GROQ_MODEL` | Groq model name (default: `openai/gpt-oss-20b`) |
+| `OLLAMA_MODEL` | Ollama model name (default: `gpt-oss:120b-cloud`) |
+| `OLLAMA_BASE_URL` | Ollama endpoint (default: `https://ollama.com`; use `http://localhost:11434` for local) |
+| `OLLAMA_API_KEY` | Only needed for hosted Ollama instances requiring auth |
 
 ### Useful Scripts
 
@@ -71,4 +82,15 @@ Player Action → Player Company Agent (SWOT) ─┐
                Market Agent (in parallel)   ─┴→ Gamemaster (synthesis & KPI resolution) → Result
 ```
 
-The pipeline lives in [src/lib/agents/](src/lib/agents/) — see `graph.ts` for the LangGraph orchestration and `prompts.ts` / `schemas.ts` for agent prompts and output validation.
+The pipeline lives in [src/lib/agents/](src/lib/agents/) — see `graph.ts` for the LangGraph orchestration and `prompts.ts` / `schemas.ts` for agent prompts and output validation. Provider selection (Groq/Ollama) is centralized in `llm.ts`.
+
+## API Endpoints
+
+All endpoints are `POST` with JSON bodies:
+
+| Endpoint | Description |
+| --- | --- |
+| `/api/initialize` | Set up a new game (market, competitors, starting KPIs) |
+| `/api/turn` | Resolve a turn through the multi-agent pipeline |
+| `/api/advisor/chat` | Chat with the AI advisor (streams the reply) |
+| `/api/stakeholder/chat` | Chat with a stakeholder contact (streams the reply) |
