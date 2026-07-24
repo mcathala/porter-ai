@@ -83,3 +83,14 @@ Player Action → Player Company Agent (SWOT) ─┐
 ```
 
 The pipeline lives in [src/lib/agents/](src/lib/agents/) — see `graph.ts` for the LangGraph orchestration and `prompts.ts` / `schemas.ts` for agent prompts and output validation. Provider selection (Groq/Ollama) is centralized in `llm.ts`.
+
+## API Endpoints
+
+All endpoints are `POST` with JSON bodies:
+
+| Endpoint | Description |
+| --- | --- |
+| `/api/initialize` | Set up a new game (market, competitors, starting KPIs) |
+| `/api/turn` | Resolve a turn through the multi-agent pipeline |
+| `/api/advisor/chat` | Chat with the AI advisor (streams the reply) |
+| `/api/stakeholder/chat` | Chat with a stakeholder contact (streams the reply) |
