@@ -12,6 +12,8 @@ AI-powered business simulation game where player decisions generate dynamic, nar
 
 ## Getting Started
 
+Requires Node.js 20.9+ (Next.js 16) and a [Groq API key](https://console.groq.com/) (or a local Ollama instance).
+
 ```bash
 # Install dependencies
 npm install
@@ -47,7 +49,7 @@ npm run test       # Run tests with Vitest
 
 ### Playtesting
 
-With the dev server running, two Python scripts can play full games against the API for diagnostics (KPI tracking, dampening analysis, market share validation):
+With the dev server running, two Python scripts can play full games against the API for diagnostics (KPI tracking, dampening analysis, market share validation). They only need Python 3 — no packages to install:
 
 ```bash
 python3 scripts/playtest.py     # Scripted playthrough (see --preset, --difficulty, --market)
