@@ -26,7 +26,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to play.
+Open [http://localhost:3000](http://localhost:3000) to play. Game state lives in memory only — refreshing the page starts a new game.
 
 ### Environment Variables
 
@@ -45,6 +45,8 @@ Open [http://localhost:3000](http://localhost:3000) to play.
 npm run lint       # Lint with ESLint
 npm run typecheck  # Type-check with tsc
 npm run test       # Run tests with Vitest
+npm run build      # Production build
+npm start          # Serve the production build
 ```
 
 ### Playtesting
